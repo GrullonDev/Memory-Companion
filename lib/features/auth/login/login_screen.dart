@@ -1,19 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/floating_bob.dart';
+import 'package:memory_companion/features/auth/controller/auth_controller.dart';
 import 'package:memory_companion/features/auth/login/widget/social_login_row.dart';
+import 'package:memory_companion/features/auth/util/auth_error_mapper.dart';
 import 'package:memory_companion/features/auth/widget/auth_primary_button.dart';
 import 'package:memory_companion/features/auth/widget/auth_text_field.dart';
+import 'package:memory_companion/features/auth/widget/phone_sign_in_dialog.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends ConsumerState<LoginScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _submitLogin() {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocale.fieldsRequiredMessage.getString(context))),
+      );
+      return;
+    }
+    ref.read(authControllerProvider.notifier).signIn(
+      email: email,
+      password: password,
+    );
+  }
+
   Future<void> _showForgotPasswordDialog(BuildContext context) async {
-    final controller = TextEditingController();
+    final controller = TextEditingController(text: _emailController.text.trim());
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -34,8 +68,15 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
           FilledButton(
-            onPressed: () {
+            onPressed: () async {
+              final email = controller.text.trim();
               Navigator.of(dialogContext).pop();
+              if (email.isEmpty) return;
+              await ref
+                  .read(authControllerProvider.notifier)
+                  .sendPasswordResetEmail(email);
+              final state = ref.read(authControllerProvider);
+              if (!context.mounted || state.hasError) return;
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -53,6 +94,23 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authControllerProvider).isLoading;
+
+    ref.listen(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(authErrorMessage(context, error))),
+        ),
+      );
+    });
+
+    ref.listen(authStateChangesProvider, (previous, next) {
+      final user = next.value;
+      if (user != null) {
+        Navigator.of(context).pushReplacementNamed(RoutePaths.home);
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -122,8 +180,11 @@ class LoginScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               AuthTextField(
-                icon: Icons.person_outline_rounded,
+                icon: Icons.mail_outline_rounded,
                 hint: AppLocale.usernameOrEmailHint.getString(context),
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                enabled: !isLoading,
               ),
               const SizedBox(height: 20),
               Text(
@@ -138,6 +199,8 @@ class LoginScreen extends StatelessWidget {
                 icon: Icons.lock_outline_rounded,
                 hint: AppLocale.passwordHint.getString(context),
                 isPassword: true,
+                controller: _passwordController,
+                enabled: !isLoading,
               ),
               const SizedBox(height: 8),
               Align(
@@ -156,17 +219,17 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 12),
               AuthPrimaryButton(
                 label: AppLocale.loginButtonLabel.getString(context),
-                onTap: () =>
-                    Navigator.of(context).pushReplacementNamed(RoutePaths.home),
+                isLoading: isLoading,
+                onTap: _submitLogin,
               ),
               const SizedBox(height: 24),
               SocialLoginRow(
-                onGoogleTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
-                ),
-                onFacebookTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
-                ),
+                onGoogleTap: isLoading
+                    ? null
+                    : () => ref.read(authControllerProvider.notifier).signInWithGoogle(),
+                onPhoneTap: isLoading
+                    ? null
+                    : () => showPhoneSignInDialog(context),
               ),
               const SizedBox(height: 24),
               Center(

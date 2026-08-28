@@ -40,6 +40,8 @@ class VersusPlayerCard extends StatelessWidget {
       children: [
         Text(
           name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             color: AppColors.onSurface,
             fontWeight: FontWeight.w700,
@@ -48,7 +50,6 @@ class VersusPlayerCard extends StatelessWidget {
         const SizedBox(height: 6),
         Row(
           textDirection: reversed ? TextDirection.rtl : TextDirection.ltr,
-          mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -58,6 +59,8 @@ class VersusPlayerCard extends StatelessWidget {
               ),
               child: Text(
                 'Lv $level',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   color: accentColor,
                   fontWeight: FontWeight.w700,
@@ -65,10 +68,14 @@ class VersusPlayerCard extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text(
-              rankLabel,
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                color: AppColors.onSurfaceVariant,
+            Flexible(
+              child: Text(
+                rankLabel,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
             ),
           ],
@@ -82,19 +89,28 @@ class VersusPlayerCard extends StatelessWidget {
           : [avatar, const SizedBox(width: 16), Expanded(child: identity)],
     );
 
-    final powerLabel = Text(
-      AppLocale.powerLevelLabel.getString(context),
-      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-        color: AppColors.onSurfaceVariant,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.4,
+    final powerLabel = Flexible(
+      child: Text(
+        AppLocale.powerLevelLabel.getString(context),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.labelLarge?.copyWith(
+          color: AppColors.onSurfaceVariant,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.4,
+        ),
       ),
     );
-    final powerValueText = Text(
-      powerValue,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: AppColors.onSurface,
-        fontWeight: FontWeight.w700,
+    final powerValueText = Flexible(
+      child: Text(
+        powerValue,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.end,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: AppColors.onSurface,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
 

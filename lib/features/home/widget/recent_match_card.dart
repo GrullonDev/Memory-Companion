@@ -49,6 +49,8 @@ class RecentMatchCard extends StatelessWidget {
               children: [
                 Text(
                   title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.onSurface,
                     fontWeight: FontWeight.w600,
@@ -57,6 +59,8 @@ class RecentMatchCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   '${AppLocale.scoreLabel.getString(context)}: $score',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -64,11 +68,18 @@ class RecentMatchCard extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            timeAgo,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.outline),
+          const SizedBox(width: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 72),
+            child: Text(
+              timeAgo,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.outline),
+            ),
           ),
         ],
       ),

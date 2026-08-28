@@ -5,10 +5,18 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class BoardTopBar extends StatelessWidget {
-  const BoardTopBar({super.key, required this.progress, required this.moves});
+  const BoardTopBar({
+    super.key,
+    required this.progress,
+    required this.moves,
+    required this.lives,
+    required this.isLivesUnlimited,
+  });
 
   final double progress;
   final int moves;
+  final int lives;
+  final bool isLivesUnlimited;
 
   @override
   Widget build(BuildContext context) {
@@ -28,29 +36,21 @@ class BoardTopBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        Text(
-          AppLocale.appTitle.getString(context),
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: AppColors.onSurface,
-            fontWeight: FontWeight.w600,
+        _Pill(
+          icon: Icons.favorite_rounded,
+          iconColor: AppColors.error,
+          child: Text(
+            isLivesUnlimited ? '∞' : lives.toString(),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
+              color: AppColors.onSurface,
+              fontWeight: FontWeight.w800,
+            ),
           ),
-          overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(width: 12),
-        Container(
-          constraints: const BoxConstraints(minHeight: 40),
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceContainerLowest,
-            borderRadius: BorderRadius.circular(999),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x14000000),
-                offset: Offset(0, 2),
-                blurRadius: 6,
-              ),
-            ],
-          ),
+        const SizedBox(width: 8),
+        _Pill(
           child: Text.rich(
             TextSpan(
               children: [
@@ -70,9 +70,48 @@ class BoardTopBar extends StatelessWidget {
                 ),
               ],
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Pill extends StatelessWidget {
+  const _Pill({required this.child, this.icon, this.iconColor});
+
+  final Widget child;
+  final IconData? icon;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(minHeight: 40),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(999),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x14000000),
+            offset: Offset(0, 2),
+            blurRadius: 6,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 16, color: iconColor),
+            const SizedBox(width: 6),
+          ],
+          child,
+        ],
+      ),
     );
   }
 }

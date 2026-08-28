@@ -46,6 +46,8 @@ class MatchHistoryTile extends StatelessWidget {
               children: [
                 Text(
                   match.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.onSurface,
                     fontWeight: FontWeight.w600,
@@ -55,6 +57,8 @@ class MatchHistoryTile extends StatelessWidget {
                 Text(
                   '${AppLocale.scoreLabel.getString(context)}: ${match.score} · '
                   '${AppLocale.movesLabel.getString(context)}: ${match.moves}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -62,11 +66,18 @@ class MatchHistoryTile extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            match.timeAgo,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(color: AppColors.outline),
+          const SizedBox(width: 8),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 72),
+            child: Text(
+              match.timeAgo,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.end,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(color: AppColors.outline),
+            ),
           ),
         ],
       ),

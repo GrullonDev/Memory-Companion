@@ -104,6 +104,31 @@ mixin AppLocale {
   static const String chooseAvatarTitle = 'chooseAvatarTitle';
   static const String searchingOpponentLabel = 'searchingOpponentLabel';
   static const String forgotPasswordSentMessage = 'forgotPasswordSentMessage';
+  static const String offlineBannerMessage = 'offlineBannerMessage';
+  static const String backOnlineBannerMessage = 'backOnlineBannerMessage';
+  static const String livesLabel = 'livesLabel';
+  static const String noLivesTitle = 'noLivesTitle';
+  static const String noLivesMessage = 'noLivesMessage';
+  static const String nextLifeInLabel = 'nextLifeInLabel';
+  static const String goToShopLabel = 'goToShopLabel';
+  static const String notNowLabel = 'notNowLabel';
+  static const String fieldsRequiredMessage = 'fieldsRequiredMessage';
+  static const String authErrorInvalidEmail = 'authErrorInvalidEmail';
+  static const String authErrorInvalidCredential = 'authErrorInvalidCredential';
+  static const String authErrorEmailAlreadyInUse = 'authErrorEmailAlreadyInUse';
+  static const String authErrorWeakPassword = 'authErrorWeakPassword';
+  static const String authErrorNetworkFailed = 'authErrorNetworkFailed';
+  static const String authErrorTooManyRequests = 'authErrorTooManyRequests';
+  static const String authErrorGeneric = 'authErrorGeneric';
+  static const String accountCreatedMessage = 'accountCreatedMessage';
+  static const String phoneSignInTitle = 'phoneSignInTitle';
+  static const String phoneNumberLabel = 'phoneNumberLabel';
+  static const String phoneNumberHint = 'phoneNumberHint';
+  static const String sendCodeLabel = 'sendCodeLabel';
+  static const String verificationCodeTitle = 'verificationCodeTitle';
+  static const String verificationCodeHint = 'verificationCodeHint';
+  static const String verifyCodeLabel = 'verifyCodeLabel';
+  static const String codeSentMessage = 'codeSentMessage';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -179,8 +204,8 @@ mixin AppLocale {
     featNoAds: 'Sin Anuncios',
     loginWelcomeTitle: '¡Bienvenido de nuevo!',
     loginSubtitle: '¿Listo para potenciar tu mente?',
-    usernameOrEmailLabel: 'Usuario o Correo',
-    usernameOrEmailHint: 'jugador123',
+    usernameOrEmailLabel: 'Correo Electrónico',
+    usernameOrEmailHint: 'hola@ejemplo.com',
     passwordLabel: 'Contraseña',
     passwordHint: 'Ingresa tu contraseña',
     forgotPasswordLabel: '¿Olvidaste tu contraseña?',
@@ -209,6 +234,33 @@ mixin AppLocale {
     searchingOpponentLabel: 'Buscando rival...',
     forgotPasswordSentMessage:
         'Te enviamos un enlace para recuperar tu contraseña',
+    offlineBannerMessage:
+        'Sin conexión. Tus puntuaciones se sincronizarán al reconectar.',
+    backOnlineBannerMessage: 'Conexión restaurada. Sincronizando...',
+    livesLabel: 'Vidas',
+    noLivesTitle: '¡Sin vidas!',
+    noLivesMessage:
+        'Consigue vidas infinitas con Memory Pro, o espera a que se recarguen.',
+    nextLifeInLabel: 'Próxima vida en',
+    goToShopLabel: 'Ir a la Tienda',
+    notNowLabel: 'Ahora no',
+    fieldsRequiredMessage: 'Completa todos los campos.',
+    authErrorInvalidEmail: 'El correo electrónico no es válido.',
+    authErrorInvalidCredential: 'Correo o contraseña incorrectos.',
+    authErrorEmailAlreadyInUse: 'Ya existe una cuenta con ese correo.',
+    authErrorWeakPassword: 'La contraseña debe tener al menos 6 caracteres.',
+    authErrorNetworkFailed: 'Sin conexión. Verifica tu red e intenta de nuevo.',
+    authErrorTooManyRequests: 'Demasiados intentos. Intenta más tarde.',
+    authErrorGeneric: 'Ocurrió un error. Intenta de nuevo.',
+    accountCreatedMessage: '¡Cuenta creada con éxito!',
+    phoneSignInTitle: 'Inicia sesión con tu teléfono',
+    phoneNumberLabel: 'Número de teléfono',
+    phoneNumberHint: '+502 1234 5678',
+    sendCodeLabel: 'Enviar código',
+    verificationCodeTitle: 'Ingresa el código',
+    verificationCodeHint: 'Código de 6 dígitos',
+    verifyCodeLabel: 'Verificar',
+    codeSentMessage: 'Te enviamos un código por SMS',
   };
 
   static const Map<String, dynamic> en = {
@@ -286,8 +338,8 @@ mixin AppLocale {
     featNoAds: 'No Ads',
     loginWelcomeTitle: 'Welcome Back!',
     loginSubtitle: 'Ready to boost your brain?',
-    usernameOrEmailLabel: 'Username or Email',
-    usernameOrEmailHint: 'player123',
+    usernameOrEmailLabel: 'Email Address',
+    usernameOrEmailHint: 'hello@example.com',
     passwordLabel: 'Password',
     passwordHint: 'Enter your password',
     forgotPasswordLabel: 'Forgot Password?',
@@ -315,5 +367,32 @@ mixin AppLocale {
     chooseAvatarTitle: 'Choose your avatar',
     searchingOpponentLabel: 'Searching for opponent...',
     forgotPasswordSentMessage: "We've sent you a password reset link",
+    offlineBannerMessage:
+        "You're offline. Your scores will sync once you reconnect.",
+    backOnlineBannerMessage: 'Back online. Syncing...',
+    livesLabel: 'Lives',
+    noLivesTitle: 'Out of lives!',
+    noLivesMessage:
+        'Get unlimited lives with Memory Pro, or wait for them to recharge.',
+    nextLifeInLabel: 'Next life in',
+    goToShopLabel: 'Go to Shop',
+    notNowLabel: 'Not now',
+    fieldsRequiredMessage: 'Please fill in all fields.',
+    authErrorInvalidEmail: 'That email address is not valid.',
+    authErrorInvalidCredential: 'Incorrect email or password.',
+    authErrorEmailAlreadyInUse: 'An account already exists for that email.',
+    authErrorWeakPassword: 'Password must be at least 6 characters.',
+    authErrorNetworkFailed: "You're offline. Check your connection and retry.",
+    authErrorTooManyRequests: 'Too many attempts. Try again later.',
+    authErrorGeneric: 'Something went wrong. Please try again.',
+    accountCreatedMessage: 'Account created successfully!',
+    phoneSignInTitle: 'Sign in with your phone',
+    phoneNumberLabel: 'Phone number',
+    phoneNumberHint: '+1 234 567 8900',
+    sendCodeLabel: 'Send code',
+    verificationCodeTitle: 'Enter the code',
+    verificationCodeHint: '6-digit code',
+    verifyCodeLabel: 'Verify',
+    codeSentMessage: "We've texted you a verification code",
   };
 }

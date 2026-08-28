@@ -10,11 +10,13 @@ class AuthPrimaryButton extends StatelessWidget {
     required this.label,
     this.onTap,
     this.trailingIcon,
+    this.isLoading = false,
   });
 
   final String label;
   final VoidCallback? onTap;
   final IconData? trailingIcon;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +27,7 @@ class AuthPrimaryButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
+          onTap: isLoading ? null : onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 18),
             alignment: Alignment.center,
@@ -42,23 +44,37 @@ class AuthPrimaryButton extends StatelessWidget {
                 ),
               ],
             ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  label,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.onPrimaryFixed,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.5,
+            child: isLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2.5,
+                      color: AppColors.onPrimaryFixed,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: AppColors.onPrimaryFixed,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: 0.5,
+                              ),
+                        ),
+                      ),
+                      if (trailingIcon != null) ...[
+                        const SizedBox(width: 8),
+                        Icon(trailingIcon, color: AppColors.onPrimaryFixed),
+                      ],
+                    ],
                   ),
-                ),
-                if (trailingIcon != null) ...[
-                  const SizedBox(width: 8),
-                  Icon(trailingIcon, color: AppColors.onPrimaryFixed),
-                ],
-              ],
-            ),
           ),
         ),
       ),
