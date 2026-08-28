@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
+import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/auth/splash/widget/loading_indicator.dart';
 import 'package:memory_companion/features/auth/splash/widget/mascot_badge.dart';
@@ -27,7 +29,7 @@ class SplashScreen extends StatelessWidget {
               MascotBadge(),
               const SizedBox(height: 24),
               Text(
-                'MEMORY ARCADE',
+                AppLocale.appTitle.getString(context).toUpperCase(),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppColors.onPrimary,
                   fontWeight: FontWeight.w700,
