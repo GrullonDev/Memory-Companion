@@ -37,7 +37,10 @@ class FeaturedBanner extends StatelessWidget {
                   color: AppColors.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Image.asset('assets/logo_mascota.png', fit: BoxFit.contain),
+                child: Image.asset(
+                  'assets/logo_mascota.png',
+                  fit: BoxFit.contain,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -48,7 +51,9 @@ class FeaturedBanner extends StatelessWidget {
                     Text(
                       AppLocale.bannerEyebrow.getString(context),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppColors.onSecondaryFixed.withValues(alpha: 0.75),
+                        color: AppColors.onSecondaryFixed.withValues(
+                          alpha: 0.75,
+                        ),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -71,7 +76,10 @@ class FeaturedBanner extends StatelessWidget {
             child: ElevatedButton.icon(
               onPressed: () =>
                   Navigator.of(context).pushNamed(RoutePaths.levelMap),
-              icon: const Icon(Icons.play_arrow, color: AppColors.onPrimaryFixed),
+              icon: const Icon(
+                Icons.play_arrow,
+                color: AppColors.onPrimaryFixed,
+              ),
               label: Text(
                 AppLocale.startGame.getString(context),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(

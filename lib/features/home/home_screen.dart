@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/featured_banner.dart';
 import 'package:memory_companion/features/home/widget/game_mode_grid.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
 import 'package:memory_companion/features/home/widget/recent_match_card.dart';
+import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final wallet = ref.watch(walletControllerProvider);
+    final recentMatch = ref.watch(homeControllerProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       bottomNavigationBar: HomeBottomNav(
@@ -26,7 +33,7 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           children: [
             HomeTopBar(
-              coins: 1250,
+              coins: wallet.value ?? 0,
               onAvatarTap: () =>
                   Navigator.of(context).pushNamed(RoutePaths.profile),
             ),
@@ -51,10 +58,15 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            RecentMatchCard(
-              title: AppLocale.sampleMatchTitle.getString(context),
-              score: '14,200',
-              timeAgo: AppLocale.sampleMatchTimeAgo.getString(context),
+            AsyncValueView(
+              value: recentMatch,
+              minHeight: 96,
+              onRetry: () => ref.invalidate(homeControllerProvider),
+              data: (context, match) => RecentMatchCard(
+                title: match.titleKey.getString(context),
+                score: match.score,
+                timeAgo: match.timeAgoKey.getString(context),
+              ),
             ),
           ],
         ),

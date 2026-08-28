@@ -29,7 +29,10 @@ class HomeTopBar extends StatelessWidget {
             child: ClipOval(
               child: Container(
                 color: AppColors.surfaceContainerLowest,
-                child: Image.asset('assets/logo_mascota.png', fit: BoxFit.cover),
+                child: Image.asset(
+                  'assets/logo_mascota.png',
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
