@@ -94,6 +94,16 @@ mixin AppLocale {
   static const String createAccountLabel = 'createAccountLabel';
   static const String alreadyHaveAccountLabel = 'alreadyHaveAccountLabel';
   static const String loginLabel = 'loginLabel';
+  static const String genericErrorMessage = 'genericErrorMessage';
+  static const String retryLabel = 'retryLabel';
+  static const String linkCopiedMessage = 'linkCopiedMessage';
+  static const String codeCopiedMessage = 'codeCopiedMessage';
+  static const String inviteSentMessage = 'inviteSentMessage';
+  static const String upgradeSuccessMessage = 'upgradeSuccessMessage';
+  static const String avatarUpdatedMessage = 'avatarUpdatedMessage';
+  static const String chooseAvatarTitle = 'chooseAvatarTitle';
+  static const String searchingOpponentLabel = 'searchingOpponentLabel';
+  static const String forgotPasswordSentMessage = 'forgotPasswordSentMessage';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -152,8 +162,7 @@ mixin AppLocale {
     statusOffline: 'Desconectado',
     multiplayerLobbyLabel: 'SALA MULTIJUGADOR',
     shopHeroTitle: 'Desbloquea Memory Pro',
-    shopHeroSubtitle:
-        'Eleva tu mente con vidas infinitas y temas exclusivos.',
+    shopHeroSubtitle: 'Eleva tu mente con vidas infinitas y temas exclusivos.',
     shopHeroBanner: 'TIENDA PRO',
     activatePremiumLabel: 'ACTIVAR PREMIUM',
     planFreeTitle: 'Gratis',
@@ -189,6 +198,17 @@ mixin AppLocale {
     createAccountLabel: 'CREAR CUENTA',
     alreadyHaveAccountLabel: '¿Ya tienes una cuenta?',
     loginLabel: 'Inicia sesión',
+    genericErrorMessage: 'No se pudo cargar la información.',
+    retryLabel: 'Reintentar',
+    linkCopiedMessage: 'Enlace copiado al portapapeles',
+    codeCopiedMessage: 'Código copiado al portapapeles',
+    inviteSentMessage: '¡Invitación enviada!',
+    upgradeSuccessMessage: '¡Ahora eres Memory Pro!',
+    avatarUpdatedMessage: 'Avatar actualizado',
+    chooseAvatarTitle: 'Elige tu avatar',
+    searchingOpponentLabel: 'Buscando rival...',
+    forgotPasswordSentMessage:
+        'Te enviamos un enlace para recuperar tu contraseña',
   };
 
   static const Map<String, dynamic> en = {
@@ -285,5 +305,15 @@ mixin AppLocale {
     createAccountLabel: 'CREATE ACCOUNT',
     alreadyHaveAccountLabel: 'Already have an account?',
     loginLabel: 'Login',
+    genericErrorMessage: 'We could not load this information.',
+    retryLabel: 'Retry',
+    linkCopiedMessage: 'Link copied to clipboard',
+    codeCopiedMessage: 'Code copied to clipboard',
+    inviteSentMessage: 'Invite sent!',
+    upgradeSuccessMessage: "You're now Memory Pro!",
+    avatarUpdatedMessage: 'Avatar updated',
+    chooseAvatarTitle: 'Choose your avatar',
+    searchingOpponentLabel: 'Searching for opponent...',
+    forgotPasswordSentMessage: "We've sent you a password reset link",
   };
 }

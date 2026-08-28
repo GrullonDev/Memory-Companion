@@ -1,16 +1,26 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
-import 'package:memory_companion/features/auth/register/widget/avatar_picker.dart';
+import 'package:memory_companion/core/widgets/avatar_picker.dart';
 import 'package:memory_companion/features/auth/register/widget/dotted_background.dart';
 import 'package:memory_companion/features/auth/widget/auth_primary_button.dart';
 import 'package:memory_companion/features/auth/widget/auth_text_field.dart';
 
-class RegisterScreen extends StatelessWidget {
+/// Kept as a [StatefulWidget] only for the local avatar-seed toggle — no
+/// account is actually created yet, so this is otherwise a static form.
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  int _avatarSeed = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +56,10 @@ class RegisterScreen extends StatelessWidget {
                     color: AppColors.surfaceContainerLowest,
                     borderRadius: BorderRadius.all(Radius.circular(28)),
                     border: Border(
-                      top: BorderSide(color: AppColors.secondaryContainer, width: 6),
+                      top: BorderSide(
+                        color: AppColors.secondaryContainer,
+                        width: 6,
+                      ),
                     ),
                     boxShadow: [
                       BoxShadow(
@@ -58,16 +71,21 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      AvatarPicker(onRandomize: () {}),
+                      AvatarPicker(
+                        seed: _avatarSeed,
+                        onRandomize: () =>
+                            setState(() => _avatarSeed = _avatarSeed + 1),
+                      ),
                       const SizedBox(height: 24),
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
                           AppLocale.usernameLabel.getString(context),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: AppColors.onSurface,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                color: AppColors.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -80,10 +98,11 @@ class RegisterScreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           AppLocale.emailLabel.getString(context),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: AppColors.onSurface,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                color: AppColors.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -97,10 +116,11 @@ class RegisterScreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           AppLocale.passwordLabel.getString(context),
-                          style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: AppColors.onSurface,
-                            fontWeight: FontWeight.w700,
-                          ),
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(
+                                color: AppColors.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -137,11 +157,12 @@ class RegisterScreen extends StatelessWidget {
                         ).pushReplacementNamed(RoutePaths.login),
                         child: Text(
                           AppLocale.loginLabel.getString(context),
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.w800,
-                            decoration: TextDecoration.underline,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w800,
+                                decoration: TextDecoration.underline,
+                              ),
                         ),
                       ),
                     ],

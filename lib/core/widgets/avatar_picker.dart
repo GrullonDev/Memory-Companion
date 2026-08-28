@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
@@ -10,12 +11,32 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 /// No illustrated avatar set exists in the project yet, so a plain icon on
 /// a gradient background stands in for the generated character art.
 class AvatarPicker extends StatelessWidget {
-  const AvatarPicker({super.key, this.onRandomize});
+  const AvatarPicker({super.key, this.onRandomize, this.seed = 0});
 
   final VoidCallback? onRandomize;
 
+  /// Picks which gradient/icon combo to show, so tapping "randomize" is
+  /// visibly different each time even without real avatar art.
+  final int seed;
+
+  static const _gradients = [
+    [AppColors.mintGreen, AppColors.secondaryContainer],
+    [AppColors.pastelPurple, AppColors.tertiaryFixed],
+    [AppColors.secondary, AppColors.primaryFixed],
+    [AppColors.tertiary, AppColors.mintGreen],
+  ];
+
+  static const _icons = [
+    Icons.face_rounded,
+    Icons.pets_rounded,
+    Icons.emoji_emotions_rounded,
+    Icons.mood_rounded,
+  ];
+
   @override
   Widget build(BuildContext context) {
+    final gradient = _gradients[seed % _gradients.length];
+    final icon = _icons[seed % _icons.length];
     return Column(
       children: [
         GestureDetector(
@@ -32,16 +53,16 @@ class AvatarPicker extends StatelessWidget {
                   color: AppColors.primaryFixed,
                 ),
                 child: Container(
-                  decoration: const BoxDecoration(
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                      colors: [AppColors.mintGreen, AppColors.secondaryContainer],
+                      colors: gradient,
                     ),
                   ),
-                  child: const Icon(
-                    Icons.face_rounded,
+                  child: Icon(
+                    icon,
                     size: 56,
                     color: AppColors.surfaceContainerLowest,
                   ),
