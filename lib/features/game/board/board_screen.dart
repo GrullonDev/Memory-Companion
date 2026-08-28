@@ -6,6 +6,7 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/features/game/board/widget/board_bottom_bar.dart';
 import 'package:memory_companion/features/game/board/widget/board_grid.dart';
+import 'package:memory_companion/features/game/board/widget/board_paused_overlay.dart';
 import 'package:memory_companion/features/game/board/widget/board_top_bar.dart';
 
 /// Pure UI for the solo memory board. All game logic lives in
@@ -59,12 +60,10 @@ class BoardScreen extends StatelessWidget {
               ),
             ),
             if (state.isPaused && !state.isCompleted)
-              _BoardOverlay(
-                title: AppLocale.pausedTitle.getString(context),
-                subtitle: AppLocale.pausedSubtitle.getString(context),
-                actionLabel: AppLocale.resumeGame.getString(context),
-                onAction: onTogglePause,
-                onExit: onExit,
+              BoardPausedOverlay(
+                onResume: onTogglePause,
+                onSettings: () {},
+                onQuit: onExit,
               ),
             if (state.isCompleted)
               _BoardOverlay(

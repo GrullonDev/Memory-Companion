@@ -19,6 +19,7 @@ dependencies:
   flutter_riverpod: ^3.0.2
   flutter_localization: ^0.4.1
   intl: ^0.20.3
+  flutter_launcher_icons: ^0.14.4
 
 dev_dependencies:
   flutter_test:
