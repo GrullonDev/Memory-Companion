@@ -26,10 +26,7 @@ class ForestBackdrop extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              AppColors.secondaryFixed,
-              AppColors.mintGreen,
-            ],
+            colors: [AppColors.secondaryFixed, AppColors.mintGreen],
           ),
         ),
         child: Stack(

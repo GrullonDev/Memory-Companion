@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
-import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/level_map/model/level_node.dart';
 import 'package:memory_companion/features/level_map/widget/forest_backdrop.dart';
 import 'package:memory_companion/features/level_map/widget/level_path.dart';
@@ -16,28 +14,25 @@ class LevelMapScreen extends StatelessWidget {
     required this.regionName,
     required this.levels,
     required this.onSelectLevel,
+    this.coins = 0,
   });
 
   final String regionName;
   final List<LevelNode> levels;
   final ValueChanged<LevelNode> onSelectLevel;
+  final int coins;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
-      body: Stack(
-        children: [
-          const ForestBackdrop(),
-          SafeArea(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(20, 12, 20, 0),
-                  child: VersusTopBar(coins: 1250),
+    return Stack(
+      children: [
+        const ForestBackdrop(),
+        SafeArea(
+          child: Column(
+            children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                  child: VersusTopBar(coins: coins),
                 ),
                 Expanded(
                   child: ListView(
@@ -104,7 +99,6 @@ class LevelMapScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
     );
   }
 }
