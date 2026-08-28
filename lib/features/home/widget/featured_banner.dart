@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class FeaturedBanner extends StatelessWidget {
@@ -68,7 +69,8 @@ class FeaturedBanner extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(RoutePaths.levelMap),
               icon: const Icon(Icons.play_arrow, color: AppColors.onPrimaryFixed),
               label: Text(
                 AppLocale.startGame.getString(context),

@@ -5,6 +5,8 @@ import 'package:memory_companion/features/auth/splash/splash_page.dart';
 import 'package:memory_companion/features/game/board/board_page.dart';
 import 'package:memory_companion/features/home/home_screen.dart';
 import 'package:memory_companion/features/home/widget/coming_soon_screen.dart';
+import 'package:memory_companion/features/level_map/level_map_screen.dart';
+import 'package:memory_companion/features/level_map/model/level_node.dart';
 import 'package:memory_companion/features/versus/versus_screen.dart';
 
 class RouteSwitch {
@@ -32,6 +34,20 @@ class RouteSwitch {
             icon: Icons.storefront,
             title: 'Shop',
             activeIndex: 3,
+          ),
+        );
+      case RoutePaths.levelMap:
+        return MaterialPageRoute(
+          builder: (context) => LevelMapScreen(
+            regionName: 'Forest of Riddles',
+            levels: const [
+              LevelNode(number: 1, status: LevelStatus.completed),
+              LevelNode(number: 2, status: LevelStatus.current),
+              LevelNode(number: 3, status: LevelStatus.locked),
+              LevelNode(number: 4, status: LevelStatus.locked),
+            ],
+            onSelectLevel: (level) =>
+                Navigator.of(context).pushNamed(RoutePaths.boardSolo),
           ),
         );
       case RoutePaths.boardSolo:

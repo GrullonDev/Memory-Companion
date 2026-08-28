@@ -24,7 +24,7 @@ class GameModeGrid extends StatelessWidget {
           label: AppLocale.modePlaySolo.getString(context),
           background: AppColors.primaryFixed,
           foreground: AppColors.onPrimaryFixed,
-          onTap: () => Navigator.of(context).pushNamed(RoutePaths.boardSolo),
+          onTap: () => Navigator.of(context).pushNamed(RoutePaths.levelMap),
         ),
         GameModeCard(
           icon: Icons.groups,
