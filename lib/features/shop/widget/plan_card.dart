@@ -29,7 +29,9 @@ class PlanCard extends StatelessWidget {
         color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: highlighted ? AppColors.primaryFixedDim : AppColors.outlineVariant,
+          color: highlighted
+              ? AppColors.primaryFixedDim
+              : AppColors.outlineVariant,
           width: highlighted ? 3 : 1,
         ),
         boxShadow: highlighted
@@ -55,7 +57,9 @@ class PlanCard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                color: highlighted ? AppColors.primaryFixedDim : AppColors.onSurfaceVariant,
+                color: highlighted
+                    ? AppColors.primaryFixedDim
+                    : AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
               Text(
@@ -90,13 +94,14 @@ class _FeatureRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final iconData = feature.icon ??
+    final iconData =
+        feature.icon ??
         (feature.included ? Icons.check_rounded : Icons.close_rounded);
     final color = !feature.included
         ? AppColors.outline
         : highlighted
-            ? AppColors.onPrimaryFixedVariant
-            : AppColors.mintGreen;
+        ? AppColors.onPrimaryFixedVariant
+        : AppColors.mintGreen;
     return Row(
       children: [
         Icon(iconData, size: 20, color: color),
