@@ -62,11 +62,15 @@ class PlanCard extends StatelessWidget {
                     : AppColors.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
-              Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.onSurface,
-                  fontWeight: FontWeight.w800,
+              Flexible(
+                child: Text(
+                  title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: AppColors.onSurface,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
               ),
               const Spacer(),
@@ -106,10 +110,14 @@ class _FeatureRow extends StatelessWidget {
       children: [
         Icon(iconData, size: 20, color: color),
         const SizedBox(width: 10),
-        Text(
-          feature.label,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: feature.included ? AppColors.onSurface : AppColors.outline,
+        Expanded(
+          child: Text(
+            feature.label,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: feature.included
+                  ? AppColors.onSurface
+                  : AppColors.outline,
+            ),
           ),
         ),
       ],

@@ -67,6 +67,9 @@ class ProfileHeader extends StatelessWidget {
         const SizedBox(height: 16),
         Text(
           name,
+          textAlign: TextAlign.center,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             color: AppColors.onSurface,
             fontWeight: FontWeight.w700,

@@ -110,13 +110,17 @@ class InviteFriendsCard extends StatelessWidget {
                         color: AppColors.onPrimaryFixed,
                       ),
                       const SizedBox(width: 8),
-                      Text(
-                        AppLocale.inviteLinkLabel.getString(context),
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: AppColors.onPrimaryFixed,
-                              fontWeight: FontWeight.w700,
-                            ),
+                      Flexible(
+                        child: Text(
+                          AppLocale.inviteLinkLabel.getString(context),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(
+                                color: AppColors.onPrimaryFixed,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
                       ),
                     ],
                   ),

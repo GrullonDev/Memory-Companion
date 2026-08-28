@@ -58,6 +58,8 @@ class VersusTopBar extends StatelessWidget {
               const SizedBox(width: 6),
               Text(
                 NumberFormat.decimalPattern().format(coins),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: AppColors.onPrimaryFixed,
                   fontWeight: FontWeight.w700,
