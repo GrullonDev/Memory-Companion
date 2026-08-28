@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 
 class RoutePaths {
   static const String splash = '/splash';
+  static const String login = '/login';
+  static const String register = '/register';
   static const String home = '/home';
   static const String versus = '/versus';
   static const String friends = '/friends';

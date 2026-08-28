@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/features/auth/login/login_screen.dart';
+import 'package:memory_companion/features/auth/register/register_screen.dart';
 import 'package:memory_companion/features/auth/splash/splash_page.dart';
 import 'package:memory_companion/features/game/board/board_page.dart';
 import 'package:memory_companion/features/home/home_screen.dart';
@@ -16,6 +18,10 @@ class RouteSwitch {
     switch (settings.name) {
       case RoutePaths.splash:
         return MaterialPageRoute(builder: (_) => const SplashPage());
+      case RoutePaths.login:
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case RoutePaths.register:
+        return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case RoutePaths.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case RoutePaths.versus:

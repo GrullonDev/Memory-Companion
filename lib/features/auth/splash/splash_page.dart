@@ -15,7 +15,7 @@ class SplashPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     ref.listen(splashBootProvider, (previous, next) {
       next.whenOrNull(
-        data: (_) => Navigator.pushReplacementNamed(context, RoutePaths.home),
+        data: (_) => Navigator.pushReplacementNamed(context, RoutePaths.login),
       );
     });
 

@@ -73,6 +73,27 @@ mixin AppLocale {
   static const String featInfiniteLives = 'featInfiniteLives';
   static const String featExclusiveThemes = 'featExclusiveThemes';
   static const String featNoAds = 'featNoAds';
+  static const String loginWelcomeTitle = 'loginWelcomeTitle';
+  static const String loginSubtitle = 'loginSubtitle';
+  static const String usernameOrEmailLabel = 'usernameOrEmailLabel';
+  static const String usernameOrEmailHint = 'usernameOrEmailHint';
+  static const String passwordLabel = 'passwordLabel';
+  static const String passwordHint = 'passwordHint';
+  static const String forgotPasswordLabel = 'forgotPasswordLabel';
+  static const String loginButtonLabel = 'loginButtonLabel';
+  static const String orPlayWithLabel = 'orPlayWithLabel';
+  static const String noAccountLabel = 'noAccountLabel';
+  static const String signUpLabel = 'signUpLabel';
+  static const String registerSubtitle = 'registerSubtitle';
+  static const String randomizeAvatarLabel = 'randomizeAvatarLabel';
+  static const String usernameLabel = 'usernameLabel';
+  static const String usernameHint = 'usernameHint';
+  static const String emailLabel = 'emailLabel';
+  static const String emailHint = 'emailHint';
+  static const String passwordHintStrong = 'passwordHintStrong';
+  static const String createAccountLabel = 'createAccountLabel';
+  static const String alreadyHaveAccountLabel = 'alreadyHaveAccountLabel';
+  static const String loginLabel = 'loginLabel';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -147,6 +168,27 @@ mixin AppLocale {
     featInfiniteLives: 'Vidas Infinitas',
     featExclusiveThemes: 'Temas Exclusivos',
     featNoAds: 'Sin Anuncios',
+    loginWelcomeTitle: '¡Bienvenido de nuevo!',
+    loginSubtitle: '¿Listo para potenciar tu mente?',
+    usernameOrEmailLabel: 'Usuario o Correo',
+    usernameOrEmailHint: 'jugador123',
+    passwordLabel: 'Contraseña',
+    passwordHint: 'Ingresa tu contraseña',
+    forgotPasswordLabel: '¿Olvidaste tu contraseña?',
+    loginButtonLabel: 'INICIAR SESIÓN',
+    orPlayWithLabel: 'O JUEGA CON',
+    noAccountLabel: '¿No tienes una cuenta?',
+    signUpLabel: 'Regístrate',
+    registerSubtitle: '¡Únete a la diversión!',
+    randomizeAvatarLabel: 'TOCA PARA CAMBIAR AVATAR',
+    usernameLabel: 'Usuario',
+    usernameHint: 'Elige un nombre genial',
+    emailLabel: 'Correo Electrónico',
+    emailHint: 'hola@ejemplo.com',
+    passwordHintStrong: 'Crea una contraseña segura',
+    createAccountLabel: 'CREAR CUENTA',
+    alreadyHaveAccountLabel: '¿Ya tienes una cuenta?',
+    loginLabel: 'Inicia sesión',
   };
 
   static const Map<String, dynamic> en = {
@@ -222,5 +264,26 @@ mixin AppLocale {
     featInfiniteLives: 'Infinite Lives',
     featExclusiveThemes: 'Exclusive Themes',
     featNoAds: 'No Ads',
+    loginWelcomeTitle: 'Welcome Back!',
+    loginSubtitle: 'Ready to boost your brain?',
+    usernameOrEmailLabel: 'Username or Email',
+    usernameOrEmailHint: 'player123',
+    passwordLabel: 'Password',
+    passwordHint: 'Enter your password',
+    forgotPasswordLabel: 'Forgot Password?',
+    loginButtonLabel: 'LOGIN',
+    orPlayWithLabel: 'OR PLAY WITH',
+    noAccountLabel: "Don't have an account?",
+    signUpLabel: 'Sign Up',
+    registerSubtitle: 'Join the Fun!',
+    randomizeAvatarLabel: 'TAP TO RANDOMIZE AVATAR',
+    usernameLabel: 'Username',
+    usernameHint: 'Choose a cool name',
+    emailLabel: 'Email Address',
+    emailHint: 'hello@example.com',
+    passwordHintStrong: 'Create a strong password',
+    createAccountLabel: 'CREATE ACCOUNT',
+    alreadyHaveAccountLabel: 'Already have an account?',
+    loginLabel: 'Login',
   };
 }
