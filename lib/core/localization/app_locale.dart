@@ -106,6 +106,12 @@ mixin AppLocale {
   static const String forgotPasswordSentMessage = 'forgotPasswordSentMessage';
   static const String offlineBannerMessage = 'offlineBannerMessage';
   static const String backOnlineBannerMessage = 'backOnlineBannerMessage';
+  static const String livesLabel = 'livesLabel';
+  static const String noLivesTitle = 'noLivesTitle';
+  static const String noLivesMessage = 'noLivesMessage';
+  static const String nextLifeInLabel = 'nextLifeInLabel';
+  static const String goToShopLabel = 'goToShopLabel';
+  static const String notNowLabel = 'notNowLabel';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -214,6 +220,13 @@ mixin AppLocale {
     offlineBannerMessage:
         'Sin conexión. Tus puntuaciones se sincronizarán al reconectar.',
     backOnlineBannerMessage: 'Conexión restaurada. Sincronizando...',
+    livesLabel: 'Vidas',
+    noLivesTitle: '¡Sin vidas!',
+    noLivesMessage:
+        'Consigue vidas infinitas con Memory Pro, o espera a que se recarguen.',
+    nextLifeInLabel: 'Próxima vida en',
+    goToShopLabel: 'Ir a la Tienda',
+    notNowLabel: 'Ahora no',
   };
 
   static const Map<String, dynamic> en = {
@@ -323,5 +336,12 @@ mixin AppLocale {
     offlineBannerMessage:
         "You're offline. Your scores will sync once you reconnect.",
     backOnlineBannerMessage: 'Back online. Syncing...',
+    livesLabel: 'Lives',
+    noLivesTitle: 'Out of lives!',
+    noLivesMessage:
+        'Get unlimited lives with Memory Pro, or wait for them to recharge.',
+    nextLifeInLabel: 'Next life in',
+    goToShopLabel: 'Go to Shop',
+    notNowLabel: 'Not now',
   };
 }

@@ -21,6 +21,8 @@ class BoardScreen extends StatelessWidget {
     required this.onHint,
     required this.onRestart,
     required this.onExit,
+    required this.lives,
+    required this.isLivesUnlimited,
   });
 
   final BoardState state;
@@ -29,6 +31,8 @@ class BoardScreen extends StatelessWidget {
   final VoidCallback onHint;
   final VoidCallback onRestart;
   final VoidCallback onExit;
+  final int lives;
+  final bool isLivesUnlimited;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,12 @@ class BoardScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
               child: Column(
                 children: [
-                  BoardTopBar(progress: state.progress, moves: state.moves),
+                  BoardTopBar(
+                    progress: state.progress,
+                    moves: state.moves,
+                    lives: lives,
+                    isLivesUnlimited: isLivesUnlimited,
+                  ),
                   const SizedBox(height: 32),
                   Expanded(
                     child: Center(
