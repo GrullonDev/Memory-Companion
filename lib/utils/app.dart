@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
+import 'package:memory_companion/core/connectivity/widget/connectivity_banner.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/routes/route_switch.dart';
@@ -44,6 +45,8 @@ class _MyAppState extends State<MyApp> {
       localizationsDelegates: _localization.localizationsDelegates,
       initialRoute: RoutePaths.splash,
       onGenerateRoute: RouteSwitch.onGenerateRoute,
+      builder: (context, child) =>
+          ConnectivityBanner(child: child ?? const SizedBox.shrink()),
     );
   }
 }

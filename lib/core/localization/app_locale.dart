@@ -104,6 +104,8 @@ mixin AppLocale {
   static const String chooseAvatarTitle = 'chooseAvatarTitle';
   static const String searchingOpponentLabel = 'searchingOpponentLabel';
   static const String forgotPasswordSentMessage = 'forgotPasswordSentMessage';
+  static const String offlineBannerMessage = 'offlineBannerMessage';
+  static const String backOnlineBannerMessage = 'backOnlineBannerMessage';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -209,6 +211,9 @@ mixin AppLocale {
     searchingOpponentLabel: 'Buscando rival...',
     forgotPasswordSentMessage:
         'Te enviamos un enlace para recuperar tu contraseña',
+    offlineBannerMessage:
+        'Sin conexión. Tus puntuaciones se sincronizarán al reconectar.',
+    backOnlineBannerMessage: 'Conexión restaurada. Sincronizando...',
   };
 
   static const Map<String, dynamic> en = {
@@ -315,5 +320,8 @@ mixin AppLocale {
     chooseAvatarTitle: 'Choose your avatar',
     searchingOpponentLabel: 'Searching for opponent...',
     forgotPasswordSentMessage: "We've sent you a password reset link",
+    offlineBannerMessage:
+        "You're offline. Your scores will sync once you reconnect.",
+    backOnlineBannerMessage: 'Back online. Syncing...',
   };
 }
