@@ -12,6 +12,45 @@ import 'package:memory_companion/features/auth/widget/auth_text_field.dart';
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
+  Future<void> _showForgotPasswordDialog(BuildContext context) async {
+    final controller = TextEditingController();
+    await showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: AppColors.surfaceContainerLowest,
+        title: Text(AppLocale.forgotPasswordLabel.getString(dialogContext)),
+        content: TextField(
+          controller: controller,
+          keyboardType: TextInputType.emailAddress,
+          decoration: InputDecoration(
+            hintText: AppLocale.emailHint.getString(dialogContext),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(
+              MaterialLocalizations.of(dialogContext).cancelButtonLabel,
+            ),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    AppLocale.forgotPasswordSentMessage.getString(context),
+                  ),
+                ),
+              );
+            },
+            child: Text(AppLocale.loginButtonLabel.getString(dialogContext)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,9 +108,9 @@ class LoginScreen extends StatelessWidget {
               Text(
                 AppLocale.loginSubtitle.getString(context),
                 textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyLarge?.copyWith(color: AppColors.onSurfaceVariant),
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
               const SizedBox(height: 32),
               Text(
@@ -104,7 +143,7 @@ class LoginScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () => _showForgotPasswordDialog(context),
                   child: Text(
                     AppLocale.forgotPasswordLabel.getString(context),
                     style: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -121,7 +160,14 @@ class LoginScreen extends StatelessWidget {
                     Navigator.of(context).pushReplacementNamed(RoutePaths.home),
               ),
               const SizedBox(height: 24),
-              const SocialLoginRow(),
+              SocialLoginRow(
+                onGoogleTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
+                ),
+                onFacebookTap: () => ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
+                ),
+              ),
               const SizedBox(height: 24),
               Center(
                 child: Wrap(
