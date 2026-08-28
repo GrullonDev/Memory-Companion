@@ -25,7 +25,11 @@ class HomeScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           children: [
-            const HomeTopBar(coins: 1250),
+            HomeTopBar(
+              coins: 1250,
+              onAvatarTap: () =>
+                  Navigator.of(context).pushNamed(RoutePaths.profile),
+            ),
             const SizedBox(height: 24),
             const FeaturedBanner(),
             const SizedBox(height: 24),

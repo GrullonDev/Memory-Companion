@@ -37,6 +37,42 @@ mixin AppLocale {
   static const String formLabel = 'formLabel';
   static const String startDuel = 'startDuel';
   static const String comingSoon = 'comingSoon';
+  static const String profileTitle = 'profileTitle';
+  static const String nextLevelLabel = 'nextLevelLabel';
+  static const String gamesWonLabel = 'gamesWonLabel';
+  static const String totalMovesLabel = 'totalMovesLabel';
+  static const String bestStreakLabel = 'bestStreakLabel';
+  static const String totalCoinsLabel = 'totalCoinsLabel';
+  static const String winsUnit = 'winsUnit';
+  static const String matchHistoryTitle = 'matchHistoryTitle';
+  static const String achievementsTitle = 'achievementsTitle';
+  static const String performanceTitle = 'performanceTitle';
+  static const String performanceSubtitle = 'performanceSubtitle';
+  static const String inviteFriendsTitle = 'inviteFriendsTitle';
+  static const String inviteFriendsSubtitle = 'inviteFriendsSubtitle';
+  static const String inviteLinkLabel = 'inviteLinkLabel';
+  static const String socialNetworkTitle = 'socialNetworkTitle';
+  static const String findByUsernameHint = 'findByUsernameHint';
+  static const String statusOnline = 'statusOnline';
+  static const String statusInGame = 'statusInGame';
+  static const String statusOffline = 'statusOffline';
+  static const String multiplayerLobbyLabel = 'multiplayerLobbyLabel';
+  static const String shopHeroTitle = 'shopHeroTitle';
+  static const String shopHeroSubtitle = 'shopHeroSubtitle';
+  static const String shopHeroBanner = 'shopHeroBanner';
+  static const String activatePremiumLabel = 'activatePremiumLabel';
+  static const String planFreeTitle = 'planFreeTitle';
+  static const String planProTitle = 'planProTitle';
+  static const String bestValueLabel = 'bestValueLabel';
+  static const String currentPlanLabel = 'currentPlanLabel';
+  static const String upgradeNowLabel = 'upgradeNowLabel';
+  static const String exclusiveThemesTitle = 'exclusiveThemesTitle';
+  static const String featLivesDaily = 'featLivesDaily';
+  static const String featBasicThemes = 'featBasicThemes';
+  static const String featAdSupported = 'featAdSupported';
+  static const String featInfiniteLives = 'featInfiniteLives';
+  static const String featExclusiveThemes = 'featExclusiveThemes';
+  static const String featNoAds = 'featNoAds';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -73,6 +109,44 @@ mixin AppLocale {
     formLabel: 'FORMA',
     startDuel: 'INICIAR DUELO',
     comingSoon: 'Muy pronto',
+    profileTitle: 'Perfil y Estadísticas',
+    nextLevelLabel: 'Próximo Nivel',
+    gamesWonLabel: 'Partidas Ganadas',
+    totalMovesLabel: 'Movimientos Totales',
+    bestStreakLabel: 'Mejor Racha',
+    totalCoinsLabel: 'Monedas Totales',
+    winsUnit: 'victorias',
+    matchHistoryTitle: 'Historial de partidas',
+    achievementsTitle: 'Logros Desbloqueados',
+    performanceTitle: 'Rendimiento Cognitivo',
+    performanceSubtitle: 'Precisión de memoria semanal',
+    inviteFriendsTitle: 'Invita a tus amigos',
+    inviteFriendsSubtitle:
+        'Escanea para unirte a mi sala, o envía un enlace rápido.',
+    inviteLinkLabel: 'Enlace de invitación',
+    socialNetworkTitle: 'Red Social',
+    findByUsernameHint: 'Buscar por usuario',
+    statusOnline: 'En línea',
+    statusInGame: 'En partida',
+    statusOffline: 'Desconectado',
+    multiplayerLobbyLabel: 'SALA MULTIJUGADOR',
+    shopHeroTitle: 'Desbloquea Memory Pro',
+    shopHeroSubtitle:
+        'Eleva tu mente con vidas infinitas y temas exclusivos.',
+    shopHeroBanner: 'TIENDA PRO',
+    activatePremiumLabel: 'ACTIVAR PREMIUM',
+    planFreeTitle: 'Gratis',
+    planProTitle: 'PRO',
+    bestValueLabel: 'MEJOR VALOR',
+    currentPlanLabel: 'Plan Actual',
+    upgradeNowLabel: 'Actualizar Ahora',
+    exclusiveThemesTitle: 'Temas Exclusivos',
+    featLivesDaily: '5 Vidas Diarias',
+    featBasicThemes: 'Temas Básicos',
+    featAdSupported: 'Con Anuncios',
+    featInfiniteLives: 'Vidas Infinitas',
+    featExclusiveThemes: 'Temas Exclusivos',
+    featNoAds: 'Sin Anuncios',
   };
 
   static const Map<String, dynamic> en = {
@@ -110,5 +184,43 @@ mixin AppLocale {
     formLabel: 'FORM',
     startDuel: 'START DUEL',
     comingSoon: 'Coming soon',
+    profileTitle: 'Profile & Stats',
+    nextLevelLabel: 'Next Level',
+    gamesWonLabel: 'Games Won',
+    totalMovesLabel: 'Total Moves',
+    bestStreakLabel: 'Best Streak',
+    totalCoinsLabel: 'Total Coins',
+    winsUnit: 'wins',
+    matchHistoryTitle: 'Match History',
+    achievementsTitle: 'Achievements',
+    performanceTitle: 'Cognitive Performance',
+    performanceSubtitle: 'Weekly memory accuracy',
+    inviteFriendsTitle: 'Invite Friends',
+    inviteFriendsSubtitle:
+        'Scan to join my lobby, or send a quick invite link!',
+    inviteLinkLabel: 'Invite Link',
+    socialNetworkTitle: 'Social Network',
+    findByUsernameHint: 'Find by Username',
+    statusOnline: 'Online',
+    statusInGame: 'In Game',
+    statusOffline: 'Offline',
+    multiplayerLobbyLabel: 'MULTIPLAYER LOBBY',
+    shopHeroTitle: 'Unlock Memory Pro',
+    shopHeroSubtitle:
+        'Elevate your mind with infinite lives and exclusive themes.',
+    shopHeroBanner: 'PRO PLAN STORE',
+    activatePremiumLabel: 'ACTIVATE PREMIUM',
+    planFreeTitle: 'Free',
+    planProTitle: 'PRO',
+    bestValueLabel: 'BEST VALUE',
+    currentPlanLabel: 'Current Plan',
+    upgradeNowLabel: 'Upgrade Now',
+    exclusiveThemesTitle: 'Exclusive Themes',
+    featLivesDaily: '5 Lives Daily',
+    featBasicThemes: 'Basic Themes',
+    featAdSupported: 'Ad-Supported',
+    featInfiniteLives: 'Infinite Lives',
+    featExclusiveThemes: 'Exclusive Themes',
+    featNoAds: 'No Ads',
   };
 }

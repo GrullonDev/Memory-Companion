@@ -8,6 +8,7 @@ class RoutePaths {
   static const String shop = '/shop';
   static const String levelMap = '/level-map';
   static const String boardSolo = '/board/solo';
+  static const String profile = '/profile';
 
   /// Bottom-nav tab destinations, indexed the same way as [HomeBottomNav].
   static const List<String> tabs = [home, versus, friends, shop];

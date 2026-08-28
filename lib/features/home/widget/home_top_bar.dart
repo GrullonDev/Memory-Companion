@@ -6,27 +6,31 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class HomeTopBar extends StatelessWidget {
-  const HomeTopBar({super.key, required this.coins});
+  const HomeTopBar({super.key, required this.coins, this.onAvatarTap});
 
   final int coins;
+  final VoidCallback? onAvatarTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          width: 56,
-          height: 56,
-          padding: const EdgeInsets.all(3),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.secondaryContainer,
-          ),
-          child: ClipOval(
-            child: Container(
-              color: AppColors.surfaceContainerLowest,
-              child: Image.asset('assets/logo_mascota.png', fit: BoxFit.cover),
+        GestureDetector(
+          onTap: onAvatarTap,
+          child: Container(
+            width: 56,
+            height: 56,
+            padding: const EdgeInsets.all(3),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.secondaryContainer,
+            ),
+            child: ClipOval(
+              child: Container(
+                color: AppColors.surfaceContainerLowest,
+                child: Image.asset('assets/logo_mascota.png', fit: BoxFit.cover),
+              ),
             ),
           ),
         ),
