@@ -57,10 +57,11 @@ class PerformanceChartCard extends StatelessWidget {
                         children: [
                           Text(
                             '${(point.value * 100).round()}%',
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: AppColors.onSurfaceVariant,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(
+                                  color: AppColors.onSurfaceVariant,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                           const SizedBox(height: 6),
                           ClipRRect(
@@ -84,10 +85,11 @@ class PerformanceChartCard extends StatelessWidget {
                           const SizedBox(height: 8),
                           Text(
                             point.label,
-                            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: AppColors.outline,
-                              fontWeight: FontWeight.w600,
-                            ),
+                            style: Theme.of(context).textTheme.labelSmall
+                                ?.copyWith(
+                                  color: AppColors.outline,
+                                  fontWeight: FontWeight.w600,
+                                ),
                           ),
                         ],
                       ),

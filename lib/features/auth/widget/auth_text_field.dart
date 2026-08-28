@@ -65,7 +65,10 @@ class _AuthTextFieldState extends State<AuthTextField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: AppColors.secondaryContainer, width: 2),
+          borderSide: const BorderSide(
+            color: AppColors.secondaryContainer,
+            width: 2,
+          ),
         ),
       ),
     );
