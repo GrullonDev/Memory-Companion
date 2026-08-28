@@ -1,0 +1,13 @@
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/logo_mascota.png"
+  adaptive_icon_background: "#E55200"
+  adaptive_icon_foreground: "assets/logo_mascota.png"
+  remove_alpha_ios: true
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false

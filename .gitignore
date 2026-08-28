@@ -46,3 +46,12 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# App is mobile-first (with future web support); these desktop platforms
+# are not targeted for now.
+/linux/
+/macos/
+/windows/
+
+# Pub dependency lockfile
+pubspec.lock
