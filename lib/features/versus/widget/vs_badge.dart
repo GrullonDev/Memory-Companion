@@ -79,7 +79,12 @@ class _DashedRingsPainter extends CustomPainter {
     );
   }
 
-  void _drawDashedCircle(Canvas canvas, Offset center, double radius, Color color) {
+  void _drawDashedCircle(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    Color color,
+  ) {
     final paint = Paint()
       ..color = color
       ..style = PaintingStyle.stroke

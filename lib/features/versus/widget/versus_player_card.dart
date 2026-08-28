@@ -33,8 +33,9 @@ class VersusPlayerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final avatar = _Avatar(accentColor: accentColor);
     final identity = Column(
-      crossAxisAlignment:
-          reversed ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+      crossAxisAlignment: reversed
+          ? CrossAxisAlignment.end
+          : CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -66,9 +67,9 @@ class VersusPlayerCard extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               rankLabel,
-              style: Theme.of(
-                context,
-              ).textTheme.labelLarge?.copyWith(color: AppColors.onSurfaceVariant),
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                color: AppColors.onSurfaceVariant,
+              ),
             ),
           ],
         ),
