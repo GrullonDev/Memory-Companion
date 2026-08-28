@@ -21,6 +21,16 @@ class BoardState {
   double get progress =>
       totalSeconds == 0 ? 0 : secondsRemaining / totalSeconds;
 
+  int get elapsedSeconds => totalSeconds - secondsRemaining;
+
+  /// Pair-completion bonus plus a time bonus, minus a small penalty per
+  /// extra move — matches are worth more than speed, speed more than moves.
+  int get score {
+    final pairs = cards.length ~/ 2;
+    final raw = pairs * 500 + secondsRemaining * 10 - moves * 15;
+    return raw < 0 ? 0 : raw;
+  }
+
   BoardState copyWith({
     List<MemoryCard>? cards,
     int? moves,

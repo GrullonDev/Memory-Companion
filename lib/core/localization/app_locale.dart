@@ -27,9 +27,10 @@ mixin AppLocale {
   static const String pausedSubtitle = 'pausedSubtitle';
   static const String resumeGame = 'resumeGame';
   static const String completedTitle = 'completedTitle';
-  static const String completedSubtitle = 'completedSubtitle';
   static const String playAgain = 'playAgain';
   static const String backToHome = 'backToHome';
+  static const String timeLabel = 'timeLabel';
+  static const String coinsEarnedLabel = 'coinsEarnedLabel';
   static const String settingsLabel = 'settingsLabel';
   static const String quitMatch = 'quitMatch';
   static const String powerLevelLabel = 'powerLevelLabel';
@@ -61,10 +62,11 @@ mixin AppLocale {
     pausedTitle: 'Juego en pausa',
     pausedSubtitle: 'Respira. Tu puntaje está a salvo.',
     resumeGame: 'Reanudar juego',
-    completedTitle: '¡Lo lograste!',
-    completedSubtitle: 'Encontraste todas las parejas',
-    playAgain: 'JUGAR DE NUEVO',
-    backToHome: 'Volver al inicio',
+    completedTitle: '¡VICTORIA!',
+    playAgain: 'Jugar de nuevo',
+    backToHome: 'Volver al menú',
+    timeLabel: 'Tiempo',
+    coinsEarnedLabel: 'Monedas ganadas',
     settingsLabel: 'Ajustes',
     quitMatch: 'Salir de la partida',
     powerLevelLabel: 'NIVEL DE PODER',
@@ -97,10 +99,11 @@ mixin AppLocale {
     pausedTitle: 'Game Paused',
     pausedSubtitle: 'Take a breath! Your score is safe.',
     resumeGame: 'Resume Game',
-    completedTitle: 'You did it!',
-    completedSubtitle: 'You found every pair',
-    playAgain: 'PLAY AGAIN',
-    backToHome: 'Back to home',
+    completedTitle: 'VICTORY!',
+    playAgain: 'Play again',
+    backToHome: 'Back to Menu',
+    timeLabel: 'Time',
+    coinsEarnedLabel: 'Coins Earned',
     settingsLabel: 'Settings',
     quitMatch: 'Quit Match',
     powerLevelLabel: 'POWER LEVEL',
