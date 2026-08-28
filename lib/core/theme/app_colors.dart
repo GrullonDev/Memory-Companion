@@ -60,6 +60,12 @@ abstract final class AppColors {
   static const Color onBackground = Color(0xFF0B1C30);
   static const Color surfaceVariant = Color(0xFFD3E4FE);
 
+  /// Soft-tone category identifiers (see DESIGN.md "Soft Tones").
+  static const Color mintGreen = Color(0xFF4CD97B);
+  static const Color onMintGreen = Color(0xFF0E5C33);
+  static const Color pastelPurple = Color(0xFF9B7BFF);
+  static const Color onPastelPurple = Color(0xFF3A2170);
+
   /// Material 3 [ColorScheme] built from the palette above.
   static const ColorScheme lightScheme = ColorScheme(
     brightness: Brightness.light,
