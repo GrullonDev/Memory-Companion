@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/home/widget/featured_banner.dart';
 import 'package:memory_companion/features/home/widget/game_mode_grid.dart';
@@ -16,7 +17,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      bottomNavigationBar: const HomeBottomNav(),
+      bottomNavigationBar: HomeBottomNav(
+        onTap: (index) => RoutePaths.navigateToTab(context, index),
+      ),
       body: SafeArea(
         bottom: true,
         child: ListView(

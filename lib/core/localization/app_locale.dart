@@ -32,6 +32,10 @@ mixin AppLocale {
   static const String backToHome = 'backToHome';
   static const String settingsLabel = 'settingsLabel';
   static const String quitMatch = 'quitMatch';
+  static const String powerLevelLabel = 'powerLevelLabel';
+  static const String formLabel = 'formLabel';
+  static const String startDuel = 'startDuel';
+  static const String comingSoon = 'comingSoon';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -63,6 +67,10 @@ mixin AppLocale {
     backToHome: 'Volver al inicio',
     settingsLabel: 'Ajustes',
     quitMatch: 'Salir de la partida',
+    powerLevelLabel: 'NIVEL DE PODER',
+    formLabel: 'FORMA',
+    startDuel: 'INICIAR DUELO',
+    comingSoon: 'Muy pronto',
   };
 
   static const Map<String, dynamic> en = {
@@ -95,5 +103,9 @@ mixin AppLocale {
     backToHome: 'Back to home',
     settingsLabel: 'Settings',
     quitMatch: 'Quit Match',
+    powerLevelLabel: 'POWER LEVEL',
+    formLabel: 'FORM',
+    startDuel: 'START DUEL',
+    comingSoon: 'Coming soon',
   };
 }

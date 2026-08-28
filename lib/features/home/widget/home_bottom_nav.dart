@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class HomeBottomNav extends StatelessWidget {
-  const HomeBottomNav({super.key, this.activeIndex = 0});
+  const HomeBottomNav({super.key, this.activeIndex = 0, this.onTap});
 
   final int activeIndex;
+  final ValueChanged<int>? onTap;
 
   static const _items = [
     (icon: Icons.home, label: 'Home'),
@@ -34,10 +35,13 @@ class HomeBottomNav extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           for (var i = 0; i < _items.length; i++)
-            _NavItem(
-              icon: _items[i].icon,
-              label: _items[i].label,
-              active: i == activeIndex,
+            GestureDetector(
+              onTap: onTap == null ? null : () => onTap!(i),
+              child: _NavItem(
+                icon: _items[i].icon,
+                label: _items[i].label,
+                active: i == activeIndex,
+              ),
             ),
         ],
       ),
