@@ -121,10 +121,26 @@ class _VictoryIllustration extends StatelessWidget {
                 ),
               ),
             ),
-            const Positioned(top: 10, left: 18, child: _Confetto(Color(0xFF00BDFD))),
-            const Positioned(top: 16, right: 28, child: _Confetto(Color(0xFFFFFFFF))),
-            const Positioned(bottom: 12, left: 40, child: _Confetto(Color(0xFF9B7BFF))),
-            const Positioned(bottom: 16, right: 20, child: _Confetto(Color(0xFF4CD97B))),
+            const Positioned(
+              top: 10,
+              left: 18,
+              child: _Confetto(Color(0xFF00BDFD)),
+            ),
+            const Positioned(
+              top: 16,
+              right: 28,
+              child: _Confetto(Color(0xFFFFFFFF)),
+            ),
+            const Positioned(
+              bottom: 12,
+              left: 40,
+              child: _Confetto(Color(0xFF9B7BFF)),
+            ),
+            const Positioned(
+              bottom: 16,
+              right: 20,
+              child: _Confetto(Color(0xFF4CD97B)),
+            ),
             Center(
               child: Container(
                 width: 56,
@@ -157,7 +173,10 @@ class _Confetto extends StatelessWidget {
     return Container(
       width: 8,
       height: 8,
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(2)),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(2),
+      ),
     );
   }
 }
@@ -258,9 +277,9 @@ class _SummaryRow extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppColors.onSurface,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: AppColors.onSurface),
             ),
           ),
           valueWidget ??

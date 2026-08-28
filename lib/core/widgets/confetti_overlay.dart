@@ -88,8 +88,9 @@ class _ConfettiOverlayState extends State<ConfettiOverlay>
   ) {
     final progress = (t * piece.fallSpeed + piece.phase) % 1.0;
     final top = -40 + progress * (height + 80);
-    final left = (piece.dx * width + piece.drift * math.sin(progress * math.pi * 2))
-        .clamp(0, width - piece.size);
+    final left =
+        (piece.dx * width + piece.drift * math.sin(progress * math.pi * 2))
+            .clamp(0, width - piece.size);
     final angle = progress * piece.spin * math.pi;
 
     return Positioned(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
+import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/features/game/board/widget/board_bottom_bar.dart';
@@ -61,7 +63,9 @@ class BoardScreen extends StatelessWidget {
             if (state.isPaused && !state.isCompleted)
               BoardPausedOverlay(
                 onResume: onTogglePause,
-                onSettings: () {},
+                onSettings: () => ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
+                ),
                 onQuit: onExit,
               ),
             if (state.isCompleted)

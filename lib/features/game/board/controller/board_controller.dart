@@ -88,10 +88,7 @@ class BoardController extends Notifier<BoardState> {
 
     final updated = [...state.cards];
     final isMatch = first.symbol == second.symbol;
-    updated[firstIndex] = first.copyWith(
-      isFaceUp: isMatch,
-      isMatched: isMatch,
-    );
+    updated[firstIndex] = first.copyWith(isFaceUp: isMatch, isMatched: isMatch);
     updated[secondIndex] = second.copyWith(
       isFaceUp: isMatch,
       isMatched: isMatch,
@@ -136,5 +133,6 @@ class BoardController extends Notifier<BoardState> {
   }
 }
 
-final boardControllerProvider =
-    NotifierProvider<BoardController, BoardState>(BoardController.new);
+final boardControllerProvider = NotifierProvider<BoardController, BoardState>(
+  BoardController.new,
+);

@@ -5,11 +5,7 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class BoardTopBar extends StatelessWidget {
-  const BoardTopBar({
-    super.key,
-    required this.progress,
-    required this.moves,
-  });
+  const BoardTopBar({super.key, required this.progress, required this.moves});
 
   final double progress;
   final int moves;
