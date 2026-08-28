@@ -22,6 +22,14 @@ mixin AppLocale {
   static const String scoreLabel = 'scoreLabel';
   static const String sampleMatchTitle = 'sampleMatchTitle';
   static const String sampleMatchTimeAgo = 'sampleMatchTimeAgo';
+  static const String movesLabel = 'movesLabel';
+  static const String pausedTitle = 'pausedTitle';
+  static const String pausedSubtitle = 'pausedSubtitle';
+  static const String resumeGame = 'resumeGame';
+  static const String completedTitle = 'completedTitle';
+  static const String completedSubtitle = 'completedSubtitle';
+  static const String playAgain = 'playAgain';
+  static const String backToHome = 'backToHome';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -43,6 +51,14 @@ mixin AppLocale {
     scoreLabel: 'Puntaje',
     sampleMatchTitle: 'Venciste a "Memory Master"',
     sampleMatchTimeAgo: 'Hace 2h',
+    movesLabel: 'Movimientos',
+    pausedTitle: 'Juego en pausa',
+    pausedSubtitle: 'Toca continuar cuando estés listo',
+    resumeGame: 'CONTINUAR',
+    completedTitle: '¡Lo lograste!',
+    completedSubtitle: 'Encontraste todas las parejas',
+    playAgain: 'JUGAR DE NUEVO',
+    backToHome: 'Volver al inicio',
   };
 
   static const Map<String, dynamic> en = {
@@ -65,5 +81,13 @@ mixin AppLocale {
     scoreLabel: 'Score',
     sampleMatchTitle: "Beat 'Memory Master'",
     sampleMatchTimeAgo: '2h ago',
+    movesLabel: 'Moves',
+    pausedTitle: 'Game paused',
+    pausedSubtitle: 'Tap resume whenever you are ready',
+    resumeGame: 'RESUME',
+    completedTitle: 'You did it!',
+    completedSubtitle: 'You found every pair',
+    playAgain: 'PLAY AGAIN',
+    backToHome: 'Back to home',
   };
 }

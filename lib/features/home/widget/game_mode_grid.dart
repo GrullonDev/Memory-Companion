@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/home/widget/game_mode_card.dart';
 
@@ -23,7 +24,7 @@ class GameModeGrid extends StatelessWidget {
           label: AppLocale.modePlaySolo.getString(context),
           background: AppColors.primaryFixed,
           foreground: AppColors.onPrimaryFixed,
-          onTap: () {},
+          onTap: () => Navigator.of(context).pushNamed(RoutePaths.boardSolo),
         ),
         GameModeCard(
           icon: Icons.groups,
