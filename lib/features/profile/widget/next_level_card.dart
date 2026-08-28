@@ -17,7 +17,9 @@ class NextLevelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final progress = targetXp == 0 ? 0.0 : (currentXp / targetXp).clamp(0.0, 1.0);
+    final progress = targetXp == 0
+        ? 0.0
+        : (currentXp / targetXp).clamp(0.0, 1.0);
     final numberFormat = NumberFormat.decimalPattern();
     return Container(
       padding: const EdgeInsets.all(20),
@@ -54,9 +56,9 @@ class NextLevelCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '${numberFormat.format(currentXp)} / ${numberFormat.format(targetXp)} XP',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: AppColors.onSurfaceVariant,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(color: AppColors.onSurfaceVariant),
           ),
           const SizedBox(height: 12),
           ClipRRect(
@@ -65,7 +67,9 @@ class NextLevelCard extends StatelessWidget {
               value: progress,
               minHeight: 12,
               backgroundColor: AppColors.surfaceContainerHigh,
-              valueColor: const AlwaysStoppedAnimation(AppColors.primaryFixedDim),
+              valueColor: const AlwaysStoppedAnimation(
+                AppColors.primaryFixedDim,
+              ),
             ),
           ),
         ],

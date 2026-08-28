@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
-import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
-import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
-import 'package:memory_companion/features/profile/model/achievement.dart';
-import 'package:memory_companion/features/profile/model/profile_match.dart';
+import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/core/widgets/avatar_picker.dart';
+import 'package:memory_companion/features/profile/controller/profile_controller.dart';
+import 'package:memory_companion/features/profile/model/profile_data.dart';
 import 'package:memory_companion/features/profile/widget/achievements_grid.dart';
 import 'package:memory_companion/features/profile/widget/match_history_tile.dart';
 import 'package:memory_companion/features/profile/widget/next_level_card.dart';
@@ -14,59 +15,72 @@ import 'package:memory_companion/features/profile/widget/performance_chart_card.
 import 'package:memory_companion/features/profile/widget/profile_header.dart';
 import 'package:memory_companion/features/profile/widget/profile_stat_grid.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  static const _matches = [
-    ProfileMatch(
-      title: 'Venciste a "Memory Master"',
-      score: '14,200',
-      moves: 28,
-      timeAgo: 'Hace 2h',
-      result: MatchResult.win,
-    ),
-    ProfileMatch(
-      title: 'Reto Diario',
-      score: '9,800',
-      moves: 34,
-      timeAgo: 'Ayer',
-      result: MatchResult.win,
-    ),
-    ProfileMatch(
-      title: 'Duelo vs "PinkFox"',
-      score: '5,400',
-      moves: 41,
-      timeAgo: 'Hace 3 días',
-      result: MatchResult.loss,
-    ),
-  ];
-
-  static const _achievements = [
-    Achievement(icon: Icons.emoji_events_rounded, title: 'Racha x10', unlocked: true),
-    Achievement(icon: Icons.flash_on_rounded, title: 'Velocista', unlocked: true),
-    Achievement(icon: Icons.psychology_rounded, title: 'Mente Ágil', unlocked: true),
-    Achievement(icon: Icons.military_tech_rounded, title: 'Maestro', unlocked: false),
-    Achievement(icon: Icons.diamond_rounded, title: 'Coleccionista', unlocked: false),
-    Achievement(icon: Icons.groups_rounded, title: 'Social', unlocked: false),
-  ];
-
-  static const _performancePoints = [
-    (label: 'Lun', value: 0.6),
-    (label: 'Mar', value: 0.72),
-    (label: 'Mié', value: 0.65),
-    (label: 'Jue', value: 0.85),
-    (label: 'Vie', value: 0.78),
-    (label: 'Sáb', value: 0.92),
-    (label: 'Dom', value: 0.88),
-  ];
+  Future<void> _openAvatarSheet(BuildContext context, WidgetRef ref) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surfaceContainerLowest,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (sheetContext) {
+        return Consumer(
+          builder: (sheetContext, ref, _) {
+            final profile = ref.watch(profileControllerProvider).value;
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppLocale.chooseAvatarTitle.getString(sheetContext),
+                    style: Theme.of(sheetContext).textTheme.titleLarge
+                        ?.copyWith(
+                          color: AppColors.onSurface,
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 20),
+                  AvatarPicker(
+                    seed: profile?.avatarSeed ?? 0,
+                    onRandomize: () => ref
+                        .read(profileControllerProvider.notifier)
+                        .randomizeAvatar(),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton(
+                      onPressed: () {
+                        Navigator.of(sheetContext).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              AppLocale.avatarUpdatedMessage.getString(context),
+                            ),
+                          ),
+                        );
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(profileControllerProvider);
+
     return Scaffold(
       backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
       body: SafeArea(
         bottom: true,
         child: ListView(
@@ -76,7 +90,10 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 IconButton(
                   onPressed: () => Navigator.of(context).maybePop(),
-                  icon: const Icon(Icons.arrow_back, color: AppColors.onSurface),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: AppColors.onSurface,
+                  ),
                 ),
                 Expanded(
                   child: Text(
@@ -92,46 +109,68 @@ class ProfileScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            ProfileHeader(
-              name: 'Alex "Spark" Rossi',
-              rank: 'Master Rank',
-              level: 42,
-              onEditAvatar: () {},
-            ),
-            const SizedBox(height: 24),
-            const NextLevelCard(currentXp: 1250, targetXp: 2000),
-            const SizedBox(height: 16),
-            const ProfileStatGrid(
-              gamesWon: 142,
-              totalMoves: '4.5k',
-              bestStreak: 12,
-              totalCoins: '8.2k',
-            ),
-            const SizedBox(height: 24),
-            Text(
-              AppLocale.achievementsTitle.getString(context),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w700,
+            AsyncValueView(
+              value: profile,
+              onRetry: () => ref.invalidate(profileControllerProvider),
+              data: (context, ProfileData data) => Column(
+                children: [
+                  ProfileHeader(
+                    name: data.name,
+                    rank: data.rank,
+                    level: data.level,
+                    onEditAvatar: () => _openAvatarSheet(context, ref),
+                  ),
+                  const SizedBox(height: 24),
+                  NextLevelCard(
+                    currentXp: data.currentXp,
+                    targetXp: data.targetXp,
+                  ),
+                  const SizedBox(height: 16),
+                  ProfileStatGrid(
+                    gamesWon: data.gamesWon,
+                    totalMoves: data.totalMoves,
+                    bestStreak: data.bestStreak,
+                    totalCoins: data.totalCoins,
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocale.achievementsTitle.getString(context),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  AchievementsGrid(achievements: data.achievements),
+                  const SizedBox(height: 24),
+                  PerformanceChartCard(
+                    points: [
+                      for (final point in data.performancePoints)
+                        (label: point.label, value: point.value),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      AppLocale.matchHistoryTitle.getString(context),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.onSurface,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  for (final match in data.matches) ...[
+                    MatchHistoryTile(match: match),
+                    const SizedBox(height: 12),
+                  ],
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            const AchievementsGrid(achievements: _achievements),
-            const SizedBox(height: 24),
-            const PerformanceChartCard(points: _performancePoints),
-            const SizedBox(height: 24),
-            Text(
-              AppLocale.matchHistoryTitle.getString(context),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 12),
-            for (final match in _matches) ...[
-              MatchHistoryTile(match: match),
-              const SizedBox(height: 12),
-            ],
           ],
         ),
       ),

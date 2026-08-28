@@ -55,9 +55,9 @@ class MatchHistoryTile extends StatelessWidget {
                 Text(
                   '${AppLocale.scoreLabel.getString(context)}: ${match.score} · '
                   '${AppLocale.movesLabel.getString(context)}: ${match.moves}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyMedium?.copyWith(color: AppColors.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),
