@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 /// Rounded, outlined text field shared by the login and register screens.
-///
-/// Purely presentational — no controller or validation is wired up yet,
-/// since these screens aren't connected to a real auth backend.
 class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
     required this.icon,
     required this.hint,
+    this.controller,
     this.isPassword = false,
     this.keyboardType,
+    this.enabled = true,
   });
 
   final IconData icon;
   final String hint;
+  final TextEditingController? controller;
   final bool isPassword;
   final TextInputType? keyboardType;
+  final bool enabled;
 
   @override
   State<AuthTextField> createState() => _AuthTextFieldState();
@@ -30,6 +31,8 @@ class _AuthTextFieldState extends State<AuthTextField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: widget.controller,
+      enabled: widget.enabled,
       obscureText: widget.isPassword && _obscured,
       keyboardType: widget.keyboardType,
       style: Theme.of(

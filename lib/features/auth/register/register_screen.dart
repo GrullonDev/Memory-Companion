@@ -1,29 +1,86 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/avatar_picker.dart';
+import 'package:memory_companion/features/auth/controller/auth_controller.dart';
+import 'package:memory_companion/features/auth/login/widget/social_login_row.dart';
 import 'package:memory_companion/features/auth/register/widget/dotted_background.dart';
+import 'package:memory_companion/features/auth/util/auth_error_mapper.dart';
 import 'package:memory_companion/features/auth/widget/auth_primary_button.dart';
 import 'package:memory_companion/features/auth/widget/auth_text_field.dart';
+import 'package:memory_companion/features/auth/widget/phone_sign_in_dialog.dart';
 
-/// Kept as a [StatefulWidget] only for the local avatar-seed toggle — no
-/// account is actually created yet, so this is otherwise a static form.
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   int _avatarSeed = 0;
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void _submitRegister() {
+    final username = _usernameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    if (username.isEmpty || email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocale.fieldsRequiredMessage.getString(context))),
+      );
+      return;
+    }
+    ref.read(authControllerProvider.notifier).register(
+      email: email,
+      password: password,
+      displayName: username,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(authControllerProvider).isLoading;
+
+    ref.listen(authControllerProvider, (previous, next) {
+      next.whenOrNull(
+        error: (error, _) => ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(authErrorMessage(context, error))),
+        ),
+        data: (_) {
+          if (previous is AsyncLoading) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocale.accountCreatedMessage.getString(context)),
+              ),
+            );
+          }
+        },
+      );
+    });
+
+    ref.listen(authStateChangesProvider, (previous, next) {
+      final user = next.value;
+      if (user != null) {
+        Navigator.of(context).pushReplacementNamed(RoutePaths.home);
+      }
+    });
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -92,6 +149,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AuthTextField(
                         icon: Icons.person_outline_rounded,
                         hint: AppLocale.usernameHint.getString(context),
+                        controller: _usernameController,
+                        enabled: !isLoading,
                       ),
                       const SizedBox(height: 20),
                       Align(
@@ -110,6 +169,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.mail_outline_rounded,
                         hint: AppLocale.emailHint.getString(context),
                         keyboardType: TextInputType.emailAddress,
+                        controller: _emailController,
+                        enabled: !isLoading,
                       ),
                       const SizedBox(height: 20),
                       Align(
@@ -128,14 +189,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icons.lock_outline_rounded,
                         hint: AppLocale.passwordHintStrong.getString(context),
                         isPassword: true,
+                        controller: _passwordController,
+                        enabled: !isLoading,
                       ),
                       const SizedBox(height: 24),
                       AuthPrimaryButton(
                         label: AppLocale.createAccountLabel.getString(context),
                         trailingIcon: Icons.arrow_forward_rounded,
-                        onTap: () => Navigator.of(
-                          context,
-                        ).pushReplacementNamed(RoutePaths.home),
+                        isLoading: isLoading,
+                        onTap: _submitRegister,
+                      ),
+                      const SizedBox(height: 24),
+                      SocialLoginRow(
+                        onGoogleTap: isLoading
+                            ? null
+                            : () => ref
+                                .read(authControllerProvider.notifier)
+                                .signInWithGoogle(),
+                        onPhoneTap: isLoading
+                            ? null
+                            : () => showPhoneSignInDialog(context),
                       ),
                     ],
                   ),

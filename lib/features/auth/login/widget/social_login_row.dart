@@ -3,14 +3,13 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
-/// "OR PLAY WITH" divider plus a row of quick-login provider buttons.
-///
-/// No auth SDKs are wired up yet, so the buttons are visual placeholders.
+/// "OR PLAY WITH" divider plus a row of quick-login provider buttons,
+/// matching the providers enabled on the Firebase project (Google, Phone).
 class SocialLoginRow extends StatelessWidget {
-  const SocialLoginRow({super.key, this.onGoogleTap, this.onFacebookTap});
+  const SocialLoginRow({super.key, this.onGoogleTap, this.onPhoneTap});
 
   final VoidCallback? onGoogleTap;
-  final VoidCallback? onFacebookTap;
+  final VoidCallback? onPhoneTap;
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +42,8 @@ class SocialLoginRow extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _ProviderButton(
-                icon: Icons.facebook_rounded,
-                onTap: onFacebookTap,
+                icon: Icons.phone_android_rounded,
+                onTap: onPhoneTap,
               ),
             ),
           ],
