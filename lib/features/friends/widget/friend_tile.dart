@@ -82,9 +82,9 @@ class FriendTile extends StatelessWidget {
                 ),
                 Text(
                   _statusLabel(context),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodySmall?.copyWith(color: AppColors.onSurfaceVariant),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: AppColors.onSurfaceVariant,
+                  ),
                 ),
               ],
             ),

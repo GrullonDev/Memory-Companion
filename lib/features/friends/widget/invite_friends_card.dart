@@ -5,7 +5,12 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
 class InviteFriendsCard extends StatelessWidget {
-  const InviteFriendsCard({super.key, this.onShare, this.onCopyCode, this.onInvite});
+  const InviteFriendsCard({
+    super.key,
+    this.onShare,
+    this.onCopyCode,
+    this.onInvite,
+  });
 
   final VoidCallback? onShare;
   final VoidCallback? onCopyCode;
@@ -56,12 +61,18 @@ class InviteFriendsCard extends StatelessWidget {
                   Positioned(
                     top: 10,
                     left: 10,
-                    child: _CornerButton(icon: Icons.share_rounded, onTap: onShare),
+                    child: _CornerButton(
+                      icon: Icons.share_rounded,
+                      onTap: onShare,
+                    ),
                   ),
                   Positioned(
                     top: 10,
                     right: 10,
-                    child: _CornerButton(icon: Icons.copy_rounded, onTap: onCopyCode),
+                    child: _CornerButton(
+                      icon: Icons.copy_rounded,
+                      onTap: onCopyCode,
+                    ),
                   ),
                 ],
               ),
@@ -88,10 +99,7 @@ class InviteFriendsCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     border: const Border(
-                      bottom: BorderSide(
-                        color: AppColors.tertiary,
-                        width: 4,
-                      ),
+                      bottom: BorderSide(color: AppColors.tertiary, width: 4),
                     ),
                   ),
                   child: Row(
@@ -104,10 +112,11 @@ class InviteFriendsCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       Text(
                         AppLocale.inviteLinkLabel.getString(context),
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: AppColors.onPrimaryFixed,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: AppColors.onPrimaryFixed,
+                              fontWeight: FontWeight.w700,
+                            ),
                       ),
                     ],
                   ),
