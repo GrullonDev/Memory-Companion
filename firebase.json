@@ -1,1 +1,27 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"memory-compaknion","appId":"1:1049848624178:android:c26ade07c48144a8b8f82b","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"memory-compaknion","configurations":{"android":"1:1049848624178:android:c26ade07c48144a8b8f82b"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "memory-compaknion",
+          "appId": "1:1049848624178:android:c26ade07c48144a8b8f82b",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "memory-compaknion",
+          "configurations": {
+            "android": "1:1049848624178:android:c26ade07c48144a8b8f82b"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "nam5",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}
