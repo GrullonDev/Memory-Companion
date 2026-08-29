@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/features/game/board/model/memory_card.dart';
+import 'package:memory_companion/features/game/controller/game_controller.dart';
 
 const _symbols = ['🍓', '🍌', '🍇', '🍉', '🍒', '🍍', '🥝', '🍑'];
 const _totalSeconds = 90;
@@ -42,10 +43,31 @@ class BoardController extends Notifier<BoardState> {
       if (state.secondsRemaining <= 1) {
         _timer?.cancel();
         state = state.copyWith(secondsRemaining: 0, isCompleted: true);
+        _onGameCompleted();
         return;
       }
       state = state.copyWith(secondsRemaining: state.secondsRemaining - 1);
     });
+  }
+
+  /// Called when the game is completed (either won by finishing or lost by timeout)
+  Future<void> _onGameCompleted() async {
+    final currentState = state;
+    final won = currentState.cards.every((c) => c.isMatched);
+
+    // Save the game result to Firestore
+    try {
+      await ref.read(gameControllerProvider.notifier).completeSoloGame(
+        score: currentState.score,
+        moves: currentState.moves,
+        secondsElapsed: currentState.elapsedSeconds,
+        timeLimit: currentState.totalSeconds,
+        won: won,
+      );
+    } catch (e) {
+      // Silent fail - game is still playable even if Firestore is down
+      print('Error saving game to Firestore: $e');
+    }
   }
 
   void restart() {

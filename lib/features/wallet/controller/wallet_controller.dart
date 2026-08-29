@@ -1,12 +1,17 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:memory_companion/features/auth/controller/user_controller.dart';
+
 /// Owns the player's coin balance, shared by every screen that shows the
 /// coin counter (Home, Friends, Shop, Versus, Level Map).
 class WalletController extends AsyncNotifier<int> {
   @override
   Future<int> build() async {
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    return 1250;
+    // Fetch user data from Firestore
+    final user = await ref.watch(currentUserProvider.future);
+
+    // Return total coins from Firestore, default to 0 if no user
+    return user?.totalCoins ?? 0;
   }
 
   bool spend(int amount) {
