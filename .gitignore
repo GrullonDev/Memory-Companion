@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+pubspec.lock
 
 # Symbolication related
 app.*.symbols
@@ -47,11 +48,11 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 
-# App is mobile-first (with future web support); these desktop platforms
-# are not targeted for now.
-/linux/
-/macos/
-/windows/
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
 
-# Pub dependency lockfile
-pubspec.lock
+# iOS will place build artifacts here
+/ios/Runner.xcworkspace
+/ios/Runner.xcodeproj
