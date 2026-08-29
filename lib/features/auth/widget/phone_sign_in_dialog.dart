@@ -34,7 +34,14 @@ class _PhoneSignInDialogState extends ConsumerState<_PhoneSignInDialog> {
   void dispose() {
     _phoneController.dispose();
     _codeController.dispose();
-    ref.read(phoneAuthControllerProvider.notifier).reset();
+    // Safely reset the provider before widget is unmounted
+    if (mounted) {
+      try {
+        ref.read(phoneAuthControllerProvider.notifier).reset();
+      } catch (e) {
+        // Ignore errors during dispose
+      }
+    }
     super.dispose();
   }
 

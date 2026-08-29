@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:memory_companion/features/auth/controller/user_controller.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>(
   (ref) => FirebaseAuth.instance,
@@ -50,6 +51,12 @@ class AuthController extends AsyncNotifier<void> {
       if (trimmedName.isNotEmpty) {
         await credential.user?.updateDisplayName(trimmedName);
       }
+
+      // Create user in Firestore
+      await ref.read(userControllerProvider.notifier).createNewUser(
+        email: email.trim(),
+        displayName: trimmedName.isNotEmpty ? trimmedName : null,
+      );
     });
   }
 
@@ -68,7 +75,16 @@ class AuthController extends AsyncNotifier<void> {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
-      await _auth.signInWithCredential(credential);
+      final userCredential = await _auth.signInWithCredential(credential);
+
+      // Create user in Firestore if it's a new user
+      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
+        await ref.read(userControllerProvider.notifier).createNewUser(
+          email: userCredential.user?.email ?? '',
+          displayName: userCredential.user?.displayName,
+          photoUrl: userCredential.user?.photoURL,
+        );
+      }
     });
     return true;
   }
