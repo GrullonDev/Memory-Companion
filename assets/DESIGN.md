@@ -1,168 +1,215 @@
 ---
 name: Vibrant Kinetic
+implementation: lib/core/theme/ (app_colors, app_spacing, app_shadows, app_motion, app_typography, app_theme)
 colors:
-  surface: '#f8f9ff'
-  surface-dim: '#cbdbf5'
-  surface-bright: '#f8f9ff'
+  # Neutrals — one slate ramp for every surface and every piece of text
+  surface: '#f7f8fc'
+  surface-dim: '#e6eaf2'
+  surface-bright: '#ffffff'
   surface-container-lowest: '#ffffff'
-  surface-container-low: '#eff4ff'
-  surface-container: '#e5eeff'
-  surface-container-high: '#dce9ff'
-  surface-container-highest: '#d3e4fe'
-  on-surface: '#0b1c30'
-  on-surface-variant: '#4d4732'
-  inverse-surface: '#213145'
-  inverse-on-surface: '#eaf1ff'
-  outline: '#7e775f'
-  outline-variant: '#d0c6ab'
-  surface-tint: '#705d00'
-  primary: '#705d00'
-  on-primary: '#ffffff'
-  primary-container: '#ffd700'
-  on-primary-container: '#705e00'
-  inverse-primary: '#e9c400'
-  secondary: '#00668a'
-  on-secondary: '#ffffff'
-  secondary-container: '#00bdfd'
-  on-secondary-container: '#004964'
-  tertiary: '#904d00'
-  on-tertiary: '#ffffff'
-  tertiary-container: '#ffd1af'
-  on-tertiary-container: '#914d00'
-  error: '#ba1a1a'
+  surface-container-low: '#f2f4f9'
+  surface-container: '#ebeef5'
+  surface-container-high: '#e3e7f0'
+  surface-container-highest: '#dae0ec'
+  on-surface: '#101828'          # 15.9:1 on white
+  on-surface-variant: '#4a5568'  # 7.6:1 on surface
+  outline: '#667085'             # 5.3:1 on white — safe for 12px metadata
+  outline-variant: '#d3d8e3'     # hairlines only, never text
+  inverse-surface: '#1b2434'
+  inverse-on-surface: '#eef2f9'
+  # Sun — primary action, XP, coins
+  sun: '#ffc531'
+  on-sun: '#3d2c00'              # 8.5:1 on sun
+  sun-soft: '#fff4d6'
+  sun-strong: '#8a6100'
+  sun-deep: '#e0a400'
+  # Sky — multiplayer and social
+  sky: '#35c4f0'
+  on-sky: '#05384a'              # 6.2:1 on sky
+  sky-soft: '#ddf3fc'
+  sky-strong: '#0b5e7a'
+  sky-deep: '#17a5d6'
+  # Mint — daily challenge, progress, success
+  mint: '#3dd07f'
+  on-mint: '#06381e'             # 6.6:1 on mint
+  mint-soft: '#dcf6e7'
+  mint-strong: '#0e7a44'
+  mint-deep: '#23b268'
+  # Violet — shop, cosmetics, unlockables
+  violet: '#a78bfa'
+  on-violet: '#2e1065'           # 5.6:1 on violet
+  violet-soft: '#ebe4fe'
+  violet-strong: '#5b34c7'
+  violet-deep: '#8b69f2'
+  # Streak — urgency
+  streak: '#ff7a3d'
+  on-streak: '#4a1b00'
+  streak-soft: '#ffe8da'
+  streak-strong: '#b44100'
+  streak-deep: '#e85f1f'
+  # Semantic
+  error: '#c5221f'
   on-error: '#ffffff'
-  error-container: '#ffdad6'
-  on-error-container: '#93000a'
-  primary-fixed: '#ffe16d'
-  primary-fixed-dim: '#e9c400'
-  on-primary-fixed: '#221b00'
-  on-primary-fixed-variant: '#544600'
-  secondary-fixed: '#c3e8ff'
-  secondary-fixed-dim: '#7ad0ff'
-  on-secondary-fixed: '#001e2c'
-  on-secondary-fixed-variant: '#004c69'
-  tertiary-fixed: '#ffdcc3'
-  tertiary-fixed-dim: '#ffb77d'
-  on-tertiary-fixed: '#2f1500'
-  on-tertiary-fixed-variant: '#6e3900'
-  background: '#f8f9ff'
-  on-background: '#0b1c30'
-  surface-variant: '#d3e4fe'
+  error-container: '#ffe4e1'
+  on-error-container: '#7a0f0d'
+  disabled: '#e3e7f0'
+  on-disabled: '#8b93a5'
 typography:
-  display-lg:
-    fontFamily: Quicksand
-    fontSize: 40px
-    fontWeight: '700'
-    lineHeight: 48px
-    letterSpacing: -0.5px
-  headline-lg:
-    fontFamily: Quicksand
-    fontSize: 32px
-    fontWeight: '700'
-    lineHeight: 40px
-  headline-md:
-    fontFamily: Quicksand
-    fontSize: 24px
-    fontWeight: '700'
-    lineHeight: 32px
-  headline-sm:
-    fontFamily: Quicksand
-    fontSize: 20px
-    fontWeight: '600'
-    lineHeight: 28px
-  body-lg:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 18px
-    fontWeight: '500'
-    lineHeight: 26px
-  body-md:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 16px
-    fontWeight: '400'
-    lineHeight: 24px
-  label-lg:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 14px
-    fontWeight: '600'
-    lineHeight: 20px
-    letterSpacing: 0.1px
-  label-sm:
-    fontFamily: Plus Jakarta Sans
-    fontSize: 12px
-    fontWeight: '700'
-    lineHeight: 16px
-    letterSpacing: 0.5px
-rounded:
-  sm: 0.25rem
-  DEFAULT: 0.5rem
-  md: 0.75rem
-  lg: 1rem
-  xl: 1.5rem
-  full: 9999px
+  display-lg: { fontFamily: Quicksand, fontSize: 40px, fontWeight: '700', lineHeight: 48px, letterSpacing: -0.5px }
+  display-md: { fontFamily: Quicksand, fontSize: 34px, fontWeight: '700', lineHeight: 42px }
+  headline-lg: { fontFamily: Quicksand, fontSize: 28px, fontWeight: '700', lineHeight: 36px }
+  headline-md: { fontFamily: Quicksand, fontSize: 24px, fontWeight: '700', lineHeight: 32px }
+  headline-sm: { fontFamily: Quicksand, fontSize: 21px, fontWeight: '700', lineHeight: 28px }
+  title-lg: { fontFamily: Quicksand, fontSize: 20px, fontWeight: '700', lineHeight: 28px }
+  title-md: { fontFamily: Quicksand, fontSize: 17px, fontWeight: '700', lineHeight: 24px }
+  title-sm: { fontFamily: Plus Jakarta Sans, fontSize: 15px, fontWeight: '700', lineHeight: 20px }
+  body-lg: { fontFamily: Plus Jakarta Sans, fontSize: 17px, fontWeight: '500', lineHeight: 26px }
+  body-md: { fontFamily: Plus Jakarta Sans, fontSize: 15px, fontWeight: '400', lineHeight: 22px }
+  body-sm: { fontFamily: Plus Jakarta Sans, fontSize: 13px, fontWeight: '400', lineHeight: 18px }
+  label-lg: { fontFamily: Plus Jakarta Sans, fontSize: 15px, fontWeight: '700', lineHeight: 20px, letterSpacing: 0.2px }
+  label-md: { fontFamily: Plus Jakarta Sans, fontSize: 13px, fontWeight: '700', lineHeight: 16px, letterSpacing: 0.3px }
+  label-sm: { fontFamily: Plus Jakarta Sans, fontSize: 12px, fontWeight: '700', lineHeight: 16px, letterSpacing: 0.4px }
+radius:
+  xs: 8px
+  sm: 12px
+  md: 16px
+  lg: 20px
+  xl: 24px
+  xxl: 28px
+  hero: 32px
+  pill: 999px
 spacing:
   unit: 4px
+  xxs: 2px
   xs: 4px
   sm: 8px
-  md: 16px
-  lg: 24px
-  xl: 32px
-  gutter: 16px
-  margin: 20px
+  md: 12px
+  lg: 16px
+  xl: 20px
+  xxl: 24px
+  xxxl: 32px
+  huge: 40px
+  screen-margin: 20px
+  gutter: 14px
+  section-gap: 28px
+sizes:
+  touch-min: 48px
+  touch-comfortable: 56px
+  progress-bar-height: 14px
+motion:
+  instant: 90ms   # press acknowledgement
+  fast: 160ms     # release, chip toggles
+  normal: 220ms   # default move/fade
+  slow: 420ms     # progress fills, counters
+  celebrate: 700ms
+  page: 280ms
+  press-scale: 0.965
+  press-scale-small: 0.92
+  press-depth: 3px
 ---
 
 ## Brand & Style
-The design system embodies a high-energy, playful aesthetic tailored for a modern mobile gaming experience. It merges the structured hierarchy of Material 3 with a "Neo-Pop" cartoon sensibility. The interface is designed to evoke joy, movement, and accessibility, targeting a wide demographic of casual gamers.
+A modern casual-game surface, not an educational app for children. The
+interface reads as a set of physical, touchable objects: squircle geometry,
+vibrant colour blocking, soft tactile depth, and generous empty space. It has
+to be fun enough that a four-year-old wants to press it and calm enough that a
+fifty-year-old wants to open it every morning.
 
-The visual style utilizes a "Soft-Tactile" approach: elements appear as physical, touchable objects through the use of squircle geometries, thick strokes, and vibrant color blocking. Motion and interaction should feel bouncy and elastic, reinforcing the arcade narrative through stylized digital illustrations and a complete absence of photographic assets.
+The rule that resolves that tension: **the personality lives in the shapes,
+the colours and the motion — never in the text size, the density, or the
+contrast.** Type stays large and quiet; colour and geometry carry the play.
 
-## Colors
-The palette is centered around "Sunny Yellow" to drive energy and focus. 
+## Colours
+Five families, each with a fixed job. Never introduce a colour outside them.
 
-- **Primary (Sunny Yellow):** Used for main actions, high-priority buttons, and progress indicators.
-- **Secondary (Sky Blue):** Used for navigation elements, selection states, and informational icons.
-- **Tertiary (Cheerful Orange):** Reserved for urgent notifications, sale items, or "Level Up" moments.
-- **Soft Tones:** Mint Green and Pastel Purple serve as category identifiers and background accents for cards to provide visual variety without overwhelming the user.
-- **Backgrounds:** Maintain a Crisp White base to ensure the vibrant accents pop, using subtle off-white (`#F8FAFC`) for nested surfaces and container grouping.
+| Family | Meaning | Where |
+| --- | --- | --- |
+| **Sun** (yellow) | The primary action, XP, coins | Play Solo card, level medallion, coin chip, active nav |
+| **Sky** (cyan) | Competition, other people | Multiplayer, friends, focused inputs |
+| **Mint** (green) | Progress, streaks, success | Daily challenge, success states |
+| **Violet** (purple) | Ownership, cosmetics, unlockables | Shop, themes, Pro |
+| **Streak** (orange) | Urgency, "don't lose it" | Streak badge, warnings |
+
+Each family exposes the same four roles: `X` (saturated fill), `onX` (text on
+that fill), `X-soft` (pale tint for icon wells on white), `X-strong` (the hue
+darkened for text on white) and `X-deep` (pressed state, tinted shadow).
+
+**Every fill/on pair clears WCAG AA at 4.5:1.** Text on a coloured surface is
+always a dark tint of that surface's own hue, never white — white on mid-tone
+yellow, green or cyan cannot reach AA, and it is the single most common
+failure in games styled this way.
+
+Colour never carries meaning alone. Status is always colour **plus** an icon
+**plus** a word.
 
 ## Typography
-The typography system prioritizes legibility with a friendly, rounded character. 
+**Quicksand** for headings, titles and numbers; **Plus Jakarta Sans** for body,
+labels and buttons. Quicksand's rounded terminals echo the squircles and read
+as friendly without reading as juvenile; Plus Jakarta Sans has the x-height and
+open apertures that keep 13px legible for a reader with low vision.
 
-**Quicksand** is used for all headlines to maintain the cartoon-inspired aesthetic. Its rounded terminals mirror the UI's squircle shapes. **Plus Jakarta Sans** is used for body text and labels to provide a clean, modern contrast that remains readable during fast-paced gameplay. 
-
-For mobile-specific scaling, `display-lg` should be reserved for splash screens and big win states. All headlines use bold or semi-bold weights to maintain visual weight against the vibrant background colors.
+The smallest type in the product is 13px, and everything under 15px is
+metadata that is never the only route to a piece of information. Numbers that
+change in place (scores, coins, XP, timers) use tabular figures so the layout
+does not twitch as digits update.
 
 ## Layout & Spacing
-This design system utilizes a fluid 4-column grid for mobile, emphasizing generous margins to prevent the UI from feeling cluttered.
+20px screen margins, 14px gutters, a 4px vertical rhythm, and a 28px gap
+between sections. The Home column is capped at 560px so a tablet or unfolded
+device gets a readable column rather than stretched cards.
 
-- **Grid:** 4 columns on mobile, 8 on tablet.
-- **Margins:** 20px side margins ensure content is clear of screen edges and "safe zones."
-- **Gutter:** 16px between cards and interactive elements.
-- **Rhythm:** All vertical spacing follows a 4px/8px baseline increment to maintain a tight, mathematical harmony.
-
-Layouts should be container-based, utilizing squircles to group related information. Use `lg` (24px) spacing for section headers and `md` (16px) for internal padding within cards.
+Nothing assumes a screen width. Card heights are driven by their content with
+a stated minimum, so long labels and enlarged system text grow the card
+instead of clipping it.
 
 ## Elevation & Depth
-Depth is communicated through "Soft-Shadows" rather than traditional Material elevation.
+Soft, large, Y-offset shadows — never Material's tonal elevation.
 
-- **Surface Tiers:** Use subtle tonal shifts (White to Off-White) to define nested content.
-- **Shadow Style:** Shadows are large, soft, and slightly offset on the Y-axis (e.g., `0px 8px 24px rgba(0, 0, 0, 0.08)`). 
-- **Color Tinting:** For primary-colored elements (like a Yellow button), use a warm, tinted shadow (e.g., `rgba(255, 140, 0, 0.2)`) instead of grey to maintain color vibrancy.
-- **Active States:** When pressed, elements should shift 2px downward on the Y-axis and reduce shadow blur, simulating a physical "click."
+- Neutral cards use a grey shadow (`card`, `raised`, `floating`).
+- Saturated surfaces use a shadow tinted with their own `-deep` hue, so the
+  colour stays vibrant instead of turning muddy.
+- On press, the shadow flattens as the surface travels down: the shadow is
+  the depth cue, so it has to move with the element.
 
 ## Shapes
-The defining characteristic of the UI is the "Squircle" (smoothed corner). 
+Squircles everywhere; no 90-degree corners. Hero surfaces 32px, cards 24px,
+buttons and wells 16px, chips and badges fully rounded.
 
-- **Containers & Cards:** Use a 24px corner radius for a friendly, chunky feel.
-- **Buttons:** Use a 16px corner radius to distinguish them from larger layout containers.
-- **Selection Controls:** Checkboxes and small chips should use a 12px radius.
+## Motion
+Feedback lands in under 200ms. Every press does three things at once — scale
+down, travel toward the screen, flatten its shadow — which is what makes a
+tap legible to a pre-reader and confirmable for someone who cannot feel the
+haptic. Progress bars and counters animate to their value (rewards should be
+*witnessed*); everything else is fast and unshowy.
 
-Avoid sharp 90-degree angles entirely. Every edge should feel soft to the touch, reinforcing the playful arcade brand.
+All motion is transform and opacity only, so nothing costs a layout pass.
+`Pressable` honours the platform's "reduce motion" setting.
 
 ## Components
-- **Buttons:** Primary buttons use Sunny Yellow with a 2px bottom "border-shadow" of Cheerful Orange to create a 3D effect. Text is bold and centered.
-- **Cards:** All cards feature a 24px squircle radius, a white background, and a soft Y-offset shadow. For game-specific cards, use the Secondary or Soft tone colors for a top-border accent.
-- **Chips/Badges:** Small, pill-shaped elements with high-contrast backgrounds (Mint Green or Pastel Purple) for difficulty levels or item tags.
-- **Input Fields:** Thick 2px outlines using a light-grey neutral, which transition to Sky Blue when focused.
-- **Progress Bars:** Thick, rounded tracks with a high-contrast fill and a subtle "gloss" highlight on the top half to simulate a plastic feel.
-- **Navigation:** A bottom navigation bar with oversized, floating icons that scale up slightly when active.
-- **Illustrations:** Every screen should include at least one stylized digital illustration. These should feature thick lines and no gradients to maintain the "cartoon" aesthetic.
+Implemented in `lib/core/widgets/`:
+
+- **Pressable** — the app's one press interaction. Replaces `InkWell` (whose
+  ripple is invisible on saturated fills) and bare `GestureDetector` (no
+  feedback at all). Owns scale, depth, shadow flattening, haptics, semantics.
+- **AppCard** — the base container. Owns radius, padding, background, shadow;
+  becomes a `Pressable` when given an `onTap`.
+- **GameIcon** — an icon in a tinted rounded well (`.small` / `.large`). Icons
+  are never bare glyphs floating on a colour.
+- **AppBadge** — status pill (`.neutral`, `.success`). Always icon + word.
+- **AppStatChip** — one live number with its icon (`.coins`, `.streak`),
+  minimum 48dp tall, tabular figures.
+- **AppProgressBar** — thick, fully rounded, animated to its value, with a
+  gloss highlight and a percentage exposed to screen readers.
+- **SectionHeader** — semantic header plus an optional action.
+
+## Accessibility
+- 4.5:1 minimum for text, 3:1 for icons and large text. Every token pair in
+  this file has been checked.
+- 48dp minimum touch target, 56dp on primary controls.
+- Colour is never the only carrier of meaning.
+- System font scaling is honoured and clamped at 135% (`utils/app.dart`);
+  layouts survive the whole range, and the two-up mode row folds to a column
+  past 120%.
+- Interactive elements carry semantic labels; decoration is excluded from the
+  semantics tree.
+- `prefers-reduced-motion` is respected by `Pressable`.
