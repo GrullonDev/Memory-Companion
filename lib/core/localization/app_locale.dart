@@ -130,6 +130,34 @@ mixin AppLocale {
   static const String verifyCodeLabel = 'verifyCodeLabel';
   static const String codeSentMessage = 'codeSentMessage';
 
+  // --- Home redesign ---
+  static const String homeReadyPrompt = 'homeReadyPrompt';
+  static const String homeGreetingPlayer = 'homeGreetingPlayer';
+  static const String streakDaysLabel = 'streakDaysLabel';
+  static const String streakStartLabel = 'streakStartLabel';
+  static const String levelLabel = 'levelLabel';
+  static const String xpToNextLabel = 'xpToNextLabel';
+  static const String levelProgressSemantic = 'levelProgressSemantic';
+  static const String playSoloSubtitle = 'playSoloSubtitle';
+  static const String continueLabel = 'continueLabel';
+  static const String dailyChallengeSubtitle = 'dailyChallengeSubtitle';
+  static const String dailyChallengeAvailableLabel = 'dailyChallengeAvailableLabel';
+  static const String dailyChallengeDoneLabel = 'dailyChallengeDoneLabel';
+  static const String rewardLabel = 'rewardLabel';
+  static const String multiplayerSubtitle = 'multiplayerSubtitle';
+  static const String shopSubtitle = 'shopSubtitle';
+  static const String moreModesLabel = 'moreModesLabel';
+  static const String lastMatchLabel = 'lastMatchLabel';
+  static const String noMatchesYetTitle = 'noMatchesYetTitle';
+  static const String noMatchesYetSubtitle = 'noMatchesYetSubtitle';
+  static const String navHome = 'navHome';
+  static const String navVersus = 'navVersus';
+  static const String navFriends = 'navFriends';
+  static const String navShop = 'navShop';
+  static const String viewProfileLabel = 'viewProfileLabel';
+  static const String coinsSemanticLabel = 'coinsSemanticLabel';
+  static const String streakSemanticLabel = 'streakSemanticLabel';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -261,6 +289,32 @@ mixin AppLocale {
     verificationCodeHint: 'Código de 6 dígitos',
     verifyCodeLabel: 'Verificar',
     codeSentMessage: 'Te enviamos un código por SMS',
+    homeReadyPrompt: '¿Listo para entrenar tu mente?',
+    homeGreetingPlayer: 'Jugador',
+    streakDaysLabel: 'días de racha',
+    streakStartLabel: 'Empieza tu racha hoy',
+    levelLabel: 'Nivel',
+    xpToNextLabel: 'XP para el Nivel',
+    levelProgressSemantic: 'Progreso hacia el siguiente nivel',
+    playSoloSubtitle: 'Entrena a tu ritmo',
+    continueLabel: 'CONTINUAR',
+    dailyChallengeSubtitle: 'Vuelve cada día y no pierdas la racha',
+    dailyChallengeAvailableLabel: 'Disponible hoy',
+    dailyChallengeDoneLabel: 'Completado hoy',
+    rewardLabel: 'Recompensa',
+    multiplayerSubtitle: 'Reta a un amigo',
+    shopSubtitle: 'Temas y ventajas',
+    moreModesLabel: 'Más modos',
+    lastMatchLabel: 'Tu última partida',
+    noMatchesYetTitle: 'Aún no hay partidas',
+    noMatchesYetSubtitle: 'Juega tu primera partida y aparecerá aquí',
+    navHome: 'Inicio',
+    navVersus: 'Versus',
+    navFriends: 'Amigos',
+    navShop: 'Tienda',
+    viewProfileLabel: 'Ver tu perfil',
+    coinsSemanticLabel: 'Monedas',
+    streakSemanticLabel: 'Racha diaria',
   };
 
   static const Map<String, dynamic> en = {
@@ -394,5 +448,31 @@ mixin AppLocale {
     verificationCodeHint: '6-digit code',
     verifyCodeLabel: 'Verify',
     codeSentMessage: "We've texted you a verification code",
+    homeReadyPrompt: 'Ready to train your brain?',
+    homeGreetingPlayer: 'Player',
+    streakDaysLabel: 'day streak',
+    streakStartLabel: 'Start your streak today',
+    levelLabel: 'Level',
+    xpToNextLabel: 'XP to Level',
+    levelProgressSemantic: 'Progress to the next level',
+    playSoloSubtitle: 'Train at your own pace',
+    continueLabel: 'CONTINUE',
+    dailyChallengeSubtitle: 'Come back daily and keep your streak',
+    dailyChallengeAvailableLabel: 'Available today',
+    dailyChallengeDoneLabel: 'Done today',
+    rewardLabel: 'Reward',
+    multiplayerSubtitle: 'Challenge a friend',
+    shopSubtitle: 'Themes and perks',
+    moreModesLabel: 'More modes',
+    lastMatchLabel: 'Your last game',
+    noMatchesYetTitle: 'No games yet',
+    noMatchesYetSubtitle: 'Play your first game and it will show up here',
+    navHome: 'Home',
+    navVersus: 'Versus',
+    navFriends: 'Friends',
+    navShop: 'Shop',
+    viewProfileLabel: 'View your profile',
+    coinsSemanticLabel: 'Coins',
+    streakSemanticLabel: 'Daily streak',
   };
 }
