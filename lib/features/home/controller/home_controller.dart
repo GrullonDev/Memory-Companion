@@ -1,7 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/home/model/home_summary.dart';
 import 'package:memory_companion/features/home/model/recent_match.dart';
 
 /// Loads the data the home screen shows beyond the static mode grid: the
@@ -18,6 +20,7 @@ class HomeController extends AsyncNotifier<RecentMatch> {
         titleKey: AppLocale.sampleMatchTitle,
         score: '--',
         timeAgoKey: AppLocale.sampleMatchTimeAgo,
+        isPlaceholder: true,
       );
     }
 
@@ -64,3 +67,26 @@ class HomeController extends AsyncNotifier<RecentMatch> {
 
 final homeControllerProvider =
     AsyncNotifierProvider<HomeController, RecentMatch>(HomeController.new);
+
+/// The player snapshot behind the Home header: name, level, XP and streak.
+///
+/// Derived straight from [currentUserProvider], so it stays in sync with the
+/// Profile screen without either one owning the other. It never throws — a
+/// missing or still-loading user resolves to [HomeSummary.empty], which the
+/// header renders as a neutral, non-alarming placeholder.
+final homeSummaryProvider = Provider<HomeSummary>((ref) {
+  final userAsync = ref.watch(currentUserProvider);
+  final user = userAsync.value;
+
+  if (user == null) {
+    return HomeSummary.empty(isLoading: userAsync.isLoading);
+  }
+
+  return HomeSummary(
+    playerName: user.displayName ?? '',
+    level: user.level,
+    currentXp: user.currentXp,
+    streakDays: user.bestStreak,
+    isLoading: false,
+  );
+});

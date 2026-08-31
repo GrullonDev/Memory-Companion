@@ -4,27 +4,55 @@ import 'package:intl/intl.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/theme/app_spacing.dart';
+import 'package:memory_companion/core/widgets/app_stat_chip.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
+/// Identity row: who is playing, and what they own.
+///
+/// The old top bar centred the app's own name — information the player
+/// already has, taking the most valuable strip of the screen. This one leads
+/// with the player instead, which is what makes the app feel like *theirs*
+/// rather than like a product page.
+///
+/// Progress (level, XP, streak) deliberately lives one row below, in
+/// [LevelProgressCard], so this row stays scannable at a glance.
 class HomeTopBar extends StatelessWidget {
-  const HomeTopBar({super.key, required this.coins, this.onAvatarTap});
+  const HomeTopBar({
+    super.key,
+    required this.playerName,
+    required this.coins,
+    this.onAvatarTap,
+    this.onCoinsTap,
+  });
 
+  /// Empty while the profile loads — the fallback keeps the layout stable
+  /// instead of collapsing and reflowing when the name arrives.
+  final String playerName;
   final int coins;
   final VoidCallback? onAvatarTap;
+  final VoidCallback? onCoinsTap;
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final name = playerName.trim().isEmpty
+        ? AppLocale.homeGreetingPlayer.getString(context)
+        : playerName.trim();
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        GestureDetector(
+        Pressable.small(
           onTap: onAvatarTap,
+          semanticLabel: AppLocale.viewProfileLabel.getString(context),
           child: Container(
-            width: 56,
-            height: 56,
+            width: AppSize.avatarMd,
+            height: AppSize.avatarMd,
             padding: const EdgeInsets.all(3),
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: AppColors.secondaryContainer,
+              color: AppColors.sun,
             ),
             child: ClipOval(
               child: Container(
@@ -37,66 +65,36 @@ class HomeTopBar extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                AppLocale.appTitle.getString(context),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.titleLarge,
               ),
+              const SizedBox(height: AppSpacing.xxs),
               Text(
-                AppLocale.homeGreeting.getString(context),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                AppLocale.homeReadyPrompt.getString(context),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: textTheme.bodySmall?.copyWith(
                   color: AppColors.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(width: 12),
-        Container(
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: AppColors.primaryFixed,
-            borderRadius: BorderRadius.circular(999),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x40E6B400),
-                offset: Offset(0, 4),
-                blurRadius: 10,
-              ),
-            ],
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.monetization_on,
-                size: 20,
-                color: AppColors.onPrimaryFixed,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                NumberFormat.decimalPattern().format(coins),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: AppColors.onPrimaryFixed,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ],
-          ),
+        const SizedBox(width: AppSpacing.md),
+        AppStatChip.coins(
+          value: NumberFormat.decimalPattern().format(coins),
+          onTap: onCoinsTap,
+          semanticLabel:
+              '${AppLocale.coinsSemanticLabel.getString(context)}: $coins',
         ),
       ],
     );
