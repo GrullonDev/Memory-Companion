@@ -81,7 +81,8 @@ class BoardScreen extends StatelessWidget {
               BoardVictoryOverlay(
                 score: state.score,
                 elapsedSeconds: state.elapsedSeconds,
-                coinsEarned: 50,
+                coinsEarned: state.coinsEarned,
+                xpEarned: state.xpEarned,
                 onPlayAgain: onRestart,
                 onExit: onExit,
               ),

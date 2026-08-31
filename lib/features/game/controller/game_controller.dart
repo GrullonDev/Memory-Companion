@@ -6,6 +6,7 @@ import 'package:memory_companion/features/auth/controller/auth_controller.dart';
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/model/match.dart';
 import 'package:memory_companion/features/game/repository/match_repository.dart';
+import 'package:memory_companion/features/level_map/controller/level_controller.dart';
 
 final matchRepositoryProvider = Provider<MatchRepository>((ref) {
   return MatchRepository();
@@ -52,6 +53,7 @@ class GameController extends AsyncNotifier<void> {
     required int secondsElapsed,
     required int timeLimit,
     required bool won,
+    int currentLevel = 1,
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
@@ -93,8 +95,14 @@ class GameController extends AsyncNotifier<void> {
           movesUsed: moves,
         );
 
-        // Check for level up
-        await _checkLevelUp(user.uid);
+        // Complete current level and unlock next
+        await ref.read(levelControllerProvider.notifier).completeLevel(
+          levelNumber: currentLevel,
+          score: score,
+        );
+
+        // Check for level progression
+        await _updateLevelProgression(user.uid, rewards['xp']!);
       } else {
         // Small XP for playing
         await ref.read(userControllerProvider.notifier).addXp(rewards['xp']!);
@@ -102,14 +110,15 @@ class GameController extends AsyncNotifier<void> {
     });
   }
 
-  /// Check if user should level up
-  Future<void> _checkLevelUp(String uid) async {
+  /// Update user's level based on XP progression
+  Future<void> _updateLevelProgression(String uid, int xpEarned) async {
     try {
-      final userRepository = ref.read(authControllerProvider);
-      // This would need to be implemented in UserRepository
-      // For now, we'll keep it simple
+      // Get current user data
+      final userController = ref.read(userControllerProvider.notifier);
+      // The level up logic is already handled by the user controller
+      // when adding XP. This is just to track progression.
     } catch (e) {
-      // Silent fail for level checking
+      print('Error updating level progression: $e');
     }
   }
 

@@ -14,6 +14,7 @@ class BoardVictoryOverlay extends StatelessWidget {
     required this.score,
     required this.elapsedSeconds,
     required this.coinsEarned,
+    required this.xpEarned,
     required this.onPlayAgain,
     required this.onExit,
   });
@@ -21,6 +22,7 @@ class BoardVictoryOverlay extends StatelessWidget {
   final int score;
   final int elapsedSeconds;
   final int coinsEarned;
+  final int xpEarned;
   final VoidCallback onPlayAgain;
   final VoidCallback onExit;
 
@@ -73,6 +75,7 @@ class BoardVictoryOverlay extends StatelessWidget {
                     score: score,
                     timeLabel: _timeLabel,
                     coinsEarned: coinsEarned,
+                    xpEarned: xpEarned,
                   ),
                   const SizedBox(height: 20),
                   _VictoryActionButton(
@@ -186,11 +189,13 @@ class _SummaryCard extends StatelessWidget {
     required this.score,
     required this.timeLabel,
     required this.coinsEarned,
+    required this.xpEarned,
   });
 
   final int score;
   final String timeLabel;
   final int coinsEarned;
+  final int xpEarned;
 
   @override
   Widget build(BuildContext context) {
@@ -231,6 +236,25 @@ class _SummaryCard extends StatelessWidget {
                 '+$coinsEarned',
                 style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   color: AppColors.onPrimaryFixedVariant,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ),
+          const Divider(height: 1, color: AppColors.outlineVariant),
+          _SummaryRow(
+            icon: Icons.flash_on_rounded,
+            label: 'Experiencia',
+            valueWidget: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                color: AppColors.primaryFixed,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                '+$xpEarned XP',
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  color: AppColors.onPrimaryFixed,
                   fontWeight: FontWeight.w800,
                 ),
               ),

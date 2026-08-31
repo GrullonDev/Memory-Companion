@@ -9,6 +9,9 @@ class BoardState {
     this.moves = 0,
     this.isPaused = false,
     this.isCompleted = false,
+    this.coinsEarned = 0,
+    this.xpEarned = 0,
+    this.won = false,
   });
 
   final List<MemoryCard> cards;
@@ -17,6 +20,9 @@ class BoardState {
   final int secondsRemaining;
   final bool isPaused;
   final bool isCompleted;
+  final int coinsEarned;
+  final int xpEarned;
+  final bool won;
 
   double get progress =>
       totalSeconds == 0 ? 0 : secondsRemaining / totalSeconds;
@@ -37,6 +43,9 @@ class BoardState {
     int? secondsRemaining,
     bool? isPaused,
     bool? isCompleted,
+    int? coinsEarned,
+    int? xpEarned,
+    bool? won,
   }) {
     return BoardState(
       cards: cards ?? this.cards,
@@ -45,6 +54,9 @@ class BoardState {
       moves: moves ?? this.moves,
       isPaused: isPaused ?? this.isPaused,
       isCompleted: isCompleted ?? this.isCompleted,
+      coinsEarned: coinsEarned ?? this.coinsEarned,
+      xpEarned: xpEarned ?? this.xpEarned,
+      won: won ?? this.won,
     );
   }
 }

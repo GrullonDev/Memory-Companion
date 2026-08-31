@@ -55,6 +55,23 @@ class BoardController extends Notifier<BoardState> {
     final currentState = state;
     final won = currentState.cards.every((c) => c.isMatched);
 
+    // Calculate rewards
+    final rewards = won
+        ? _calculateRewards(
+            score: currentState.score,
+            moves: currentState.moves,
+            secondsElapsed: currentState.elapsedSeconds,
+            timeLimit: currentState.totalSeconds,
+          )
+        : {'coins': 0, 'xp': 10}; // Small XP for playing even if lost
+
+    // Update state with rewards
+    state = state.copyWith(
+      coinsEarned: rewards['coins'] as int,
+      xpEarned: rewards['xp'] as int,
+      won: won,
+    );
+
     // Save the game result to Firestore
     try {
       await ref.read(gameControllerProvider.notifier).completeSoloGame(
@@ -68,6 +85,39 @@ class BoardController extends Notifier<BoardState> {
       // Silent fail - game is still playable even if Firestore is down
       print('Error saving game to Firestore: $e');
     }
+  }
+
+  /// Calculate rewards based on performance
+  Map<String, int> _calculateRewards({
+    required int score,
+    required int moves,
+    required int secondsElapsed,
+    required int timeLimit,
+  }) {
+    // Base coins from score
+    int coins = (score / 100).ceil();
+
+    // Time bonus (up to 50% if finished in half the time)
+    if (secondsElapsed < timeLimit ~/ 2) {
+      coins += (coins * 0.5).ceil();
+    }
+
+    // Efficiency bonus (fewer moves = more coins)
+    if (moves < 20) {
+      coins += (coins * 0.3).ceil();
+    }
+
+    // XP calculation
+    int xp = 50; // Base XP
+    xp += (score / 100).ceil(); // Bonus from score
+    if (secondsElapsed < timeLimit ~/ 2) {
+      xp += 30; // Speed bonus
+    }
+    if (moves < 20) {
+      xp += 20; // Efficiency bonus
+    }
+
+    return {'coins': coins.clamp(10, 1000), 'xp': xp.clamp(50, 500)};
   }
 
   void restart() {
