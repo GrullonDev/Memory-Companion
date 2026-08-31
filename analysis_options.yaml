@@ -8,6 +8,8 @@ analyzer:
     - windows/**
     - macos/**
     - linux/**
+    # Código generado por drift_dev: no lo escribimos nosotros.
+    - "**/*.g.dart"
 include: package:flutter_lints/flutter.yaml
 
 linter:
