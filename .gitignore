@@ -56,3 +56,11 @@ app.*.map.json
 # iOS will place build artifacts here
 /ios/Runner.xcworkspace
 /ios/Runner.xcodeproj
+
+# Claude Code tooling
+.agents/
+.claude/
+skills-lock.json
+
+# macOS ephemeral build artifacts
+macos/Flutter/ephemeral/
