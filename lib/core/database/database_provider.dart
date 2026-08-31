@@ -12,6 +12,11 @@ import 'package:memory_companion/core/database/app_database.dart';
 /// tenerla lista antes del primer frame; en los tests se sobrescribe con
 /// `AppDatabase.forTesting(NativeDatabase.memory())`.
 final appDatabaseProvider = Provider<AppDatabase>((ref) {
+  // Riverpod 3 destruye un provider en cuanto se queda sin oyentes. Sin esto,
+  // salir de la Home cerraría la base y la siguiente lectura abriría otra
+  // conexión: la fuente de verdad del gameplay no puede ir y venir así.
+  ref.keepAlive();
+
   final database = AppDatabase();
   ref.onDispose(database.close);
   return database;

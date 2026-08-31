@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
-import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/home/model/home_summary.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';

@@ -14,6 +14,10 @@ final playerRepositoryProvider = Provider<PlayerRepository>((ref) {
 /// cambio. Sustituirá a `currentUserProvider` como fuente de la Home: local,
 /// instantáneo y disponible sin cuenta ni conexión.
 final localPlayerProvider = StreamProvider<PlayerProfile>((ref) async* {
+  // Sobrevive a la navegación: volver a la Home no debe reabrir la identidad
+  // ni hacer parpadear un estado de carga que ya estaba resuelto.
+  ref.keepAlive();
+
   final repository = ref.watch(playerRepositoryProvider);
 
   // Primera emisión inmediata: la Home no espera a nadie.

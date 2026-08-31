@@ -21,6 +21,11 @@ void main() {
     container = ProviderContainer(
       overrides: [appDatabaseProvider.overrideWithValue(db)],
     );
+
+    // En la app el oyente es la propia Home. Aquí hay que sostenerlo a mano:
+    // sin un oyente, Riverpod 3 destruye el provider antes de que el stream
+    // llegue a emitir. La suscripción la cierra `container.dispose()`.
+    container.listen(localPlayerProvider, (_, _) {});
   });
 
   tearDown(() async {
