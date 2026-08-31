@@ -28,11 +28,20 @@ dependencies:
   google_sign_in: ^6.3.0
   uuid: ^4.0.0
 
+  # --- Persistencia local (offline-first) ---
+  # Drift es la fuente de verdad del gameplay. Ver docs/OFFLINE_FIRST.md
+  drift: ^2.20.0
+  sqlite3_flutter_libs: ^0.5.20
+  path_provider: ^2.1.0
+  path: ^1.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
+  drift_dev: ^2.20.0
+  build_runner: ^2.4.0
 
 flutter:
   uses-material-design: true
