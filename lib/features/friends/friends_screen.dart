@@ -11,6 +11,7 @@ import 'package:memory_companion/features/friends/controller/friends_controller.
 import 'package:memory_companion/features/friends/widget/invite_friends_card.dart';
 import 'package:memory_companion/features/friends/widget/lobby_banner.dart';
 import 'package:memory_companion/features/friends/widget/social_network_card.dart';
+import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
@@ -36,6 +37,7 @@ class FriendsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final wallet = ref.watch(walletControllerProvider);
+    final summary = ref.watch(homeSummaryProvider);
     final friends = ref.watch(friendsControllerProvider);
 
     return Scaffold(
@@ -50,6 +52,7 @@ class FriendsScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
           children: [
             HomeTopBar(
+              playerName: summary.playerName,
               coins: wallet.value ?? 0,
               onAvatarTap: () =>
                   Navigator.of(context).pushNamed(RoutePaths.profile),
