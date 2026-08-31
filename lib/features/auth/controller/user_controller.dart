@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/features/auth/model/user.dart';
@@ -81,8 +80,7 @@ class UserController extends AsyncNotifier<void> {
     int? gamesWon,
     int? totalMoves,
     int? bestStreak,
-    int? currentXp,
-    int? level,
+    int? totalXp,
     int? totalCoins,
     String? rank,
   }) async {
@@ -96,8 +94,7 @@ class UserController extends AsyncNotifier<void> {
         gamesWon: gamesWon,
         totalMoves: totalMoves,
         bestStreak: bestStreak,
-        currentXp: currentXp,
-        level: level,
+        totalXp: totalXp,
         totalCoins: totalCoins,
         rank: rank,
       );

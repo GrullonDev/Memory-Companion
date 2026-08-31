@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:memory_companion/core/firebase/firebase_initialization.dart';
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/level_map/controller/level_controller.dart';
 
@@ -13,8 +14,10 @@ final googleSignInProvider = Provider<GoogleSignIn>((ref) => GoogleSignIn());
 /// Emits the current [User] (or null when signed out) as Firebase reports
 /// it, so the splash screen can route straight to home for a returning
 /// session instead of always landing on the login form.
-final authStateChangesProvider = StreamProvider<User?>((ref) {
-  return ref.watch(firebaseAuthProvider).authStateChanges();
+final authStateChangesProvider = StreamProvider<User?>((ref) async* {
+  // Nadie toca `FirebaseAuth.instance` antes de que Firebase exista.
+  await ref.watch(firebaseInitializationProvider.future);
+  yield* ref.watch(firebaseAuthProvider).authStateChanges();
 });
 
 /// Wraps [FirebaseAuth]'s email/password flows. State is [AsyncLoading]
@@ -27,14 +30,24 @@ class AuthController extends AsyncNotifier<void> {
 
   FirebaseAuth get _auth => ref.read(firebaseAuthProvider);
 
+  /// Firebase, garantizando que esté inicializado.
+  ///
+  /// El arranque ya no lo espera, así que cada acción explícita del jugador
+  /// —entrar, registrarse, recuperar contraseña— se asegura por su cuenta.
+  Future<FirebaseAuth> get _readyAuth async {
+    await ref.read(firebaseInitializationProvider.future);
+    return _auth;
+  }
+
   Future<void> signIn({required String email, required String password}) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => _auth.signInWithEmailAndPassword(
+    state = await AsyncValue.guard(() async {
+      final auth = await _readyAuth;
+      await auth.signInWithEmailAndPassword(
         email: email.trim(),
         password: password,
-      ),
-    );
+      );
+    });
   }
 
   Future<void> register({
@@ -44,7 +57,8 @@ class AuthController extends AsyncNotifier<void> {
   }) async {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
-      final credential = await _auth.createUserWithEmailAndPassword(
+      final auth = await _readyAuth;
+      final credential = await auth.createUserWithEmailAndPassword(
         email: email.trim(),
         password: password,
       );
@@ -68,6 +82,7 @@ class AuthController extends AsyncNotifier<void> {
   /// Google account picker, so callers can skip showing an error for that.
   Future<bool> signInWithGoogle() async {
     state = const AsyncLoading();
+    await ref.read(firebaseInitializationProvider.future);
     final googleUser = await ref.read(googleSignInProvider).signIn();
     if (googleUser == null) {
       state = const AsyncData(null);
@@ -98,9 +113,10 @@ class AuthController extends AsyncNotifier<void> {
 
   Future<void> sendPasswordResetEmail(String email) async {
     state = const AsyncLoading();
-    state = await AsyncValue.guard(
-      () => _auth.sendPasswordResetEmail(email: email.trim()),
-    );
+    state = await AsyncValue.guard(() async {
+      final auth = await _readyAuth;
+      await auth.sendPasswordResetEmail(email: email.trim());
+    });
   }
 
   Future<void> signOut() => _auth.signOut();

@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:memory_companion/features/auth/model/user.dart';
 
 /// Repository for managing user data in Firestore
 class UserRepository {
-  final FirebaseFirestore _firestore;
+  UserRepository({FirebaseFirestore? firestore}) : _injected = firestore;
 
-  UserRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  final FirebaseFirestore? _injected;
+
+  /// Se resuelve en el primer uso, no al construir: crear un
+  /// repositorio no debe exigir que Firebase ya esté inicializado.
+  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
 
   /// Create a new user document in Firestore
   /// Called right after authentication
@@ -67,8 +71,7 @@ class UserRepository {
     int? gamesWon,
     int? totalMoves,
     int? bestStreak,
-    int? currentXp,
-    int? level,
+    int? totalXp,
     int? totalCoins,
     String? rank,
   }) async {
@@ -79,8 +82,7 @@ class UserRepository {
       if (gamesWon != null) data['gamesWon'] = gamesWon;
       if (totalMoves != null) data['totalMoves'] = totalMoves;
       if (bestStreak != null) data['bestStreak'] = bestStreak;
-      if (currentXp != null) data['currentXp'] = currentXp;
-      if (level != null) data['level'] = level;
+      if (totalXp != null) data['totalXp'] = totalXp;
       if (totalCoins != null) data['totalCoins'] = totalCoins;
       if (rank != null) data['rank'] = rank;
 
@@ -102,11 +104,11 @@ class UserRepository {
     }
   }
 
-  /// Increment XP
+  /// Suma XP al acumulado de por vida. El nivel se deriva, no se escribe.
   Future<void> addXp(String uid, int amount) async {
     try {
       await _firestore.collection('users').doc(uid).update({
-        'currentXp': FieldValue.increment(amount),
+        'totalXp': FieldValue.increment(amount),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
@@ -126,7 +128,7 @@ class UserRepository {
         'gamesWon': FieldValue.increment(1),
         'totalMoves': FieldValue.increment(movesUsed),
         'totalCoins': FieldValue.increment(coinsEarned),
-        'currentXp': FieldValue.increment(xpEarned),
+        'totalXp': FieldValue.increment(xpEarned),
         'updatedAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
