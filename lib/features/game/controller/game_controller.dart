@@ -100,26 +100,11 @@ class GameController extends AsyncNotifier<void> {
           levelNumber: currentLevel,
           score: score,
         );
-
-        // Check for level progression
-        await _updateLevelProgression(user.uid, rewards['xp']!);
       } else {
         // Small XP for playing
         await ref.read(userControllerProvider.notifier).addXp(rewards['xp']!);
       }
     });
-  }
-
-  /// Update user's level based on XP progression
-  Future<void> _updateLevelProgression(String uid, int xpEarned) async {
-    try {
-      // Get current user data
-      final userController = ref.read(userControllerProvider.notifier);
-      // The level up logic is already handled by the user controller
-      // when adding XP. This is just to track progression.
-    } catch (e) {
-      print('Error updating level progression: $e');
-    }
   }
 
   /// Get match history
@@ -128,9 +113,7 @@ class GameController extends AsyncNotifier<void> {
     if (user == null) return [];
 
     try {
-      final stats = await _matchRepository.getUserStats(user.uid);
-      // Return first batch
-      return _matchRepository.getUserMatches(user.uid).first;
+      return await _matchRepository.getUserMatches(user.uid).first;
     } catch (e) {
       return [];
     }

@@ -4,6 +4,7 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/home/model/home_summary.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/home/model/recent_match.dart';
 
 /// Loads the data the home screen shows beyond the static mode grid: the
@@ -68,25 +69,26 @@ class HomeController extends AsyncNotifier<RecentMatch> {
 final homeControllerProvider =
     AsyncNotifierProvider<HomeController, RecentMatch>(HomeController.new);
 
-/// The player snapshot behind the Home header: name, level, XP and streak.
+/// La instantánea del jugador que hay detrás de la cabecera de la Home.
 ///
-/// Derived straight from [currentUserProvider], so it stays in sync with the
-/// Profile screen without either one owning the other. It never throws — a
-/// missing or still-loading user resolves to [HomeSummary.empty], which the
-/// header renders as a neutral, non-alarming placeholder.
+/// Lee de la **base local**, no de Firestore. Ese es el cambio que hace que
+/// la Home funcione sin cuenta y sin conexión: el nombre, el nivel, el XP y
+/// la racha salen de SQLite y están disponibles en el primer frame.
+///
+/// Firestore ya no aparece en esta ruta. Cuando el motor de sincronización
+/// entre en escena, escribirá en la base local y la Home reaccionará sola.
 final homeSummaryProvider = Provider<HomeSummary>((ref) {
-  final userAsync = ref.watch(currentUserProvider);
-  final user = userAsync.value;
+  final playerAsync = ref.watch(localPlayerProvider);
+  final player = playerAsync.value;
 
-  if (user == null) {
-    return HomeSummary.empty(isLoading: userAsync.isLoading);
+  if (player == null) {
+    return HomeSummary.empty(isLoading: playerAsync.isLoading);
   }
 
   return HomeSummary(
-    playerName: user.displayName ?? '',
-    level: user.level,
-    currentXp: user.currentXp,
-    streakDays: user.bestStreak,
+    playerName: player.displayName,
+    totalXp: player.totalXp,
+    streakDays: player.currentStreak,
     isLoading: false,
   );
 });

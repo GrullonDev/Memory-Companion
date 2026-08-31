@@ -1,54 +1,50 @@
-/// XP required to clear [level] and reach the next one.
-///
-/// Kept as a single function so the Home and the Profile can never disagree
-/// about how far along a player is.
-int xpTargetForLevel(int level) => 1000 * (level < 1 ? 1 : level);
+import 'package:memory_companion/features/player/model/player_level.dart';
 
-/// Everything the Home header needs about the player, in one immutable
-/// snapshot: who they are, how far along they are, and how many days in a
-/// row they have shown up.
+/// Todo lo que la cabecera de la Home necesita saber del jugador, en una
+/// instantánea inmutable: quién es, cuánto ha avanzado y cuántos días
+/// seguidos ha aparecido.
 ///
-/// Read-only view over the Firestore user document — it computes nothing the
-/// backend does not already store, so nothing here can invent progress.
+/// Vista de solo lectura sobre el perfil: no calcula nada que el backend no
+/// tenga ya, así que nada de aquí puede inventar progreso.
+///
+/// [level], [targetXp], [xpProgress] y [xpRemaining] son **derivados** de
+/// [totalXp]. Antes eran campos independientes y nadie escribía el nivel; ver
+/// `player_level.dart`.
 class HomeSummary {
   const HomeSummary({
     required this.playerName,
-    required this.level,
-    required this.currentXp,
+    required this.totalXp,
     required this.streakDays,
     required this.isLoading,
   });
 
   const HomeSummary.empty({this.isLoading = false})
       : playerName = '',
-        level = 1,
-        currentXp = 0,
+        totalXp = 0,
         streakDays = 0;
 
-  /// Display name, or an empty string when the profile has not loaded yet.
+  /// Nombre visible, o cadena vacía mientras el perfil no ha cargado.
   final String playerName;
-  final int level;
-  final int currentXp;
 
-  /// Consecutive days played. 0 means the player has no streak to protect,
-  /// which the UI treats as an invitation rather than a failure.
+  /// XP acumulado de por vida.
+  final int totalXp;
+
+  /// Días consecutivos jugados. 0 significa que no hay racha que proteger,
+  /// que la UI trata como una invitación y no como un fracaso.
   final int streakDays;
 
   final bool isLoading;
 
-  int get targetXp => xpTargetForLevel(level);
+  int get level => levelFromTotalXp(totalXp);
 
-  /// 0.0 – 1.0 progress toward the next level.
-  double get xpProgress {
-    final target = targetXp;
-    if (target <= 0) return 0;
-    return (currentXp / target).clamp(0.0, 1.0);
-  }
+  /// XP que pide el nivel actual para completarse.
+  int get targetXp => xpForLevel(level);
 
-  int get xpRemaining {
-    final remaining = targetXp - currentXp;
-    return remaining < 0 ? 0 : remaining;
-  }
+  /// Progreso dentro del nivel actual, de 0.0 a 1.0.
+  double get xpProgress => levelProgress(totalXp);
+
+  /// XP que falta para subir de nivel.
+  int get xpRemaining => xpToNextLevel(totalXp);
 
   int get nextLevel => level + 1;
 

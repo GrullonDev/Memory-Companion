@@ -5,6 +5,7 @@ import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/profile/model/achievement.dart';
 import 'package:memory_companion/features/profile/model/profile_data.dart';
+import 'package:memory_companion/features/player/model/player_level.dart';
 import 'package:memory_companion/features/profile/model/profile_match.dart';
 
 class ProfileController extends AsyncNotifier<ProfileData> {
@@ -53,9 +54,11 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     return ProfileData(
       name: appUser.displayName ?? appUser.email,
       rank: appUser.rank,
-      level: appUser.level,
-      currentXp: appUser.currentXp,
-      targetXp: 1000 * appUser.level, // XP needed for next level
+      // Nivel y progreso se derivan del acumulado, en lugar de leer un
+      // campo `level` que nadie escribía nunca.
+      level: levelFromTotalXp(appUser.totalXp),
+      currentXp: xpIntoLevel(appUser.totalXp),
+      targetXp: xpForLevel(levelFromTotalXp(appUser.totalXp)),
       gamesWon: appUser.gamesWon,
       totalMoves: totalMovesFormatted,
       bestStreak: appUser.bestStreak,

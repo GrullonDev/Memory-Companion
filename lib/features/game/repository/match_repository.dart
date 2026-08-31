@@ -3,10 +3,13 @@ import 'package:memory_companion/features/game/model/match.dart';
 
 /// Repository for managing match/game history in Firestore
 class MatchRepository {
-  final FirebaseFirestore _firestore;
+  MatchRepository({FirebaseFirestore? firestore}) : _injected = firestore;
 
-  MatchRepository({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+  final FirebaseFirestore? _injected;
+
+  /// Se resuelve en el primer uso, no al construir: crear un
+  /// repositorio no debe exigir que Firebase ya esté inicializado.
+  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
 
   /// Save a completed match to Firestore
   Future<void> saveMatch(Match match) async {
