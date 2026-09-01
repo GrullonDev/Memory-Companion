@@ -1,30 +1,41 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:memory_companion/features/auth/controller/user_controller.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
+import 'package:memory_companion/features/player/repository/player_repository.dart';
 
-/// Owns the player's coin balance, shared by every screen that shows the
-/// coin counter (Home, Friends, Shop, Versus, Level Map).
+/// El saldo de monedas del jugador, compartido por Home, Tienda, Amigos,
+/// Versus y el mapa de niveles.
+///
+/// Antes esto mutaba únicamente el estado de Riverpod: `spend()` bajaba el
+/// número en pantalla y el siguiente snapshot de Firestore lo devolvía a su
+/// sitio. Comprar en la tienda no descontaba nada, nunca.
+///
+/// Ahora el saldo **se deriva del perfil local** y las operaciones escriben en
+/// SQLite. No hay ningún `state =` aquí: el stream de la base es quien
+/// actualiza el estado, así que la UI y el disco no pueden desincronizarse.
 class WalletController extends AsyncNotifier<int> {
   @override
   Future<int> build() async {
-    // Fetch user data from Firestore
-    final user = await ref.watch(currentUserProvider.future);
-
-    // Return total coins from Firestore, default to 0 if no user
-    return user?.totalCoins ?? 0;
+    final player = await ref.watch(localPlayerProvider.future);
+    return player.totalCoins;
   }
 
-  bool spend(int amount) {
-    final current = state.value;
-    if (current == null || current < amount) return false;
-    state = AsyncValue.data(current - amount);
-    return true;
+  PlayerRepository get _repository => ref.read(playerRepositoryProvider);
+
+  String? get _localId => ref.read(localPlayerProvider).value?.localId;
+
+  /// Gasta [amount]. Devuelve `false` si el saldo no alcanza, sin tocar nada.
+  Future<bool> spend(int amount) async {
+    final localId = _localId;
+    if (localId == null) return false;
+    return _repository.spendCoins(localId: localId, amount: amount);
   }
 
-  void add(int amount) {
-    final current = state.value;
-    if (current == null) return;
-    state = AsyncValue.data(current + amount);
+  /// Suma [amount] al saldo.
+  Future<void> add(int amount) async {
+    final localId = _localId;
+    if (localId == null) return;
+    await _repository.earnCoins(localId: localId, amount: amount);
   }
 }
 
