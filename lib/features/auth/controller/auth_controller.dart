@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:memory_companion/core/firebase/firebase_initialization.dart';
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
-import 'package:memory_companion/features/level_map/controller/level_controller.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>(
   (ref) => FirebaseAuth.instance,
@@ -72,9 +71,6 @@ class AuthController extends AsyncNotifier<void> {
         email: email.trim(),
         displayName: trimmedName.isNotEmpty ? trimmedName : null,
       );
-
-      // Initialize game levels for new user
-      await ref.read(levelControllerProvider.notifier).initializeLevels();
     });
   }
 
@@ -103,9 +99,6 @@ class AuthController extends AsyncNotifier<void> {
           displayName: userCredential.user?.displayName,
           photoUrl: userCredential.user?.photoURL,
         );
-
-        // Initialize game levels for new user
-        await ref.read(levelControllerProvider.notifier).initializeLevels();
       }
     });
     return true;

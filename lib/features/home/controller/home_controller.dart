@@ -3,38 +3,38 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/home/model/home_summary.dart';
-import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/home/model/recent_match.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
 
-/// Loads the data the home screen shows beyond the static mode grid: the
-/// player's most recent match.
+/// La última partida del jugador, para la tarjeta de cierre de la Home.
+///
+/// Lee de la base local. Un jugador recién instalado no tiene ninguna, y eso
+/// no es un error: la Home muestra un estado vacío que invita a jugar en vez
+/// de una fila de guiones.
 class HomeController extends AsyncNotifier<RecentMatch> {
   @override
   Future<RecentMatch> build() async {
-    // Fetch recent matches from Firestore
-    final matches = await ref.watch(userMatchHistoryProvider.future);
+    final match = await ref.watch(lastLocalMatchProvider.future);
 
-    // If no matches, return empty state
-    if (matches.isEmpty) {
+    if (match == null) {
       return const RecentMatch(
-        titleKey: AppLocale.sampleMatchTitle,
+        titleKey: AppLocale.modePlaySolo,
         score: '--',
-        timeAgoKey: AppLocale.sampleMatchTimeAgo,
+        timeAgo: '',
         isPlaceholder: true,
       );
     }
 
-    // Get the most recent match (first in the list, since it's ordered by date)
-    final lastMatch = matches.first;
-
     return RecentMatch(
-      titleKey: 'SOLO', // Game mode as title
-      score: _formatNumber(lastMatch.score),
-      timeAgoKey: _getTimeAgoString(lastMatch.playedAt),
+      titleKey: AppLocale.modePlaySolo,
+      score: _formatNumber(match.score),
+      timeAgo: _formatTimeAgo(
+        DateTime.fromMillisecondsSinceEpoch(match.playedAt),
+      ),
     );
   }
 
-  /// Format large numbers (e.g., 14200 -> "14,200")
+  /// 14200 -> "14,200"
   String _formatNumber(int value) {
     return value.toString().replaceAllMapped(
       RegExp(r'\B(?=(\d{3})+(?!\d))'),
@@ -42,26 +42,17 @@ class HomeController extends AsyncNotifier<RecentMatch> {
     );
   }
 
-  /// Convert datetime to "time ago" format
-  String _getTimeAgoString(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
+  String _formatTimeAgo(DateTime playedAt) {
+    final difference = DateTime.now().difference(playedAt);
 
-    if (difference.inSeconds < 60) {
-      return 'Hace unos segundos';
-    } else if (difference.inMinutes < 60) {
-      return 'Hace ${difference.inMinutes}m';
-    } else if (difference.inHours < 24) {
-      return 'Hace ${difference.inHours}h';
-    } else if (difference.inDays < 7) {
-      return 'Hace ${difference.inDays}d';
-    } else if (difference.inDays < 30) {
-      final weeks = (difference.inDays / 7).floor();
-      return 'Hace ${weeks}w';
-    } else {
-      final months = (difference.inDays / 30).floor();
-      return 'Hace ${months}mo';
+    if (difference.inSeconds < 60) return 'Hace unos segundos';
+    if (difference.inMinutes < 60) return 'Hace ${difference.inMinutes} min';
+    if (difference.inHours < 24) return 'Hace ${difference.inHours} h';
+    if (difference.inDays < 7) return 'Hace ${difference.inDays} d';
+    if (difference.inDays < 30) {
+      return 'Hace ${(difference.inDays / 7).floor()} sem';
     }
+    return 'Hace ${(difference.inDays / 30).floor()} meses';
   }
 }
 
