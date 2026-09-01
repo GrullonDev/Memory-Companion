@@ -124,7 +124,7 @@ void main() {
             SyncOperationsCompanion.insert(
               opId: opId,
               playerLocalId: 'local-1',
-              type: SyncOperationType.recordWin,
+              type: SyncOperationType.recordMatch,
               entityType: 'match',
               entityId: 'match-1',
               payloadJson: '{"xp":120,"coins":50}',
