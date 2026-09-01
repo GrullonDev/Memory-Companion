@@ -158,6 +158,30 @@ mixin AppLocale {
   static const String coinsSemanticLabel = 'coinsSemanticLabel';
   static const String streakSemanticLabel = 'streakSemanticLabel';
 
+  // --- Offline-first: guardado y cuenta ---
+  static const String saveStateInCloud = 'saveStateInCloud';
+  static const String saveStateSyncing = 'saveStateSyncing';
+  static const String saveStateOnDevice = 'saveStateOnDevice';
+  static const String saveProgressTitle = 'saveProgressTitle';
+  static const String saveProgressSubtitle = 'saveProgressSubtitle';
+  static const String saveProgressBenefitRecover = 'saveProgressBenefitRecover';
+  static const String saveProgressBenefitDevices = 'saveProgressBenefitDevices';
+  static const String saveProgressBenefitFriends = 'saveProgressBenefitFriends';
+  static const String saveProgressBenefitCompete = 'saveProgressBenefitCompete';
+  static const String linkConflictTitle = 'linkConflictTitle';
+  static const String linkConflictSubtitle = 'linkConflictSubtitle';
+  static const String linkInThisAccount = 'linkInThisAccount';
+  static const String linkOnThisDevice = 'linkOnThisDevice';
+  static const String linkKeepCloud = 'linkKeepCloud';
+  static const String linkKeepLocal = 'linkKeepLocal';
+  static const String linkedMessage = 'linkedMessage';
+  static const String accountSectionTitle = 'accountSectionTitle';
+  static const String accountSignedInAs = 'accountSignedInAs';
+  static const String accountPlayingLocally = 'accountPlayingLocally';
+  static const String signOutLabel = 'signOutLabel';
+  static const String levelShortLabel = 'levelShortLabel';
+  static const String coinsShortLabel = 'coinsShortLabel';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -315,6 +339,28 @@ mixin AppLocale {
     viewProfileLabel: 'Ver tu perfil',
     coinsSemanticLabel: 'Monedas',
     streakSemanticLabel: 'Racha diaria',
+    saveStateInCloud: 'Guardado',
+    saveStateSyncing: 'Sincronizando…',
+    saveStateOnDevice: 'Guardado en este dispositivo',
+    saveProgressTitle: 'Guarda tu progreso',
+    saveProgressSubtitle: 'Crea una cuenta y llévate todo contigo',
+    saveProgressBenefitRecover: 'Recupera tu progreso',
+    saveProgressBenefitDevices: 'Juega en otros dispositivos',
+    saveProgressBenefitFriends: 'Agrega amigos',
+    saveProgressBenefitCompete: 'Compite con otros jugadores',
+    linkConflictTitle: 'Ya tienes un progreso guardado',
+    linkConflictSubtitle: '¿Con cuál quieres seguir?',
+    linkInThisAccount: 'En esta cuenta',
+    linkOnThisDevice: 'En este dispositivo',
+    linkKeepCloud: 'Seguir con el de la cuenta',
+    linkKeepLocal: 'Usar el de este dispositivo',
+    linkedMessage: '¡Listo! Tu progreso ya está a salvo',
+    accountSectionTitle: 'Tu cuenta',
+    accountSignedInAs: 'Sesión iniciada',
+    accountPlayingLocally: 'Juegas sin cuenta',
+    signOutLabel: 'Cerrar sesión',
+    levelShortLabel: 'Nivel',
+    coinsShortLabel: 'monedas',
   };
 
   static const Map<String, dynamic> en = {
@@ -474,5 +520,27 @@ mixin AppLocale {
     viewProfileLabel: 'View your profile',
     coinsSemanticLabel: 'Coins',
     streakSemanticLabel: 'Daily streak',
+    saveStateInCloud: 'Saved',
+    saveStateSyncing: 'Syncing…',
+    saveStateOnDevice: 'Saved on this device',
+    saveProgressTitle: 'Save your progress',
+    saveProgressSubtitle: 'Create an account and take it all with you',
+    saveProgressBenefitRecover: 'Recover your progress',
+    saveProgressBenefitDevices: 'Play on other devices',
+    saveProgressBenefitFriends: 'Add friends',
+    saveProgressBenefitCompete: 'Compete with other players',
+    linkConflictTitle: 'You already have saved progress',
+    linkConflictSubtitle: 'Which one do you want to keep?',
+    linkInThisAccount: 'In this account',
+    linkOnThisDevice: 'On this device',
+    linkKeepCloud: 'Keep the account one',
+    linkKeepLocal: 'Use this device one',
+    linkedMessage: 'Done! Your progress is safe now',
+    accountSectionTitle: 'Your account',
+    accountSignedInAs: 'Signed in',
+    accountPlayingLocally: 'Playing without an account',
+    signOutLabel: 'Sign out',
+    levelShortLabel: 'Level',
+    coinsShortLabel: 'coins',
   };
 }
