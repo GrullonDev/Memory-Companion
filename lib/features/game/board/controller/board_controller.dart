@@ -2,10 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/features/game/board/model/memory_card.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/game/model/match_rewards.dart';
+import 'package:memory_companion/features/level_map/controller/level_controller.dart';
 
 const _symbols = ['🍓', '🍌', '🍇', '🍉', '🍒', '🍍', '🥝', '🍑'];
 const _totalSeconds = 90;
@@ -22,6 +25,7 @@ class BoardController extends Notifier<BoardState> {
     ref.onDispose(() => _timer?.cancel());
     _startTimer();
     return BoardState(
+      matchId: const Uuid().v4(),
       cards: _shuffledCards(),
       totalSeconds: _totalSeconds,
       secondsRemaining: _totalSeconds,
@@ -50,79 +54,50 @@ class BoardController extends Notifier<BoardState> {
     });
   }
 
-  /// Called when the game is completed (either won by finishing or lost by timeout)
+  /// Fin de partida, por victoria o por agotarse el tiempo.
+  ///
+  /// Las recompensas se calculan **una sola vez** aquí, y ese mismo objeto
+  /// alimenta el overlay de victoria y el guardado. Antes había tres cálculos
+  /// distintos para el mismo evento: el jugador veía un número, cobraba otro
+  /// y conservaba un tercero.
   Future<void> _onGameCompleted() async {
-    final currentState = state;
-    final won = currentState.cards.every((c) => c.isMatched);
+    final finished = state;
+    final won = finished.cards.every((card) => card.isMatched);
 
-    // Calculate rewards
-    final rewards = won
-        ? _calculateRewards(
-            score: currentState.score,
-            moves: currentState.moves,
-            secondsElapsed: currentState.elapsedSeconds,
-            timeLimit: currentState.totalSeconds,
-          )
-        : {'coins': 0, 'xp': 10}; // Small XP for playing even if lost
-
-    // Update state with rewards
-    state = state.copyWith(
-      coinsEarned: rewards['coins'] as int,
-      xpEarned: rewards['xp'] as int,
+    final rewards = calculateMatchRewards(
+      score: finished.score,
+      moves: finished.moves,
+      timeLimit: finished.totalSeconds,
+      secondsElapsed: finished.elapsedSeconds,
       won: won,
     );
 
-    // Save the game result to Firestore
-    try {
-      await ref.read(gameControllerProvider.notifier).completeSoloGame(
-        score: currentState.score,
-        moves: currentState.moves,
-        secondsElapsed: currentState.elapsedSeconds,
-        timeLimit: currentState.totalSeconds,
-        won: won,
-      );
-    } catch (e) {
-      // Silent fail - game is still playable even if Firestore is down
-      print('Error saving game to Firestore: $e');
-    }
-  }
+    state = state.copyWith(
+      coinsEarned: rewards.coins,
+      xpEarned: rewards.xp,
+      won: won,
+    );
 
-  /// Calculate rewards based on performance
-  Map<String, int> _calculateRewards({
-    required int score,
-    required int moves,
-    required int secondsElapsed,
-    required int timeLimit,
-  }) {
-    // Base coins from score
-    int coins = (score / 100).ceil();
-
-    // Time bonus (up to 50% if finished in half the time)
-    if (secondsElapsed < timeLimit ~/ 2) {
-      coins += (coins * 0.5).ceil();
-    }
-
-    // Efficiency bonus (fewer moves = more coins)
-    if (moves < 20) {
-      coins += (coins * 0.3).ceil();
-    }
-
-    // XP calculation
-    int xp = 50; // Base XP
-    xp += (score / 100).ceil(); // Bonus from score
-    if (secondsElapsed < timeLimit ~/ 2) {
-      xp += 30; // Speed bonus
-    }
-    if (moves < 20) {
-      xp += 20; // Efficiency bonus
-    }
-
-    return {'coins': coins.clamp(10, 1000), 'xp': xp.clamp(50, 500)};
+    // Escritura local: sin red de por medio, así que tampoco hace falta
+    // tragarse el error con un `print`. Lo que falle aquí es un fallo real que
+    // debe verse, no una desconexión que haya que tolerar.
+    await ref.read(gameControllerProvider.notifier).completeSoloGame(
+          matchId: finished.matchId,
+          score: finished.score,
+          moves: finished.moves,
+          secondsElapsed: finished.elapsedSeconds,
+          timeLimit: finished.totalSeconds,
+          won: won,
+          rewards: rewards,
+          levelNumber: ref.read(selectedLevelProvider),
+        );
   }
 
   void restart() {
     _pendingFlips.clear();
+    // Reintentar es una partida nueva, con identidad nueva.
     state = BoardState(
+      matchId: const Uuid().v4(),
       cards: _shuffledCards(),
       totalSeconds: _totalSeconds,
       secondsRemaining: _totalSeconds,

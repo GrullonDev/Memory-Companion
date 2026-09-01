@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,9 +12,6 @@ import 'package:memory_companion/features/game/board/controller/board_controller
 import 'package:memory_companion/features/lives/controller/lives_controller.dart';
 import 'package:memory_companion/features/shop/controller/shop_controller.dart';
 import 'package:memory_companion/features/shop/model/plan.dart';
-import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
-
-const _victoryCoinsReward = 50;
 
 /// Connects [BoardController] to [BoardScreen]. Kept separate so
 /// [BoardScreen] stays a plain, stateless UI widget.
@@ -31,16 +30,19 @@ class _BoardPageState extends ConsumerState<BoardPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _enterMatch());
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_enterMatch()));
   }
 
-  void _enterMatch() {
-    final hasLife = ref.read(livesControllerProvider.notifier).consumeLife();
-    if (!hasLife) _showNoLivesDialog(canStayOnBoard: false);
+  Future<void> _enterMatch() async {
+    final hasLife =
+        await ref.read(livesControllerProvider.notifier).consumeLife();
+    if (!hasLife && mounted) _showNoLivesDialog(canStayOnBoard: false);
   }
 
   Future<void> _attemptRestart() async {
-    final hasLife = ref.read(livesControllerProvider.notifier).consumeLife();
+    final hasLife =
+        await ref.read(livesControllerProvider.notifier).consumeLife();
+    if (!mounted) return;
     if (hasLife) {
       ref.read(boardControllerProvider.notifier).restart();
     } else {
@@ -91,15 +93,12 @@ class _BoardPageState extends ConsumerState<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(boardControllerProvider, (previous, next) {
-      if (next.isCompleted && previous?.isCompleted != true) {
-        ref.read(walletControllerProvider.notifier).add(_victoryCoinsReward);
-      }
-    });
-
     final state = ref.watch(boardControllerProvider);
     final controller = ref.read(boardControllerProvider.notifier);
-    final lives = ref.watch(livesControllerProvider);
+    // Las vidas se cargan de la base local, así que llegan como AsyncValue.
+    // Mientras resuelven se muestra el máximo: es un instante y no bloquea el
+    // tablero, que ya está jugable.
+    final lives = ref.watch(livesControllerProvider).value;
     final isLivesUnlimited =
         ref.watch(shopControllerProvider).value?.currentPlanId ==
         PlanId.pro;
@@ -111,7 +110,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
       onHint: controller.useHint,
       onRestart: _attemptRestart,
       onExit: () => Navigator.of(context).pop(),
-      lives: lives.current,
+      lives: lives?.current ?? LivesController.maxLives,
       isLivesUnlimited: isLivesUnlimited,
     );
   }
