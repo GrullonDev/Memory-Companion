@@ -1,11 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/database/database_provider.dart';
+import 'package:memory_companion/core/sync/sync_controller.dart';
 import 'package:memory_companion/features/player/model/player_profile.dart';
 import 'package:memory_companion/features/player/repository/player_repository.dart';
 
 final playerRepositoryProvider = Provider<PlayerRepository>((ref) {
-  return PlayerRepository(database: ref.watch(appDatabaseProvider));
+  return PlayerRepository(
+    database: ref.watch(appDatabaseProvider),
+    syncQueue: ref.watch(syncQueueProvider),
+  );
 });
 
 /// El jugador de este dispositivo.
