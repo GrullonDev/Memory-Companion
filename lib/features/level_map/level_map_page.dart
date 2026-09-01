@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/features/level_map/controller/level_controller.dart';
 import 'package:memory_companion/features/level_map/controller/level_map_controller.dart';
 import 'package:memory_companion/features/level_map/level_map_screen.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
@@ -32,6 +33,9 @@ class LevelMapPage extends ConsumerWidget {
             coins: wallet.value ?? 0,
             onSelectLevel: (level) {
               if (!level.isPlayable) return;
+              // Lo lee el tablero al arrancar y también al reintentar,
+              // cuando ya no hay navegación de por medio.
+              ref.read(selectedLevelProvider.notifier).select(level.number);
               Navigator.of(context).pushNamed(RoutePaths.boardSolo);
             },
           ),
