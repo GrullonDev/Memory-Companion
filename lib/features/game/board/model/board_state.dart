@@ -4,6 +4,7 @@ import 'package:memory_companion/features/game/board/model/star_rating.dart';
 /// Immutable snapshot of a solo memory-board game.
 class BoardState {
   const BoardState({
+    required this.matchId,
     required this.cards,
     required this.totalSeconds,
     required this.secondsRemaining,
@@ -19,6 +20,12 @@ class BoardState {
     this.won = false,
     this.level,
   });
+
+  /// UUID generado **al empezar** la partida, no al guardarla.
+  ///
+  /// Que el id nazca con la partida es lo que hace idempotente el registro:
+  /// reintentar el guardado sobrescribe la misma fila en vez de crear otra.
+  final String matchId;
 
   final List<MemoryCard> cards;
   final int moves;
@@ -93,6 +100,7 @@ class BoardState {
     bool? won,
   }) {
     return BoardState(
+      matchId: matchId,
       cards: cards ?? this.cards,
       totalSeconds: totalSeconds,
       secondsRemaining: secondsRemaining ?? this.secondsRemaining,

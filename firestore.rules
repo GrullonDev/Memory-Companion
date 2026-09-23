@@ -1,41 +1,152 @@
 rules_version = '2';
+
+// Memory Companion — reglas de Firestore
+//
+// Dos cosas cambian respecto a la versión anterior:
+//
+//  1. Se cierra la fuga de datos personales. Antes `users/{uid}` tenía
+//     `allow read: if true`, lo que exponía el documento entero —email y
+//     teléfono incluidos— a cualquiera sin autenticar. Lo que amigos y
+//     rankings necesitan vive ahora en `user_index/{uid}`, con cuatro campos.
+//
+//  2. Se valida la escritura. Antes cualquier usuario autenticado podía
+//     hacer `set({totalCoins: 99999999})` sobre su propio documento.
+//
+// LÍMITE CONOCIDO: ninguna regla puede hacer confiable un saldo que calcula
+// el cliente. Las reglas solo ven la escritura, no la partida que la
+// justifica. Aquí se acota el daño —lista blanca de campos, monotonía y topes
+// por escritura—, pero un cliente modificado siempre podrá inventarse una
+// partida plausible. La solución real es que el servidor recalcule, y eso son
+// Cloud Functions: ver la fase 2 en docs/OFFLINE_FIRST.md.
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Allow read/write access to authenticated users on their own data
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function current() {
+      return resource.data;
+    }
+
+    // Único conjunto de campos que el cliente puede escribir en su perfil.
+    // Cualquier clave desconocida rechaza la escritura entera.
+    function profileFields() {
+      return [
+        'uid', 'email', 'displayName', 'photoUrl', 'phoneNumber',
+        'createdAt', 'updatedAt', 'version', 'avatarSeed', 'rank',
+        'totalXp', 'totalCoins', 'gamesWon', 'totalMoves',
+        'currentStreak', 'longestStreak', 'lastPlayedDate'
+      ];
+    }
+
+    // Un acumulado nunca puede bajar. Impide rebajarse los totales para
+    // reordenar un ranking, o deshacer partidas ya contadas.
+    function monotonic(field) {
+      return !(field in incoming())
+          || !(field in current())
+          || incoming()[field] >= current()[field];
+    }
+
+    function unchanged(field) {
+      return !(field in incoming())
+          || (field in current() && incoming()[field] == current()[field]);
+    }
+
+    // Tope por escritura. Convierte «me pongo diez millones de XP» en «me
+    // hacen falta miles de escrituras detectables».
+    //
+    // La excepción de valor cero es la adopción: al vincular una cuenta nueva
+    // se sube de una vez todo el progreso acumulado sin conexión, sobre un
+    // documento que todavía está a cero.
+    function deltaWithin(field, cap) {
+      return !(field in incoming())
+          || !(field in current())
+          || current()[field] == 0
+          || incoming()[field] - current()[field] <= cap;
+    }
+
+    // ---------------------------------------------------------------
+    // Perfil privado. Solo su dueño lo lee.
+    // ---------------------------------------------------------------
     match /users/{uid} {
-      allow read, write: if request.auth.uid == uid;
+      allow read: if isOwner(uid);
 
-      // Allow public read access to user profiles (for friends/leaderboards)
-      allow read: if true;
+      allow create: if isOwner(uid)
+                    && incoming().keys().hasOnly(profileFields());
+
+      allow update: if isOwner(uid)
+                    && incoming().keys().hasOnly(profileFields())
+                    && unchanged('createdAt')
+                    && unchanged('email')
+                    && monotonic('totalXp')
+                    && monotonic('gamesWon')
+                    && monotonic('totalMoves')
+                    && monotonic('longestStreak')
+                    && deltaWithin('totalXp', 2000)
+                    && deltaWithin('totalCoins', 2000)
+                    && deltaWithin('gamesWon', 5);
+
+      allow delete: if false;
+
+      // Historial. Una partida escrita no se reescribe ni se borra: si
+      // pudiera editarse, el historial dejaría de ser una prueba de nada.
+      match /matches/{matchId} {
+        allow read, create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+
+      // Progreso de niveles. Se puede actualizar (mejorar la marca) pero no
+      // borrar.
+      match /level_progress/{levelNumber} {
+        allow read, create, update: if isOwner(uid);
+        allow delete: if false;
+      }
+
+      // Registro de idempotencia. Crear sí; borrar **nunca**: si se pudiera
+      // borrar una entrada, podría reaplicarse su operación y duplicar las
+      // recompensas.
+      match /sync_ops/{opId} {
+        allow read, create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+
+      match /achievements/{achievementId} {
+        allow read, write: if isOwner(uid);
+      }
     }
 
-    // Match/Game history
-    match /users/{uid}/matches/{matchId} {
-      allow read, write: if request.auth.uid == uid;
-      allow read: if true; // For leaderboards/stats
+    // ---------------------------------------------------------------
+    // Perfil público: lo que amigos y rankings necesitan, y nada más.
+    // Sustituye al `allow read: if true` sobre el documento privado.
+    // ---------------------------------------------------------------
+    match /user_index/{uid} {
+      allow read: if signedIn();
+      allow write: if isOwner(uid)
+                   && incoming().keys().hasOnly(
+                        ['displayName', 'avatarSeed', 'level', 'totalXp',
+                         'updatedAt']
+                      );
     }
 
-    // Achievements
-    match /users/{uid}/achievements/{achievementId} {
-      allow read, write: if request.auth.uid == uid;
-    }
-
-    // Daily challenges
+    // Contenido de los retos diarios: lectura para todos, escritura de nadie.
     match /daily_challenges/{challengeId} {
       allow read: if true;
-      allow write: if false; // Only admin
+      allow write: if false;
     }
 
-    // Leaderboards (read-only for clients)
+    // Rankings: los calcula el servidor.
     match /leaderboards/{leaderboardId} {
-      allow read: if true;
-      allow write: if false; // Only admin/functions
-    }
-
-    // User search index
-    match /user_index/{uid} {
-      allow read: if true;
-      allow write: if request.auth.uid == uid;
+      allow read: if signedIn();
+      allow write: if false;
     }
   }
 }

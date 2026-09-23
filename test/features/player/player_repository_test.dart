@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/core/database/app_database.dart';
+import 'package:memory_companion/core/sync/sync_queue.dart';
 import 'package:memory_companion/features/player/repository/player_repository.dart';
 
 void main() {
@@ -14,6 +15,7 @@ void main() {
   PlayerRepository buildRepository() {
     return PlayerRepository(
       database: db,
+      syncQueue: SyncQueue(database: db),
       idGenerator: () => 'local-${++idCounter}',
       clock: () => now,
     );
@@ -136,6 +138,35 @@ void main() {
     await repository.updateIdentity(localId: profile.localId);
 
     expect((await repository.readLocalProfile())!.version, 0);
+  });
+
+  test('gastar y ganar monedas se acumula correctamente', () async {
+    final repository = buildRepository();
+    final profile = await repository.ensureLocalProfile();
+    final id = profile.localId;
+
+    expect(await repository.earnCoins(localId: id, amount: 300), 300);
+    expect(await repository.earnCoins(localId: id, amount: 45), 345);
+    expect(await repository.spendCoins(localId: id, amount: 45), isTrue);
+    expect((await repository.readLocalProfile())!.totalCoins, 300);
+  });
+
+  test('dos gastos simultáneos no pueden dejar el saldo en negativo',
+      () async {
+    final repository = buildRepository();
+    final profile = await repository.ensureLocalProfile();
+    final id = profile.localId;
+    await repository.earnCoins(localId: id, amount: 100);
+
+    // Solo uno de los dos puede prosperar: la comprobación y la escritura
+    // ocurren dentro de la misma transacción.
+    final results = await Future.wait([
+      repository.spendCoins(localId: id, amount: 80),
+      repository.spendCoins(localId: id, amount: 80),
+    ]);
+
+    expect(results.where((granted) => granted), hasLength(1));
+    expect((await repository.readLocalProfile())!.totalCoins, 20);
   });
 
   test('watchLocalProfile emite el estado inicial y cada cambio', () async {

@@ -72,39 +72,4 @@ class Match {
       opponentScore: data['opponentScore'],
     );
   }
-
-  /// Calculate rewards based on game performance
-  static Map<String, int> calculateRewards({
-    required int score,
-    required int moves,
-    required int timeLimit,
-    required int secondsElapsed,
-    required bool won,
-  }) {
-    if (!won) {
-      // Small penalty XP for playing even if losing
-      return {'coins': 0, 'xp': 10};
-    }
-
-    // Base rewards
-    int coins = 50 + (score ~/ 100);
-    int xp = 100 + (score ~/ 50);
-
-    // Time bonus (up to 50% bonus)
-    if (secondsElapsed < timeLimit ~/ 2) {
-      final timeBonus = ((timeLimit - secondsElapsed) / timeLimit * 50).toInt();
-      xp += timeBonus;
-      coins += timeBonus ~/ 2;
-    }
-
-    // Efficiency bonus (fewer moves = more reward)
-    final optimalMoves = 8; // Minimum moves for 8 pairs
-    if (moves <= optimalMoves + 5) {
-      final efficiencyBonus = 50;
-      coins += efficiencyBonus;
-      xp += efficiencyBonus;
-    }
-
-    return {'coins': coins, 'xp': xp};
-  }
 }

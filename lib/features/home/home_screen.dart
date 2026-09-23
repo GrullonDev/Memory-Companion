@@ -17,6 +17,7 @@ import 'package:memory_companion/features/home/widget/home_top_bar.dart';
 import 'package:memory_companion/features/home/widget/level_progress_card.dart';
 import 'package:memory_companion/features/home/widget/primary_play_card.dart';
 import 'package:memory_companion/features/home/widget/recent_match_card.dart';
+import 'package:memory_companion/features/home/widget/save_state_badge.dart';
 import 'package:memory_companion/features/home/widget/secondary_mode_row.dart';
 import 'package:memory_companion/features/minigames/hub/widget/minigame_grid.dart';
 import 'package:memory_companion/features/minigames/minigame_registry.dart';
@@ -35,6 +36,31 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Cuando una cuenta trae progreso propio, el jugador decide con cuál se
+    // queda. Adivinar por él es como se pierde el progreso de alguien.
+    ref.listen(accountLinkControllerProvider, (previous, next) {
+      final link = next.value;
+      final local = link?.localProfile;
+      final cloud = link?.cloudProfile;
+      if (link == null || !link.needsChoice || local == null || cloud == null) {
+        return;
+      }
+
+      showLinkConflictDialog(context, local: local, cloud: cloud).then((
+        choice,
+      ) {
+        final controller = ref.read(accountLinkControllerProvider.notifier);
+        switch (choice) {
+          case LinkChoice.keepLocal:
+            controller.keepLocalProgress();
+          case LinkChoice.keepCloud:
+            controller.keepCloudProgress();
+          case null:
+            break;
+        }
+      });
+    });
+
     final wallet = ref.watch(walletControllerProvider);
     final summary = ref.watch(homeSummaryProvider);
     final recentMatch = ref.watch(homeControllerProvider);
@@ -75,7 +101,15 @@ class HomeScreen extends ConsumerWidget {
                   onSettingsTap: () =>
                       Navigator.of(context).pushNamed(RoutePaths.settings),
                 ),
-                const SizedBox(height: AppSpacing.xl),
+                const SizedBox(height: AppSpacing.md),
+
+                // Dónde está guardado el progreso. Discreto a propósito: es
+                // una confirmación, no una alarma.
+                const Align(
+                  alignment: Alignment.centerRight,
+                  child: SaveStateBadge(),
+                ),
+                const SizedBox(height: AppSpacing.md),
 
                 LevelProgressCard(
                   summary: summary,
@@ -90,6 +124,9 @@ class HomeScreen extends ConsumerWidget {
                       Navigator.of(context).pushNamed(RoutePaths.levelMap),
                 ),
                 const SizedBox(height: AppSpacing.gutter),
+
+                // Aparece solo cuando el jugador ya tiene algo que perder.
+                const SaveProgressCard(),
 
                 DailyChallengeCard(
                   rewardCoins: DailyChallenge.rewardCoins,
@@ -127,7 +164,7 @@ class HomeScreen extends ConsumerWidget {
                       : RecentMatchCard(
                           title: match.titleKey.getString(context),
                           score: match.score,
-                          timeAgo: match.timeAgoKey.getString(context),
+                          timeAgo: match.timeAgo,
                         ),
                 ),
               ],

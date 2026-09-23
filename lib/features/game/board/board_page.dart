@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,9 +13,6 @@ import 'package:memory_companion/features/game/board/controller/board_controller
 import 'package:memory_companion/features/lives/controller/lives_controller.dart';
 import 'package:memory_companion/features/shop/controller/shop_controller.dart';
 import 'package:memory_companion/features/shop/model/plan.dart';
-import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
-
-const _victoryCoinsReward = 50;
 
 /// Connects [BoardController] to [BoardScreen]. Kept separate so
 /// [BoardScreen] stays a plain, stateless UI widget.
@@ -36,7 +35,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _enterMatch());
+    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_enterMatch()));
   }
 
   BoardSetup get _setup {
@@ -126,7 +125,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
       onRestart: () => _attemptNewRound((c) => c.restart()),
       onNextLevel: () => _attemptNewRound((c) => c.nextLevel()),
       onExit: () => Navigator.of(context).pop(),
-      lives: lives.current,
+      lives: lives?.current ?? LivesController.maxLives,
       isLivesUnlimited: isLivesUnlimited,
     );
   }

@@ -27,8 +27,9 @@ enum SyncOperationType {
   /// Alta o actualización completa del perfil en la nube.
   upsertProfile,
 
-  /// Partida ganada: incrementos de XP, monedas, victorias y movimientos.
-  recordWin,
+  /// Partida terminada: la fila, los incrementos y la racha. Cubre victoria
+  /// y derrota — una partida perdida también se registra.
+  recordMatch,
 
   /// XP suelto, sin victoria asociada.
   addXp,

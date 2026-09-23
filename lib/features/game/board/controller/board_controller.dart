@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:memory_companion/features/daily_challenge/model/daily_challenge.dart';
 import 'package:memory_companion/features/game/board/category/board_factory.dart';
@@ -142,7 +143,12 @@ class BoardController extends Notifier<BoardState> {
     state = state.copyWith(secondsRemaining: state.secondsRemaining - 1);
   }
 
-  /// Called when the game is completed (either won by finishing or lost by timeout)
+  /// Fin de partida, por victoria o por agotarse el tiempo.
+  ///
+  /// Las recompensas se calculan **una sola vez** aquí, y ese mismo objeto
+  /// alimenta el overlay de victoria y el guardado. Antes había tres cálculos
+  /// distintos para el mismo evento: el jugador veía un número, cobraba otro
+  /// y conservaba un tercero.
   Future<void> _onGameCompleted() async {
     final currentState = state;
     final won = currentState.cards.every((c) => c.isMatched);
@@ -262,7 +268,19 @@ class BoardController extends Notifier<BoardState> {
       xp += 20; // Efficiency bonus
     }
 
-    return {'coins': coins.clamp(10, 1000), 'xp': xp.clamp(50, 500)};
+    // Escritura local: sin red de por medio, así que tampoco hace falta
+    // tragarse el error con un `print`. Lo que falle aquí es un fallo real que
+    // debe verse, no una desconexión que haya que tolerar.
+    await ref.read(gameControllerProvider.notifier).completeSoloGame(
+          matchId: finished.matchId,
+          score: finished.score,
+          moves: finished.moves,
+          secondsElapsed: finished.elapsedSeconds,
+          timeLimit: finished.totalSeconds,
+          won: won,
+          rewards: rewards,
+          levelNumber: ref.read(selectedLevelProvider),
+        );
   }
 
   /// Replays the board from the start. After a loss that is the same level

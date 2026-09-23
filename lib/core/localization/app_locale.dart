@@ -258,6 +258,30 @@ mixin AppLocale {
   static const String levelNodeCurrent = 'levelNodeCurrent';
   static const String levelNodeLocked = 'levelNodeLocked';
 
+  // --- Offline-first: guardado y cuenta ---
+  static const String saveStateInCloud = 'saveStateInCloud';
+  static const String saveStateSyncing = 'saveStateSyncing';
+  static const String saveStateOnDevice = 'saveStateOnDevice';
+  static const String saveProgressTitle = 'saveProgressTitle';
+  static const String saveProgressSubtitle = 'saveProgressSubtitle';
+  static const String saveProgressBenefitRecover = 'saveProgressBenefitRecover';
+  static const String saveProgressBenefitDevices = 'saveProgressBenefitDevices';
+  static const String saveProgressBenefitFriends = 'saveProgressBenefitFriends';
+  static const String saveProgressBenefitCompete = 'saveProgressBenefitCompete';
+  static const String linkConflictTitle = 'linkConflictTitle';
+  static const String linkConflictSubtitle = 'linkConflictSubtitle';
+  static const String linkInThisAccount = 'linkInThisAccount';
+  static const String linkOnThisDevice = 'linkOnThisDevice';
+  static const String linkKeepCloud = 'linkKeepCloud';
+  static const String linkKeepLocal = 'linkKeepLocal';
+  static const String linkedMessage = 'linkedMessage';
+  static const String accountSectionTitle = 'accountSectionTitle';
+  static const String accountSignedInAs = 'accountSignedInAs';
+  static const String accountPlayingLocally = 'accountPlayingLocally';
+  static const String signOutLabel = 'signOutLabel';
+  static const String levelShortLabel = 'levelShortLabel';
+  static const String coinsShortLabel = 'coinsShortLabel';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
