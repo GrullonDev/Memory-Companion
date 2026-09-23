@@ -10,7 +10,11 @@ class RoutePaths {
   static const String shop = '/shop';
   static const String levelMap = '/level-map';
   static const String boardSolo = '/board/solo';
+  static const String dailyChallenge = '/daily-challenge';
   static const String profile = '/profile';
+  static const String statistics = '/statistics';
+  static const String settings = '/settings';
+  static const String minigameHub = '/games';
 
   /// Bottom-nav tab destinations, indexed the same way as [HomeBottomNav].
   static const List<String> tabs = [home, versus, friends, shop];
