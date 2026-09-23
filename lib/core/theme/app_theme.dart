@@ -5,6 +5,8 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_motion.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/theme/app_typography.dart';
+import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/core/theme/visual_profile.dart';
 
 /// Assembles every design token into the single [ThemeData] the app runs on.
 ///
@@ -13,15 +15,27 @@ import 'package:memory_companion/core/theme/app_typography.dart';
 /// default — snack bars, progress spinners, text buttons, dialogs, text
 /// styles — ignored the design system entirely. Wiring the real scheme here
 /// is what makes the tokens actually reach the screen.
+///
+/// The [VisualProfile] only changes what Material draws by default — button
+/// sizes, supporting-text contrast, divider strength — and attaches the
+/// matching [ProfileTokens]. Colour tokens and type sizes stay the same
+/// objects in both profiles; text grows through the app-wide text scale.
 abstract final class AppTheme {
-  static ThemeData light() {
-    const scheme = AppColors.lightScheme;
+  static ThemeData light({VisualProfile profile = VisualProfile.vibrant}) {
+    final tokens = ProfileTokens.forProfile(profile);
+    final scheme = profile.isAccessible
+        ? _accessibleScheme
+        : AppColors.lightScheme;
     final textTheme = AppTypography.textTheme;
+    final touchTarget = profile.isAccessible
+        ? tokens.buttonMinHeight
+        : AppSize.touchMin;
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: scheme,
       textTheme: textTheme,
+      extensions: [tokens],
       scaffoldBackgroundColor: AppColors.background,
       canvasColor: AppColors.background,
       splashFactory: InkSparkle.splashFactory,
@@ -29,8 +43,14 @@ abstract final class AppTheme {
       // Android gets the zoom transition so navigation feels like part of
       // the same system as the card presses. iOS keeps its native
       // edge-swipe-back transition, which players there expect.
-      pageTransitionsTheme: const PageTransitionsTheme(
-        builders: {TargetPlatform.android: ZoomPageTransitionsBuilder()},
+      // The accessible profile drops the zoom for a plain fade: no surface
+      // flies at the player between screens.
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: profile.isAccessible
+              ? const FadeForwardsPageTransitionsBuilder()
+              : const ZoomPageTransitionsBuilder(),
+        },
       ),
 
       appBarTheme: AppBarTheme(
@@ -50,7 +70,11 @@ abstract final class AppTheme {
           foregroundColor: AppColors.onSun,
           disabledBackgroundColor: AppColors.disabled,
           disabledForegroundColor: AppColors.onDisabled,
-          minimumSize: const Size.fromHeight(AppSize.touchComfortable),
+          minimumSize: Size.fromHeight(
+            profile.isAccessible
+                ? tokens.buttonMinHeight
+                : AppSize.touchComfortable,
+          ),
           elevation: 0,
           shadowColor: Colors.transparent,
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
@@ -64,7 +88,7 @@ abstract final class AppTheme {
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
           foregroundColor: AppColors.skyStrong,
-          minimumSize: const Size(AppSize.touchMin, AppSize.touchMin),
+          minimumSize: Size(touchTarget, touchTarget),
           textStyle: textTheme.labelLarge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.sm),
@@ -75,8 +99,12 @@ abstract final class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.onSurface,
-          minimumSize: const Size.fromHeight(AppSize.touchComfortable),
-          side: const BorderSide(color: AppColors.outlineVariant, width: 2),
+          minimumSize: Size.fromHeight(
+            profile.isAccessible
+                ? tokens.buttonMinHeight
+                : AppSize.touchComfortable,
+          ),
+          side: BorderSide(color: tokens.outlineColor, width: 2),
           textStyle: textTheme.labelLarge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md),
@@ -86,14 +114,14 @@ abstract final class AppTheme {
 
       iconButtonTheme: IconButtonThemeData(
         style: IconButton.styleFrom(
-          minimumSize: const Size(AppSize.touchMin, AppSize.touchMin),
-          foregroundColor: AppColors.onSurfaceVariant,
+          minimumSize: Size(touchTarget, touchTarget),
+          foregroundColor: tokens.supportingTextColor,
         ),
       ),
 
-      iconTheme: const IconThemeData(
-        color: AppColors.onSurfaceVariant,
-        size: AppSize.iconMd,
+      iconTheme: IconThemeData(
+        color: tokens.supportingTextColor,
+        size: profile.isAccessible ? AppSize.iconLg : AppSize.iconMd,
       ),
 
       cardTheme: CardThemeData(
@@ -117,8 +145,8 @@ abstract final class AppTheme {
         shape: const StadiumBorder(),
       ),
 
-      dividerTheme: const DividerThemeData(
-        color: AppColors.outlineVariant,
+      dividerTheme: DividerThemeData(
+        color: tokens.outlineColor,
         thickness: 1,
         space: AppSpacing.xxl,
       ),
@@ -150,7 +178,7 @@ abstract final class AppTheme {
         elevation: 0,
         titleTextStyle: textTheme.headlineSmall,
         contentTextStyle: textTheme.bodyMedium?.copyWith(
-          color: AppColors.onSurfaceVariant,
+          color: tokens.supportingTextColor,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.xxl),
@@ -213,4 +241,13 @@ abstract final class AppTheme {
       ),
     );
   }
+
+  /// [AppColors.lightScheme] with every "quiet" role promoted one step:
+  /// supporting text becomes full-strength ink (15.9:1) and outlines become
+  /// the 7.6:1 slate, so no information depends on a pale grey.
+  static final ColorScheme _accessibleScheme = AppColors.lightScheme.copyWith(
+    onSurfaceVariant: AppColors.onSurface,
+    outline: AppColors.onSurfaceVariant,
+    outlineVariant: AppColors.outline,
+  );
 }

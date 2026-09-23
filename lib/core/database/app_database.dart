@@ -2,12 +2,16 @@ import 'package:drift/drift.dart';
 
 import 'package:memory_companion/core/database/connection/open_connection.dart';
 import 'package:memory_companion/core/database/database_enums.dart';
+import 'package:memory_companion/core/database/tables/category_levels.dart';
 import 'package:memory_companion/core/database/tables/daily_challenges.dart';
+import 'package:memory_companion/core/database/tables/display_settings.dart';
+import 'package:memory_companion/core/database/tables/game_stats.dart';
 import 'package:memory_companion/core/database/tables/level_progress.dart';
 import 'package:memory_companion/core/database/tables/lives_states.dart';
 import 'package:memory_companion/core/database/tables/matches.dart';
 import 'package:memory_companion/core/database/tables/player_profiles.dart';
 import 'package:memory_companion/core/database/tables/sync_operations.dart';
+import 'package:memory_companion/core/theme/visual_profile.dart';
 
 part 'app_database.g.dart';
 
@@ -28,6 +32,9 @@ part 'app_database.g.dart';
     DailyChallengeProgress,
     LivesStates,
     SyncOperations,
+    DisplaySettings,
+    GameStats,
+    CategoryLevels,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -38,14 +45,38 @@ class AppDatabase extends _$AppDatabase {
   /// que es lo que permite probar toda la capa local sin Firebase ni disco.
   AppDatabase.forTesting(super.executor);
 
+  /// Historial:
+  ///  1. Esquema inicial.
+  ///  2. `display_settings` — perfil visual y temporizador.
+  ///  3. `game_stats` — métricas locales para el panel de estadísticas.
+  ///  4. `daily_challenge_progress` guarda movimientos, tiempo, pistas y la
+  ///     cuadrícula del resultado, para poder volver a compartirlo.
+  ///  5. `category_levels` — nivel explícito y habilidad adaptativa por
+  ///     categoría, para que la progresión sobreviva al cierre de la app.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
       onCreate: (Migrator m) async {
         await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) await m.createTable(displaySettings);
+        if (from < 3) {
+          await m.createTable(gameStats);
+          await m.createIndex(idxGameStatsPlayedAt);
+          await m.createIndex(idxGameStatsPlayedDay);
+        }
+        if (from < 4) {
+          final progress = dailyChallengeProgress;
+          await m.addColumn(progress, progress.moves);
+          await m.addColumn(progress, progress.elapsedSeconds);
+          await m.addColumn(progress, progress.hintsUsed);
+          await m.addColumn(progress, progress.grid);
+        }
+        if (from < 5) await m.createTable(categoryLevels);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

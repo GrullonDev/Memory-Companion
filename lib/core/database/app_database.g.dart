@@ -2481,6 +2481,50 @@ class $DailyChallengeProgressTable extends DailyChallengeProgress
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _movesMeta = const VerificationMeta('moves');
+  @override
+  late final GeneratedColumn<int> moves = GeneratedColumn<int>(
+    'moves',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _elapsedSecondsMeta = const VerificationMeta(
+    'elapsedSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> elapsedSeconds = GeneratedColumn<int>(
+    'elapsed_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _hintsUsedMeta = const VerificationMeta(
+    'hintsUsed',
+  );
+  @override
+  late final GeneratedColumn<int> hintsUsed = GeneratedColumn<int>(
+    'hints_used',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _gridMeta = const VerificationMeta('grid');
+  @override
+  late final GeneratedColumn<String> grid = GeneratedColumn<String>(
+    'grid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   @override
   late final GeneratedColumnWithTypeConverter<SyncStatus, String> syncStatus =
       GeneratedColumn<String>(
@@ -2499,6 +2543,10 @@ class $DailyChallengeProgressTable extends DailyChallengeProgress
     completed,
     score,
     completedAt,
+    moves,
+    elapsedSeconds,
+    hintsUsed,
+    grid,
     syncStatus,
   ];
   @override
@@ -2556,6 +2604,33 @@ class $DailyChallengeProgressTable extends DailyChallengeProgress
         ),
       );
     }
+    if (data.containsKey('moves')) {
+      context.handle(
+        _movesMeta,
+        moves.isAcceptableOrUnknown(data['moves']!, _movesMeta),
+      );
+    }
+    if (data.containsKey('elapsed_seconds')) {
+      context.handle(
+        _elapsedSecondsMeta,
+        elapsedSeconds.isAcceptableOrUnknown(
+          data['elapsed_seconds']!,
+          _elapsedSecondsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('hints_used')) {
+      context.handle(
+        _hintsUsedMeta,
+        hintsUsed.isAcceptableOrUnknown(data['hints_used']!, _hintsUsedMeta),
+      );
+    }
+    if (data.containsKey('grid')) {
+      context.handle(
+        _gridMeta,
+        grid.isAcceptableOrUnknown(data['grid']!, _gridMeta),
+      );
+    }
     return context;
   }
 
@@ -2588,6 +2663,22 @@ class $DailyChallengeProgressTable extends DailyChallengeProgress
         DriftSqlType.int,
         data['${effectivePrefix}completed_at'],
       ),
+      moves: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}moves'],
+      )!,
+      elapsedSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elapsed_seconds'],
+      )!,
+      hintsUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hints_used'],
+      )!,
+      grid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}grid'],
+      )!,
       syncStatus: $DailyChallengeProgressTable.$convertersyncStatus.fromSql(
         attachedDatabase.typeMapping.read(
           DriftSqlType.string,
@@ -2613,6 +2704,13 @@ class DailyChallengeProgressRow extends DataClass
   final bool completed;
   final int score;
   final int? completedAt;
+  final int moves;
+  final int elapsedSeconds;
+  final int hintsUsed;
+
+  /// Cuadrícula de emojis codificada, p. ej. `'ggyg|gggr'`. Ver
+  /// `DailyResult.encodedGrid`.
+  final String grid;
   final SyncStatus syncStatus;
   const DailyChallengeProgressRow({
     required this.playerLocalId,
@@ -2620,6 +2718,10 @@ class DailyChallengeProgressRow extends DataClass
     required this.completed,
     required this.score,
     this.completedAt,
+    required this.moves,
+    required this.elapsedSeconds,
+    required this.hintsUsed,
+    required this.grid,
     required this.syncStatus,
   });
   @override
@@ -2632,6 +2734,10 @@ class DailyChallengeProgressRow extends DataClass
     if (!nullToAbsent || completedAt != null) {
       map['completed_at'] = Variable<int>(completedAt);
     }
+    map['moves'] = Variable<int>(moves);
+    map['elapsed_seconds'] = Variable<int>(elapsedSeconds);
+    map['hints_used'] = Variable<int>(hintsUsed);
+    map['grid'] = Variable<String>(grid);
     {
       map['sync_status'] = Variable<String>(
         $DailyChallengeProgressTable.$convertersyncStatus.toSql(syncStatus),
@@ -2649,6 +2755,10 @@ class DailyChallengeProgressRow extends DataClass
       completedAt: completedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(completedAt),
+      moves: Value(moves),
+      elapsedSeconds: Value(elapsedSeconds),
+      hintsUsed: Value(hintsUsed),
+      grid: Value(grid),
       syncStatus: Value(syncStatus),
     );
   }
@@ -2664,6 +2774,10 @@ class DailyChallengeProgressRow extends DataClass
       completed: serializer.fromJson<bool>(json['completed']),
       score: serializer.fromJson<int>(json['score']),
       completedAt: serializer.fromJson<int?>(json['completedAt']),
+      moves: serializer.fromJson<int>(json['moves']),
+      elapsedSeconds: serializer.fromJson<int>(json['elapsedSeconds']),
+      hintsUsed: serializer.fromJson<int>(json['hintsUsed']),
+      grid: serializer.fromJson<String>(json['grid']),
       syncStatus: $DailyChallengeProgressTable.$convertersyncStatus.fromJson(
         serializer.fromJson<String>(json['syncStatus']),
       ),
@@ -2678,6 +2792,10 @@ class DailyChallengeProgressRow extends DataClass
       'completed': serializer.toJson<bool>(completed),
       'score': serializer.toJson<int>(score),
       'completedAt': serializer.toJson<int?>(completedAt),
+      'moves': serializer.toJson<int>(moves),
+      'elapsedSeconds': serializer.toJson<int>(elapsedSeconds),
+      'hintsUsed': serializer.toJson<int>(hintsUsed),
+      'grid': serializer.toJson<String>(grid),
       'syncStatus': serializer.toJson<String>(
         $DailyChallengeProgressTable.$convertersyncStatus.toJson(syncStatus),
       ),
@@ -2690,6 +2808,10 @@ class DailyChallengeProgressRow extends DataClass
     bool? completed,
     int? score,
     Value<int?> completedAt = const Value.absent(),
+    int? moves,
+    int? elapsedSeconds,
+    int? hintsUsed,
+    String? grid,
     SyncStatus? syncStatus,
   }) => DailyChallengeProgressRow(
     playerLocalId: playerLocalId ?? this.playerLocalId,
@@ -2697,6 +2819,10 @@ class DailyChallengeProgressRow extends DataClass
     completed: completed ?? this.completed,
     score: score ?? this.score,
     completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    moves: moves ?? this.moves,
+    elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+    hintsUsed: hintsUsed ?? this.hintsUsed,
+    grid: grid ?? this.grid,
     syncStatus: syncStatus ?? this.syncStatus,
   );
   DailyChallengeProgressRow copyWithCompanion(
@@ -2714,6 +2840,12 @@ class DailyChallengeProgressRow extends DataClass
       completedAt: data.completedAt.present
           ? data.completedAt.value
           : this.completedAt,
+      moves: data.moves.present ? data.moves.value : this.moves,
+      elapsedSeconds: data.elapsedSeconds.present
+          ? data.elapsedSeconds.value
+          : this.elapsedSeconds,
+      hintsUsed: data.hintsUsed.present ? data.hintsUsed.value : this.hintsUsed,
+      grid: data.grid.present ? data.grid.value : this.grid,
       syncStatus: data.syncStatus.present
           ? data.syncStatus.value
           : this.syncStatus,
@@ -2728,6 +2860,10 @@ class DailyChallengeProgressRow extends DataClass
           ..write('completed: $completed, ')
           ..write('score: $score, ')
           ..write('completedAt: $completedAt, ')
+          ..write('moves: $moves, ')
+          ..write('elapsedSeconds: $elapsedSeconds, ')
+          ..write('hintsUsed: $hintsUsed, ')
+          ..write('grid: $grid, ')
           ..write('syncStatus: $syncStatus')
           ..write(')'))
         .toString();
@@ -2740,6 +2876,10 @@ class DailyChallengeProgressRow extends DataClass
     completed,
     score,
     completedAt,
+    moves,
+    elapsedSeconds,
+    hintsUsed,
+    grid,
     syncStatus,
   );
   @override
@@ -2751,6 +2891,10 @@ class DailyChallengeProgressRow extends DataClass
           other.completed == this.completed &&
           other.score == this.score &&
           other.completedAt == this.completedAt &&
+          other.moves == this.moves &&
+          other.elapsedSeconds == this.elapsedSeconds &&
+          other.hintsUsed == this.hintsUsed &&
+          other.grid == this.grid &&
           other.syncStatus == this.syncStatus);
 }
 
@@ -2761,6 +2905,10 @@ class DailyChallengeProgressCompanion
   final Value<bool> completed;
   final Value<int> score;
   final Value<int?> completedAt;
+  final Value<int> moves;
+  final Value<int> elapsedSeconds;
+  final Value<int> hintsUsed;
+  final Value<String> grid;
   final Value<SyncStatus> syncStatus;
   final Value<int> rowid;
   const DailyChallengeProgressCompanion({
@@ -2769,6 +2917,10 @@ class DailyChallengeProgressCompanion
     this.completed = const Value.absent(),
     this.score = const Value.absent(),
     this.completedAt = const Value.absent(),
+    this.moves = const Value.absent(),
+    this.elapsedSeconds = const Value.absent(),
+    this.hintsUsed = const Value.absent(),
+    this.grid = const Value.absent(),
     this.syncStatus = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -2778,6 +2930,10 @@ class DailyChallengeProgressCompanion
     this.completed = const Value.absent(),
     this.score = const Value.absent(),
     this.completedAt = const Value.absent(),
+    this.moves = const Value.absent(),
+    this.elapsedSeconds = const Value.absent(),
+    this.hintsUsed = const Value.absent(),
+    this.grid = const Value.absent(),
     required SyncStatus syncStatus,
     this.rowid = const Value.absent(),
   }) : playerLocalId = Value(playerLocalId),
@@ -2789,6 +2945,10 @@ class DailyChallengeProgressCompanion
     Expression<bool>? completed,
     Expression<int>? score,
     Expression<int>? completedAt,
+    Expression<int>? moves,
+    Expression<int>? elapsedSeconds,
+    Expression<int>? hintsUsed,
+    Expression<String>? grid,
     Expression<String>? syncStatus,
     Expression<int>? rowid,
   }) {
@@ -2798,6 +2958,10 @@ class DailyChallengeProgressCompanion
       if (completed != null) 'completed': completed,
       if (score != null) 'score': score,
       if (completedAt != null) 'completed_at': completedAt,
+      if (moves != null) 'moves': moves,
+      if (elapsedSeconds != null) 'elapsed_seconds': elapsedSeconds,
+      if (hintsUsed != null) 'hints_used': hintsUsed,
+      if (grid != null) 'grid': grid,
       if (syncStatus != null) 'sync_status': syncStatus,
       if (rowid != null) 'rowid': rowid,
     });
@@ -2809,6 +2973,10 @@ class DailyChallengeProgressCompanion
     Value<bool>? completed,
     Value<int>? score,
     Value<int?>? completedAt,
+    Value<int>? moves,
+    Value<int>? elapsedSeconds,
+    Value<int>? hintsUsed,
+    Value<String>? grid,
     Value<SyncStatus>? syncStatus,
     Value<int>? rowid,
   }) {
@@ -2818,6 +2986,10 @@ class DailyChallengeProgressCompanion
       completed: completed ?? this.completed,
       score: score ?? this.score,
       completedAt: completedAt ?? this.completedAt,
+      moves: moves ?? this.moves,
+      elapsedSeconds: elapsedSeconds ?? this.elapsedSeconds,
+      hintsUsed: hintsUsed ?? this.hintsUsed,
+      grid: grid ?? this.grid,
       syncStatus: syncStatus ?? this.syncStatus,
       rowid: rowid ?? this.rowid,
     );
@@ -2841,6 +3013,18 @@ class DailyChallengeProgressCompanion
     if (completedAt.present) {
       map['completed_at'] = Variable<int>(completedAt.value);
     }
+    if (moves.present) {
+      map['moves'] = Variable<int>(moves.value);
+    }
+    if (elapsedSeconds.present) {
+      map['elapsed_seconds'] = Variable<int>(elapsedSeconds.value);
+    }
+    if (hintsUsed.present) {
+      map['hints_used'] = Variable<int>(hintsUsed.value);
+    }
+    if (grid.present) {
+      map['grid'] = Variable<String>(grid.value);
+    }
     if (syncStatus.present) {
       map['sync_status'] = Variable<String>(
         $DailyChallengeProgressTable.$convertersyncStatus.toSql(
@@ -2862,6 +3046,10 @@ class DailyChallengeProgressCompanion
           ..write('completed: $completed, ')
           ..write('score: $score, ')
           ..write('completedAt: $completedAt, ')
+          ..write('moves: $moves, ')
+          ..write('elapsedSeconds: $elapsedSeconds, ')
+          ..write('hintsUsed: $hintsUsed, ')
+          ..write('grid: $grid, ')
           ..write('syncStatus: $syncStatus, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -3858,6 +4046,1634 @@ class SyncOperationsCompanion extends UpdateCompanion<SyncOperationRow> {
   }
 }
 
+class $DisplaySettingsTable extends DisplaySettings
+    with TableInfo<$DisplaySettingsTable, DisplaySettingsRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DisplaySettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<VisualProfile, String>
+  visualProfile = GeneratedColumn<String>(
+    'visual_profile',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: Constant(VisualProfile.vibrant.name),
+  ).withConverter<VisualProfile>($DisplaySettingsTable.$convertervisualProfile);
+  static const VerificationMeta _timedMatchesMeta = const VerificationMeta(
+    'timedMatches',
+  );
+  @override
+  late final GeneratedColumn<bool> timedMatches = GeneratedColumn<bool>(
+    'timed_matches',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("timed_matches" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    visualProfile,
+    timedMatches,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'display_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DisplaySettingsRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('timed_matches')) {
+      context.handle(
+        _timedMatchesMeta,
+        timedMatches.isAcceptableOrUnknown(
+          data['timed_matches']!,
+          _timedMatchesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DisplaySettingsRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DisplaySettingsRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      visualProfile: $DisplaySettingsTable.$convertervisualProfile.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}visual_profile'],
+        )!,
+      ),
+      timedMatches: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}timed_matches'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DisplaySettingsTable createAlias(String alias) {
+    return $DisplaySettingsTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<VisualProfile, String, String>
+  $convertervisualProfile = const EnumNameConverter<VisualProfile>(
+    VisualProfile.values,
+  );
+}
+
+class DisplaySettingsRow extends DataClass
+    implements Insertable<DisplaySettingsRow> {
+  /// Siempre `DisplaySettingsRepository.singletonId`. Existe solo para que
+  /// el upsert tenga clave.
+  final int id;
+  final VisualProfile visualProfile;
+
+  /// Si la partida corre contra el reloj. Se reinicia al valor por defecto
+  /// del perfil cada vez que se elige uno, y después el jugador manda.
+  final bool timedMatches;
+  final int updatedAt;
+  const DisplaySettingsRow({
+    required this.id,
+    required this.visualProfile,
+    required this.timedMatches,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['visual_profile'] = Variable<String>(
+        $DisplaySettingsTable.$convertervisualProfile.toSql(visualProfile),
+      );
+    }
+    map['timed_matches'] = Variable<bool>(timedMatches);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  DisplaySettingsCompanion toCompanion(bool nullToAbsent) {
+    return DisplaySettingsCompanion(
+      id: Value(id),
+      visualProfile: Value(visualProfile),
+      timedMatches: Value(timedMatches),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DisplaySettingsRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DisplaySettingsRow(
+      id: serializer.fromJson<int>(json['id']),
+      visualProfile: $DisplaySettingsTable.$convertervisualProfile.fromJson(
+        serializer.fromJson<String>(json['visualProfile']),
+      ),
+      timedMatches: serializer.fromJson<bool>(json['timedMatches']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'visualProfile': serializer.toJson<String>(
+        $DisplaySettingsTable.$convertervisualProfile.toJson(visualProfile),
+      ),
+      'timedMatches': serializer.toJson<bool>(timedMatches),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  DisplaySettingsRow copyWith({
+    int? id,
+    VisualProfile? visualProfile,
+    bool? timedMatches,
+    int? updatedAt,
+  }) => DisplaySettingsRow(
+    id: id ?? this.id,
+    visualProfile: visualProfile ?? this.visualProfile,
+    timedMatches: timedMatches ?? this.timedMatches,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DisplaySettingsRow copyWithCompanion(DisplaySettingsCompanion data) {
+    return DisplaySettingsRow(
+      id: data.id.present ? data.id.value : this.id,
+      visualProfile: data.visualProfile.present
+          ? data.visualProfile.value
+          : this.visualProfile,
+      timedMatches: data.timedMatches.present
+          ? data.timedMatches.value
+          : this.timedMatches,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DisplaySettingsRow(')
+          ..write('id: $id, ')
+          ..write('visualProfile: $visualProfile, ')
+          ..write('timedMatches: $timedMatches, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, visualProfile, timedMatches, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DisplaySettingsRow &&
+          other.id == this.id &&
+          other.visualProfile == this.visualProfile &&
+          other.timedMatches == this.timedMatches &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
+  final Value<int> id;
+  final Value<VisualProfile> visualProfile;
+  final Value<bool> timedMatches;
+  final Value<int> updatedAt;
+  const DisplaySettingsCompanion({
+    this.id = const Value.absent(),
+    this.visualProfile = const Value.absent(),
+    this.timedMatches = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  DisplaySettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.visualProfile = const Value.absent(),
+    this.timedMatches = const Value.absent(),
+    required int updatedAt,
+  }) : updatedAt = Value(updatedAt);
+  static Insertable<DisplaySettingsRow> custom({
+    Expression<int>? id,
+    Expression<String>? visualProfile,
+    Expression<bool>? timedMatches,
+    Expression<int>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (visualProfile != null) 'visual_profile': visualProfile,
+      if (timedMatches != null) 'timed_matches': timedMatches,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  DisplaySettingsCompanion copyWith({
+    Value<int>? id,
+    Value<VisualProfile>? visualProfile,
+    Value<bool>? timedMatches,
+    Value<int>? updatedAt,
+  }) {
+    return DisplaySettingsCompanion(
+      id: id ?? this.id,
+      visualProfile: visualProfile ?? this.visualProfile,
+      timedMatches: timedMatches ?? this.timedMatches,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (visualProfile.present) {
+      map['visual_profile'] = Variable<String>(
+        $DisplaySettingsTable.$convertervisualProfile.toSql(
+          visualProfile.value,
+        ),
+      );
+    }
+    if (timedMatches.present) {
+      map['timed_matches'] = Variable<bool>(timedMatches.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DisplaySettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('visualProfile: $visualProfile, ')
+          ..write('timedMatches: $timedMatches, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $GameStatsTable extends GameStats
+    with TableInfo<$GameStatsTable, GameStatsRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $GameStatsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _playedAtMeta = const VerificationMeta(
+    'playedAt',
+  );
+  @override
+  late final GeneratedColumn<int> playedAt = GeneratedColumn<int>(
+    'played_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _playedDayMeta = const VerificationMeta(
+    'playedDay',
+  );
+  @override
+  late final GeneratedColumn<String> playedDay = GeneratedColumn<String>(
+    'played_day',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pairCountMeta = const VerificationMeta(
+    'pairCount',
+  );
+  @override
+  late final GeneratedColumn<int> pairCount = GeneratedColumn<int>(
+    'pair_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _matchedPairsMeta = const VerificationMeta(
+    'matchedPairs',
+  );
+  @override
+  late final GeneratedColumn<int> matchedPairs = GeneratedColumn<int>(
+    'matched_pairs',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _movesMeta = const VerificationMeta('moves');
+  @override
+  late final GeneratedColumn<int> moves = GeneratedColumn<int>(
+    'moves',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _memoryErrorsMeta = const VerificationMeta(
+    'memoryErrors',
+  );
+  @override
+  late final GeneratedColumn<int> memoryErrors = GeneratedColumn<int>(
+    'memory_errors',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hintsUsedMeta = const VerificationMeta(
+    'hintsUsed',
+  );
+  @override
+  late final GeneratedColumn<int> hintsUsed = GeneratedColumn<int>(
+    'hints_used',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _secondsElapsedMeta = const VerificationMeta(
+    'secondsElapsed',
+  );
+  @override
+  late final GeneratedColumn<int> secondsElapsed = GeneratedColumn<int>(
+    'seconds_elapsed',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timeLimitSecondsMeta = const VerificationMeta(
+    'timeLimitSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> timeLimitSeconds = GeneratedColumn<int>(
+    'time_limit_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _timedMeta = const VerificationMeta('timed');
+  @override
+  late final GeneratedColumn<bool> timed = GeneratedColumn<bool>(
+    'timed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("timed" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _wonMeta = const VerificationMeta('won');
+  @override
+  late final GeneratedColumn<bool> won = GeneratedColumn<bool>(
+    'won',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("won" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _scoreMeta = const VerificationMeta('score');
+  @override
+  late final GeneratedColumn<int> score = GeneratedColumn<int>(
+    'score',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    playedAt,
+    playedDay,
+    categoryId,
+    pairCount,
+    matchedPairs,
+    moves,
+    memoryErrors,
+    hintsUsed,
+    secondsElapsed,
+    timeLimitSeconds,
+    timed,
+    won,
+    score,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'game_stats';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<GameStatsRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('played_at')) {
+      context.handle(
+        _playedAtMeta,
+        playedAt.isAcceptableOrUnknown(data['played_at']!, _playedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_playedAtMeta);
+    }
+    if (data.containsKey('played_day')) {
+      context.handle(
+        _playedDayMeta,
+        playedDay.isAcceptableOrUnknown(data['played_day']!, _playedDayMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_playedDayMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryIdMeta);
+    }
+    if (data.containsKey('pair_count')) {
+      context.handle(
+        _pairCountMeta,
+        pairCount.isAcceptableOrUnknown(data['pair_count']!, _pairCountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pairCountMeta);
+    }
+    if (data.containsKey('matched_pairs')) {
+      context.handle(
+        _matchedPairsMeta,
+        matchedPairs.isAcceptableOrUnknown(
+          data['matched_pairs']!,
+          _matchedPairsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_matchedPairsMeta);
+    }
+    if (data.containsKey('moves')) {
+      context.handle(
+        _movesMeta,
+        moves.isAcceptableOrUnknown(data['moves']!, _movesMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_movesMeta);
+    }
+    if (data.containsKey('memory_errors')) {
+      context.handle(
+        _memoryErrorsMeta,
+        memoryErrors.isAcceptableOrUnknown(
+          data['memory_errors']!,
+          _memoryErrorsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_memoryErrorsMeta);
+    }
+    if (data.containsKey('hints_used')) {
+      context.handle(
+        _hintsUsedMeta,
+        hintsUsed.isAcceptableOrUnknown(data['hints_used']!, _hintsUsedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_hintsUsedMeta);
+    }
+    if (data.containsKey('seconds_elapsed')) {
+      context.handle(
+        _secondsElapsedMeta,
+        secondsElapsed.isAcceptableOrUnknown(
+          data['seconds_elapsed']!,
+          _secondsElapsedMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_secondsElapsedMeta);
+    }
+    if (data.containsKey('time_limit_seconds')) {
+      context.handle(
+        _timeLimitSecondsMeta,
+        timeLimitSeconds.isAcceptableOrUnknown(
+          data['time_limit_seconds']!,
+          _timeLimitSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_timeLimitSecondsMeta);
+    }
+    if (data.containsKey('timed')) {
+      context.handle(
+        _timedMeta,
+        timed.isAcceptableOrUnknown(data['timed']!, _timedMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_timedMeta);
+    }
+    if (data.containsKey('won')) {
+      context.handle(
+        _wonMeta,
+        won.isAcceptableOrUnknown(data['won']!, _wonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_wonMeta);
+    }
+    if (data.containsKey('score')) {
+      context.handle(
+        _scoreMeta,
+        score.isAcceptableOrUnknown(data['score']!, _scoreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_scoreMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  GameStatsRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return GameStatsRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      playedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}played_at'],
+      )!,
+      playedDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}played_day'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      pairCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pair_count'],
+      )!,
+      matchedPairs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}matched_pairs'],
+      )!,
+      moves: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}moves'],
+      )!,
+      memoryErrors: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}memory_errors'],
+      )!,
+      hintsUsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}hints_used'],
+      )!,
+      secondsElapsed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}seconds_elapsed'],
+      )!,
+      timeLimitSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}time_limit_seconds'],
+      )!,
+      timed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}timed'],
+      )!,
+      won: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}won'],
+      )!,
+      score: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}score'],
+      )!,
+    );
+  }
+
+  @override
+  $GameStatsTable createAlias(String alias) {
+    return $GameStatsTable(attachedDatabase, alias);
+  }
+}
+
+class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
+  /// Autoincremental: además de clave sirve de cursor para paginar el
+  /// historial sin `OFFSET`, que se vuelve lento con cientos de filas.
+  final int id;
+
+  /// Reloj local en milisegundos.
+  final int playedAt;
+
+  /// `'YYYY-MM-DD'` en zona **local**, igual que `lastPlayedDate` del perfil:
+  /// agrupar por día y calcular la racha no puede depender del huso horario
+  /// en el que se consulte.
+  final String playedDay;
+
+  /// `GameCategory.id`.
+  final String categoryId;
+  final int pairCount;
+  final int matchedPairs;
+
+  /// Turnos: cada par de cartas volteadas cuenta uno.
+  final int moves;
+
+  /// Fallos con información disponible, según `RoundTracker`. Los fallos de
+  /// descubrimiento no cuentan.
+  final int memoryErrors;
+  final int hintsUsed;
+
+  /// Tiempo real jugado, incluida la prórroga de una partida sin reloj.
+  final int secondsElapsed;
+  final int timeLimitSeconds;
+  final bool timed;
+  final bool won;
+  final int score;
+  const GameStatsRow({
+    required this.id,
+    required this.playedAt,
+    required this.playedDay,
+    required this.categoryId,
+    required this.pairCount,
+    required this.matchedPairs,
+    required this.moves,
+    required this.memoryErrors,
+    required this.hintsUsed,
+    required this.secondsElapsed,
+    required this.timeLimitSeconds,
+    required this.timed,
+    required this.won,
+    required this.score,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['played_at'] = Variable<int>(playedAt);
+    map['played_day'] = Variable<String>(playedDay);
+    map['category_id'] = Variable<String>(categoryId);
+    map['pair_count'] = Variable<int>(pairCount);
+    map['matched_pairs'] = Variable<int>(matchedPairs);
+    map['moves'] = Variable<int>(moves);
+    map['memory_errors'] = Variable<int>(memoryErrors);
+    map['hints_used'] = Variable<int>(hintsUsed);
+    map['seconds_elapsed'] = Variable<int>(secondsElapsed);
+    map['time_limit_seconds'] = Variable<int>(timeLimitSeconds);
+    map['timed'] = Variable<bool>(timed);
+    map['won'] = Variable<bool>(won);
+    map['score'] = Variable<int>(score);
+    return map;
+  }
+
+  GameStatsCompanion toCompanion(bool nullToAbsent) {
+    return GameStatsCompanion(
+      id: Value(id),
+      playedAt: Value(playedAt),
+      playedDay: Value(playedDay),
+      categoryId: Value(categoryId),
+      pairCount: Value(pairCount),
+      matchedPairs: Value(matchedPairs),
+      moves: Value(moves),
+      memoryErrors: Value(memoryErrors),
+      hintsUsed: Value(hintsUsed),
+      secondsElapsed: Value(secondsElapsed),
+      timeLimitSeconds: Value(timeLimitSeconds),
+      timed: Value(timed),
+      won: Value(won),
+      score: Value(score),
+    );
+  }
+
+  factory GameStatsRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return GameStatsRow(
+      id: serializer.fromJson<int>(json['id']),
+      playedAt: serializer.fromJson<int>(json['playedAt']),
+      playedDay: serializer.fromJson<String>(json['playedDay']),
+      categoryId: serializer.fromJson<String>(json['categoryId']),
+      pairCount: serializer.fromJson<int>(json['pairCount']),
+      matchedPairs: serializer.fromJson<int>(json['matchedPairs']),
+      moves: serializer.fromJson<int>(json['moves']),
+      memoryErrors: serializer.fromJson<int>(json['memoryErrors']),
+      hintsUsed: serializer.fromJson<int>(json['hintsUsed']),
+      secondsElapsed: serializer.fromJson<int>(json['secondsElapsed']),
+      timeLimitSeconds: serializer.fromJson<int>(json['timeLimitSeconds']),
+      timed: serializer.fromJson<bool>(json['timed']),
+      won: serializer.fromJson<bool>(json['won']),
+      score: serializer.fromJson<int>(json['score']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'playedAt': serializer.toJson<int>(playedAt),
+      'playedDay': serializer.toJson<String>(playedDay),
+      'categoryId': serializer.toJson<String>(categoryId),
+      'pairCount': serializer.toJson<int>(pairCount),
+      'matchedPairs': serializer.toJson<int>(matchedPairs),
+      'moves': serializer.toJson<int>(moves),
+      'memoryErrors': serializer.toJson<int>(memoryErrors),
+      'hintsUsed': serializer.toJson<int>(hintsUsed),
+      'secondsElapsed': serializer.toJson<int>(secondsElapsed),
+      'timeLimitSeconds': serializer.toJson<int>(timeLimitSeconds),
+      'timed': serializer.toJson<bool>(timed),
+      'won': serializer.toJson<bool>(won),
+      'score': serializer.toJson<int>(score),
+    };
+  }
+
+  GameStatsRow copyWith({
+    int? id,
+    int? playedAt,
+    String? playedDay,
+    String? categoryId,
+    int? pairCount,
+    int? matchedPairs,
+    int? moves,
+    int? memoryErrors,
+    int? hintsUsed,
+    int? secondsElapsed,
+    int? timeLimitSeconds,
+    bool? timed,
+    bool? won,
+    int? score,
+  }) => GameStatsRow(
+    id: id ?? this.id,
+    playedAt: playedAt ?? this.playedAt,
+    playedDay: playedDay ?? this.playedDay,
+    categoryId: categoryId ?? this.categoryId,
+    pairCount: pairCount ?? this.pairCount,
+    matchedPairs: matchedPairs ?? this.matchedPairs,
+    moves: moves ?? this.moves,
+    memoryErrors: memoryErrors ?? this.memoryErrors,
+    hintsUsed: hintsUsed ?? this.hintsUsed,
+    secondsElapsed: secondsElapsed ?? this.secondsElapsed,
+    timeLimitSeconds: timeLimitSeconds ?? this.timeLimitSeconds,
+    timed: timed ?? this.timed,
+    won: won ?? this.won,
+    score: score ?? this.score,
+  );
+  GameStatsRow copyWithCompanion(GameStatsCompanion data) {
+    return GameStatsRow(
+      id: data.id.present ? data.id.value : this.id,
+      playedAt: data.playedAt.present ? data.playedAt.value : this.playedAt,
+      playedDay: data.playedDay.present ? data.playedDay.value : this.playedDay,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      pairCount: data.pairCount.present ? data.pairCount.value : this.pairCount,
+      matchedPairs: data.matchedPairs.present
+          ? data.matchedPairs.value
+          : this.matchedPairs,
+      moves: data.moves.present ? data.moves.value : this.moves,
+      memoryErrors: data.memoryErrors.present
+          ? data.memoryErrors.value
+          : this.memoryErrors,
+      hintsUsed: data.hintsUsed.present ? data.hintsUsed.value : this.hintsUsed,
+      secondsElapsed: data.secondsElapsed.present
+          ? data.secondsElapsed.value
+          : this.secondsElapsed,
+      timeLimitSeconds: data.timeLimitSeconds.present
+          ? data.timeLimitSeconds.value
+          : this.timeLimitSeconds,
+      timed: data.timed.present ? data.timed.value : this.timed,
+      won: data.won.present ? data.won.value : this.won,
+      score: data.score.present ? data.score.value : this.score,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GameStatsRow(')
+          ..write('id: $id, ')
+          ..write('playedAt: $playedAt, ')
+          ..write('playedDay: $playedDay, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('pairCount: $pairCount, ')
+          ..write('matchedPairs: $matchedPairs, ')
+          ..write('moves: $moves, ')
+          ..write('memoryErrors: $memoryErrors, ')
+          ..write('hintsUsed: $hintsUsed, ')
+          ..write('secondsElapsed: $secondsElapsed, ')
+          ..write('timeLimitSeconds: $timeLimitSeconds, ')
+          ..write('timed: $timed, ')
+          ..write('won: $won, ')
+          ..write('score: $score')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    playedAt,
+    playedDay,
+    categoryId,
+    pairCount,
+    matchedPairs,
+    moves,
+    memoryErrors,
+    hintsUsed,
+    secondsElapsed,
+    timeLimitSeconds,
+    timed,
+    won,
+    score,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is GameStatsRow &&
+          other.id == this.id &&
+          other.playedAt == this.playedAt &&
+          other.playedDay == this.playedDay &&
+          other.categoryId == this.categoryId &&
+          other.pairCount == this.pairCount &&
+          other.matchedPairs == this.matchedPairs &&
+          other.moves == this.moves &&
+          other.memoryErrors == this.memoryErrors &&
+          other.hintsUsed == this.hintsUsed &&
+          other.secondsElapsed == this.secondsElapsed &&
+          other.timeLimitSeconds == this.timeLimitSeconds &&
+          other.timed == this.timed &&
+          other.won == this.won &&
+          other.score == this.score);
+}
+
+class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
+  final Value<int> id;
+  final Value<int> playedAt;
+  final Value<String> playedDay;
+  final Value<String> categoryId;
+  final Value<int> pairCount;
+  final Value<int> matchedPairs;
+  final Value<int> moves;
+  final Value<int> memoryErrors;
+  final Value<int> hintsUsed;
+  final Value<int> secondsElapsed;
+  final Value<int> timeLimitSeconds;
+  final Value<bool> timed;
+  final Value<bool> won;
+  final Value<int> score;
+  const GameStatsCompanion({
+    this.id = const Value.absent(),
+    this.playedAt = const Value.absent(),
+    this.playedDay = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.pairCount = const Value.absent(),
+    this.matchedPairs = const Value.absent(),
+    this.moves = const Value.absent(),
+    this.memoryErrors = const Value.absent(),
+    this.hintsUsed = const Value.absent(),
+    this.secondsElapsed = const Value.absent(),
+    this.timeLimitSeconds = const Value.absent(),
+    this.timed = const Value.absent(),
+    this.won = const Value.absent(),
+    this.score = const Value.absent(),
+  });
+  GameStatsCompanion.insert({
+    this.id = const Value.absent(),
+    required int playedAt,
+    required String playedDay,
+    required String categoryId,
+    required int pairCount,
+    required int matchedPairs,
+    required int moves,
+    required int memoryErrors,
+    required int hintsUsed,
+    required int secondsElapsed,
+    required int timeLimitSeconds,
+    required bool timed,
+    required bool won,
+    required int score,
+  }) : playedAt = Value(playedAt),
+       playedDay = Value(playedDay),
+       categoryId = Value(categoryId),
+       pairCount = Value(pairCount),
+       matchedPairs = Value(matchedPairs),
+       moves = Value(moves),
+       memoryErrors = Value(memoryErrors),
+       hintsUsed = Value(hintsUsed),
+       secondsElapsed = Value(secondsElapsed),
+       timeLimitSeconds = Value(timeLimitSeconds),
+       timed = Value(timed),
+       won = Value(won),
+       score = Value(score);
+  static Insertable<GameStatsRow> custom({
+    Expression<int>? id,
+    Expression<int>? playedAt,
+    Expression<String>? playedDay,
+    Expression<String>? categoryId,
+    Expression<int>? pairCount,
+    Expression<int>? matchedPairs,
+    Expression<int>? moves,
+    Expression<int>? memoryErrors,
+    Expression<int>? hintsUsed,
+    Expression<int>? secondsElapsed,
+    Expression<int>? timeLimitSeconds,
+    Expression<bool>? timed,
+    Expression<bool>? won,
+    Expression<int>? score,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (playedAt != null) 'played_at': playedAt,
+      if (playedDay != null) 'played_day': playedDay,
+      if (categoryId != null) 'category_id': categoryId,
+      if (pairCount != null) 'pair_count': pairCount,
+      if (matchedPairs != null) 'matched_pairs': matchedPairs,
+      if (moves != null) 'moves': moves,
+      if (memoryErrors != null) 'memory_errors': memoryErrors,
+      if (hintsUsed != null) 'hints_used': hintsUsed,
+      if (secondsElapsed != null) 'seconds_elapsed': secondsElapsed,
+      if (timeLimitSeconds != null) 'time_limit_seconds': timeLimitSeconds,
+      if (timed != null) 'timed': timed,
+      if (won != null) 'won': won,
+      if (score != null) 'score': score,
+    });
+  }
+
+  GameStatsCompanion copyWith({
+    Value<int>? id,
+    Value<int>? playedAt,
+    Value<String>? playedDay,
+    Value<String>? categoryId,
+    Value<int>? pairCount,
+    Value<int>? matchedPairs,
+    Value<int>? moves,
+    Value<int>? memoryErrors,
+    Value<int>? hintsUsed,
+    Value<int>? secondsElapsed,
+    Value<int>? timeLimitSeconds,
+    Value<bool>? timed,
+    Value<bool>? won,
+    Value<int>? score,
+  }) {
+    return GameStatsCompanion(
+      id: id ?? this.id,
+      playedAt: playedAt ?? this.playedAt,
+      playedDay: playedDay ?? this.playedDay,
+      categoryId: categoryId ?? this.categoryId,
+      pairCount: pairCount ?? this.pairCount,
+      matchedPairs: matchedPairs ?? this.matchedPairs,
+      moves: moves ?? this.moves,
+      memoryErrors: memoryErrors ?? this.memoryErrors,
+      hintsUsed: hintsUsed ?? this.hintsUsed,
+      secondsElapsed: secondsElapsed ?? this.secondsElapsed,
+      timeLimitSeconds: timeLimitSeconds ?? this.timeLimitSeconds,
+      timed: timed ?? this.timed,
+      won: won ?? this.won,
+      score: score ?? this.score,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (playedAt.present) {
+      map['played_at'] = Variable<int>(playedAt.value);
+    }
+    if (playedDay.present) {
+      map['played_day'] = Variable<String>(playedDay.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (pairCount.present) {
+      map['pair_count'] = Variable<int>(pairCount.value);
+    }
+    if (matchedPairs.present) {
+      map['matched_pairs'] = Variable<int>(matchedPairs.value);
+    }
+    if (moves.present) {
+      map['moves'] = Variable<int>(moves.value);
+    }
+    if (memoryErrors.present) {
+      map['memory_errors'] = Variable<int>(memoryErrors.value);
+    }
+    if (hintsUsed.present) {
+      map['hints_used'] = Variable<int>(hintsUsed.value);
+    }
+    if (secondsElapsed.present) {
+      map['seconds_elapsed'] = Variable<int>(secondsElapsed.value);
+    }
+    if (timeLimitSeconds.present) {
+      map['time_limit_seconds'] = Variable<int>(timeLimitSeconds.value);
+    }
+    if (timed.present) {
+      map['timed'] = Variable<bool>(timed.value);
+    }
+    if (won.present) {
+      map['won'] = Variable<bool>(won.value);
+    }
+    if (score.present) {
+      map['score'] = Variable<int>(score.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('GameStatsCompanion(')
+          ..write('id: $id, ')
+          ..write('playedAt: $playedAt, ')
+          ..write('playedDay: $playedDay, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('pairCount: $pairCount, ')
+          ..write('matchedPairs: $matchedPairs, ')
+          ..write('moves: $moves, ')
+          ..write('memoryErrors: $memoryErrors, ')
+          ..write('hintsUsed: $hintsUsed, ')
+          ..write('secondsElapsed: $secondsElapsed, ')
+          ..write('timeLimitSeconds: $timeLimitSeconds, ')
+          ..write('timed: $timed, ')
+          ..write('won: $won, ')
+          ..write('score: $score')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $CategoryLevelsTable extends CategoryLevels
+    with TableInfo<$CategoryLevelsTable, CategoryLevelRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CategoryLevelsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<String> categoryId = GeneratedColumn<String>(
+    'category_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _levelMeta = const VerificationMeta('level');
+  @override
+  late final GeneratedColumn<int> level = GeneratedColumn<int>(
+    'level',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _skillMeta = const VerificationMeta('skill');
+  @override
+  late final GeneratedColumn<double> skill = GeneratedColumn<double>(
+    'skill',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pairCountMeta = const VerificationMeta(
+    'pairCount',
+  );
+  @override
+  late final GeneratedColumn<int> pairCount = GeneratedColumn<int>(
+    'pair_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _consecutiveLossesMeta = const VerificationMeta(
+    'consecutiveLosses',
+  );
+  @override
+  late final GeneratedColumn<int> consecutiveLosses = GeneratedColumn<int>(
+    'consecutive_losses',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _roundsPlayedMeta = const VerificationMeta(
+    'roundsPlayed',
+  );
+  @override
+  late final GeneratedColumn<int> roundsPlayed = GeneratedColumn<int>(
+    'rounds_played',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    categoryId,
+    level,
+    skill,
+    pairCount,
+    consecutiveLosses,
+    roundsPlayed,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'category_levels';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CategoryLevelRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryIdMeta);
+    }
+    if (data.containsKey('level')) {
+      context.handle(
+        _levelMeta,
+        level.isAcceptableOrUnknown(data['level']!, _levelMeta),
+      );
+    }
+    if (data.containsKey('skill')) {
+      context.handle(
+        _skillMeta,
+        skill.isAcceptableOrUnknown(data['skill']!, _skillMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_skillMeta);
+    }
+    if (data.containsKey('pair_count')) {
+      context.handle(
+        _pairCountMeta,
+        pairCount.isAcceptableOrUnknown(data['pair_count']!, _pairCountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pairCountMeta);
+    }
+    if (data.containsKey('consecutive_losses')) {
+      context.handle(
+        _consecutiveLossesMeta,
+        consecutiveLosses.isAcceptableOrUnknown(
+          data['consecutive_losses']!,
+          _consecutiveLossesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rounds_played')) {
+      context.handle(
+        _roundsPlayedMeta,
+        roundsPlayed.isAcceptableOrUnknown(
+          data['rounds_played']!,
+          _roundsPlayedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {categoryId};
+  @override
+  CategoryLevelRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CategoryLevelRow(
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_id'],
+      )!,
+      level: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}level'],
+      )!,
+      skill: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}skill'],
+      )!,
+      pairCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}pair_count'],
+      )!,
+      consecutiveLosses: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}consecutive_losses'],
+      )!,
+      roundsPlayed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rounds_played'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CategoryLevelsTable createAlias(String alias) {
+    return $CategoryLevelsTable(attachedDatabase, alias);
+  }
+}
+
+class CategoryLevelRow extends DataClass
+    implements Insertable<CategoryLevelRow> {
+  /// `GameCategory.id`.
+  final String categoryId;
+
+  /// Empieza en 1 y sube uno por cada tablero ganado. Nunca baja.
+  final int level;
+
+  /// `SkillState.skill`, de 0 a 1.
+  final double skill;
+  final int pairCount;
+  final int consecutiveLosses;
+  final int roundsPlayed;
+  final int updatedAt;
+  const CategoryLevelRow({
+    required this.categoryId,
+    required this.level,
+    required this.skill,
+    required this.pairCount,
+    required this.consecutiveLosses,
+    required this.roundsPlayed,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['category_id'] = Variable<String>(categoryId);
+    map['level'] = Variable<int>(level);
+    map['skill'] = Variable<double>(skill);
+    map['pair_count'] = Variable<int>(pairCount);
+    map['consecutive_losses'] = Variable<int>(consecutiveLosses);
+    map['rounds_played'] = Variable<int>(roundsPlayed);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  CategoryLevelsCompanion toCompanion(bool nullToAbsent) {
+    return CategoryLevelsCompanion(
+      categoryId: Value(categoryId),
+      level: Value(level),
+      skill: Value(skill),
+      pairCount: Value(pairCount),
+      consecutiveLosses: Value(consecutiveLosses),
+      roundsPlayed: Value(roundsPlayed),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CategoryLevelRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CategoryLevelRow(
+      categoryId: serializer.fromJson<String>(json['categoryId']),
+      level: serializer.fromJson<int>(json['level']),
+      skill: serializer.fromJson<double>(json['skill']),
+      pairCount: serializer.fromJson<int>(json['pairCount']),
+      consecutiveLosses: serializer.fromJson<int>(json['consecutiveLosses']),
+      roundsPlayed: serializer.fromJson<int>(json['roundsPlayed']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'categoryId': serializer.toJson<String>(categoryId),
+      'level': serializer.toJson<int>(level),
+      'skill': serializer.toJson<double>(skill),
+      'pairCount': serializer.toJson<int>(pairCount),
+      'consecutiveLosses': serializer.toJson<int>(consecutiveLosses),
+      'roundsPlayed': serializer.toJson<int>(roundsPlayed),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  CategoryLevelRow copyWith({
+    String? categoryId,
+    int? level,
+    double? skill,
+    int? pairCount,
+    int? consecutiveLosses,
+    int? roundsPlayed,
+    int? updatedAt,
+  }) => CategoryLevelRow(
+    categoryId: categoryId ?? this.categoryId,
+    level: level ?? this.level,
+    skill: skill ?? this.skill,
+    pairCount: pairCount ?? this.pairCount,
+    consecutiveLosses: consecutiveLosses ?? this.consecutiveLosses,
+    roundsPlayed: roundsPlayed ?? this.roundsPlayed,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CategoryLevelRow copyWithCompanion(CategoryLevelsCompanion data) {
+    return CategoryLevelRow(
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      level: data.level.present ? data.level.value : this.level,
+      skill: data.skill.present ? data.skill.value : this.skill,
+      pairCount: data.pairCount.present ? data.pairCount.value : this.pairCount,
+      consecutiveLosses: data.consecutiveLosses.present
+          ? data.consecutiveLosses.value
+          : this.consecutiveLosses,
+      roundsPlayed: data.roundsPlayed.present
+          ? data.roundsPlayed.value
+          : this.roundsPlayed,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CategoryLevelRow(')
+          ..write('categoryId: $categoryId, ')
+          ..write('level: $level, ')
+          ..write('skill: $skill, ')
+          ..write('pairCount: $pairCount, ')
+          ..write('consecutiveLosses: $consecutiveLosses, ')
+          ..write('roundsPlayed: $roundsPlayed, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    categoryId,
+    level,
+    skill,
+    pairCount,
+    consecutiveLosses,
+    roundsPlayed,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CategoryLevelRow &&
+          other.categoryId == this.categoryId &&
+          other.level == this.level &&
+          other.skill == this.skill &&
+          other.pairCount == this.pairCount &&
+          other.consecutiveLosses == this.consecutiveLosses &&
+          other.roundsPlayed == this.roundsPlayed &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CategoryLevelsCompanion extends UpdateCompanion<CategoryLevelRow> {
+  final Value<String> categoryId;
+  final Value<int> level;
+  final Value<double> skill;
+  final Value<int> pairCount;
+  final Value<int> consecutiveLosses;
+  final Value<int> roundsPlayed;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const CategoryLevelsCompanion({
+    this.categoryId = const Value.absent(),
+    this.level = const Value.absent(),
+    this.skill = const Value.absent(),
+    this.pairCount = const Value.absent(),
+    this.consecutiveLosses = const Value.absent(),
+    this.roundsPlayed = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CategoryLevelsCompanion.insert({
+    required String categoryId,
+    this.level = const Value.absent(),
+    required double skill,
+    required int pairCount,
+    this.consecutiveLosses = const Value.absent(),
+    this.roundsPlayed = const Value.absent(),
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : categoryId = Value(categoryId),
+       skill = Value(skill),
+       pairCount = Value(pairCount),
+       updatedAt = Value(updatedAt);
+  static Insertable<CategoryLevelRow> custom({
+    Expression<String>? categoryId,
+    Expression<int>? level,
+    Expression<double>? skill,
+    Expression<int>? pairCount,
+    Expression<int>? consecutiveLosses,
+    Expression<int>? roundsPlayed,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (categoryId != null) 'category_id': categoryId,
+      if (level != null) 'level': level,
+      if (skill != null) 'skill': skill,
+      if (pairCount != null) 'pair_count': pairCount,
+      if (consecutiveLosses != null) 'consecutive_losses': consecutiveLosses,
+      if (roundsPlayed != null) 'rounds_played': roundsPlayed,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CategoryLevelsCompanion copyWith({
+    Value<String>? categoryId,
+    Value<int>? level,
+    Value<double>? skill,
+    Value<int>? pairCount,
+    Value<int>? consecutiveLosses,
+    Value<int>? roundsPlayed,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CategoryLevelsCompanion(
+      categoryId: categoryId ?? this.categoryId,
+      level: level ?? this.level,
+      skill: skill ?? this.skill,
+      pairCount: pairCount ?? this.pairCount,
+      consecutiveLosses: consecutiveLosses ?? this.consecutiveLosses,
+      roundsPlayed: roundsPlayed ?? this.roundsPlayed,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (categoryId.present) {
+      map['category_id'] = Variable<String>(categoryId.value);
+    }
+    if (level.present) {
+      map['level'] = Variable<int>(level.value);
+    }
+    if (skill.present) {
+      map['skill'] = Variable<double>(skill.value);
+    }
+    if (pairCount.present) {
+      map['pair_count'] = Variable<int>(pairCount.value);
+    }
+    if (consecutiveLosses.present) {
+      map['consecutive_losses'] = Variable<int>(consecutiveLosses.value);
+    }
+    if (roundsPlayed.present) {
+      map['rounds_played'] = Variable<int>(roundsPlayed.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CategoryLevelsCompanion(')
+          ..write('categoryId: $categoryId, ')
+          ..write('level: $level, ')
+          ..write('skill: $skill, ')
+          ..write('pairCount: $pairCount, ')
+          ..write('consecutiveLosses: $consecutiveLosses, ')
+          ..write('roundsPlayed: $roundsPlayed, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3870,6 +5686,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DailyChallengeProgressTable(this);
   late final $LivesStatesTable livesStates = $LivesStatesTable(this);
   late final $SyncOperationsTable syncOperations = $SyncOperationsTable(this);
+  late final $DisplaySettingsTable displaySettings = $DisplaySettingsTable(
+    this,
+  );
+  late final $GameStatsTable gameStats = $GameStatsTable(this);
+  late final $CategoryLevelsTable categoryLevels = $CategoryLevelsTable(this);
   late final Index idxMatchesPlayerPlayedAt = Index(
     'idx_matches_player_played_at',
     'CREATE INDEX idx_matches_player_played_at ON matches (player_local_id, played_at)',
@@ -3886,6 +5707,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_sync_ops_player_created',
     'CREATE INDEX idx_sync_ops_player_created ON sync_operations (player_local_id, created_at)',
   );
+  late final Index idxGameStatsPlayedAt = Index(
+    'idx_game_stats_played_at',
+    'CREATE INDEX idx_game_stats_played_at ON game_stats (played_at)',
+  );
+  late final Index idxGameStatsPlayedDay = Index(
+    'idx_game_stats_played_day',
+    'CREATE INDEX idx_game_stats_played_day ON game_stats (played_day)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3898,10 +5727,15 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     dailyChallengeProgress,
     livesStates,
     syncOperations,
+    displaySettings,
+    gameStats,
+    categoryLevels,
     idxMatchesPlayerPlayedAt,
     idxMatchesSyncStatus,
     idxSyncOpsStatusNextAttempt,
     idxSyncOpsPlayerCreated,
+    idxGameStatsPlayedAt,
+    idxGameStatsPlayedDay,
   ];
 }
 
@@ -4646,7 +6480,7 @@ class $$PlayerProfilesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PlayerProfilesTable, PlayerProfileRow>(table),
                   $$PlayerProfilesTableReferences(db, table, e),
                 ),
               )
@@ -5220,7 +7054,7 @@ class $$MatchesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MatchesTable, MatchRow>(table),
                   $$MatchesTableReferences(db, table, e),
                 ),
               )
@@ -5573,7 +7407,7 @@ class $$LevelProgressTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$LevelProgressTable, LevelProgressRow>(table),
                   $$LevelProgressTableReferences(db, table, e),
                 ),
               )
@@ -5809,7 +7643,18 @@ class $$DailyChallengeDefsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$DailyChallengeDefsTable, DailyChallengeDefRow>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $DailyChallengeDefsTable,
+                    DailyChallengeDefRow
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -5844,6 +7689,10 @@ typedef $$DailyChallengeProgressTableCreateCompanionBuilder =
       Value<bool> completed,
       Value<int> score,
       Value<int?> completedAt,
+      Value<int> moves,
+      Value<int> elapsedSeconds,
+      Value<int> hintsUsed,
+      Value<String> grid,
       required SyncStatus syncStatus,
       Value<int> rowid,
     });
@@ -5854,6 +7703,10 @@ typedef $$DailyChallengeProgressTableUpdateCompanionBuilder =
       Value<bool> completed,
       Value<int> score,
       Value<int?> completedAt,
+      Value<int> moves,
+      Value<int> elapsedSeconds,
+      Value<int> hintsUsed,
+      Value<String> grid,
       Value<SyncStatus> syncStatus,
       Value<int> rowid,
     });
@@ -5920,6 +7773,26 @@ class $$DailyChallengeProgressTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get moves => $composableBuilder(
+    column: $table.moves,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hintsUsed => $composableBuilder(
+    column: $table.hintsUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get grid => $composableBuilder(
+    column: $table.grid,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnWithTypeConverterFilters<SyncStatus, SyncStatus, String>
   get syncStatus => $composableBuilder(
     column: $table.syncStatus,
@@ -5979,6 +7852,26 @@ class $$DailyChallengeProgressTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get moves => $composableBuilder(
+    column: $table.moves,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hintsUsed => $composableBuilder(
+    column: $table.hintsUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get grid => $composableBuilder(
+    column: $table.grid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get syncStatus => $composableBuilder(
     column: $table.syncStatus,
     builder: (column) => ColumnOrderings(column),
@@ -6032,6 +7925,20 @@ class $$DailyChallengeProgressTableAnnotationComposer
     column: $table.completedAt,
     builder: (column) => column,
   );
+
+  GeneratedColumn<int> get moves =>
+      $composableBuilder(column: $table.moves, builder: (column) => column);
+
+  GeneratedColumn<int> get elapsedSeconds => $composableBuilder(
+    column: $table.elapsedSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get hintsUsed =>
+      $composableBuilder(column: $table.hintsUsed, builder: (column) => column);
+
+  GeneratedColumn<String> get grid =>
+      $composableBuilder(column: $table.grid, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<SyncStatus, String> get syncStatus =>
       $composableBuilder(
@@ -6107,6 +8014,10 @@ class $$DailyChallengeProgressTableTableManager
                 Value<bool> completed = const Value.absent(),
                 Value<int> score = const Value.absent(),
                 Value<int?> completedAt = const Value.absent(),
+                Value<int> moves = const Value.absent(),
+                Value<int> elapsedSeconds = const Value.absent(),
+                Value<int> hintsUsed = const Value.absent(),
+                Value<String> grid = const Value.absent(),
                 Value<SyncStatus> syncStatus = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => DailyChallengeProgressCompanion(
@@ -6115,6 +8026,10 @@ class $$DailyChallengeProgressTableTableManager
                 completed: completed,
                 score: score,
                 completedAt: completedAt,
+                moves: moves,
+                elapsedSeconds: elapsedSeconds,
+                hintsUsed: hintsUsed,
+                grid: grid,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
@@ -6125,6 +8040,10 @@ class $$DailyChallengeProgressTableTableManager
                 Value<bool> completed = const Value.absent(),
                 Value<int> score = const Value.absent(),
                 Value<int?> completedAt = const Value.absent(),
+                Value<int> moves = const Value.absent(),
+                Value<int> elapsedSeconds = const Value.absent(),
+                Value<int> hintsUsed = const Value.absent(),
+                Value<String> grid = const Value.absent(),
                 required SyncStatus syncStatus,
                 Value<int> rowid = const Value.absent(),
               }) => DailyChallengeProgressCompanion.insert(
@@ -6133,13 +8052,20 @@ class $$DailyChallengeProgressTableTableManager
                 completed: completed,
                 score: score,
                 completedAt: completedAt,
+                moves: moves,
+                elapsedSeconds: elapsedSeconds,
+                hintsUsed: hintsUsed,
+                grid: grid,
                 syncStatus: syncStatus,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $DailyChallengeProgressTable,
+                    DailyChallengeProgressRow
+                  >(table),
                   $$DailyChallengeProgressTableReferences(db, table, e),
                 ),
               )
@@ -6425,7 +8351,7 @@ class $$LivesStatesTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$LivesStatesTable, LivesStateRow>(table),
                   $$LivesStatesTableReferences(db, table, e),
                 ),
               )
@@ -6875,7 +8801,7 @@ class $$SyncOperationsTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SyncOperationsTable, SyncOperationRow>(table),
                   $$SyncOperationsTableReferences(db, table, e),
                 ),
               )
@@ -6940,6 +8866,849 @@ typedef $$SyncOperationsTableProcessedTableManager =
       SyncOperationRow,
       PrefetchHooks Function({bool playerLocalId})
     >;
+typedef $$DisplaySettingsTableCreateCompanionBuilder =
+    DisplaySettingsCompanion Function({
+      Value<int> id,
+      Value<VisualProfile> visualProfile,
+      Value<bool> timedMatches,
+      required int updatedAt,
+    });
+typedef $$DisplaySettingsTableUpdateCompanionBuilder =
+    DisplaySettingsCompanion Function({
+      Value<int> id,
+      Value<VisualProfile> visualProfile,
+      Value<bool> timedMatches,
+      Value<int> updatedAt,
+    });
+
+class $$DisplaySettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $DisplaySettingsTable> {
+  $$DisplaySettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<VisualProfile, VisualProfile, String>
+  get visualProfile => $composableBuilder(
+    column: $table.visualProfile,
+    builder: (column) => ColumnWithTypeConverterFilters(column),
+  );
+
+  ColumnFilters<bool> get timedMatches => $composableBuilder(
+    column: $table.timedMatches,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DisplaySettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DisplaySettingsTable> {
+  $$DisplaySettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get visualProfile => $composableBuilder(
+    column: $table.visualProfile,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get timedMatches => $composableBuilder(
+    column: $table.timedMatches,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DisplaySettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DisplaySettingsTable> {
+  $$DisplaySettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<VisualProfile, String> get visualProfile =>
+      $composableBuilder(
+        column: $table.visualProfile,
+        builder: (column) => column,
+      );
+
+  GeneratedColumn<bool> get timedMatches => $composableBuilder(
+    column: $table.timedMatches,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DisplaySettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DisplaySettingsTable,
+          DisplaySettingsRow,
+          $$DisplaySettingsTableFilterComposer,
+          $$DisplaySettingsTableOrderingComposer,
+          $$DisplaySettingsTableAnnotationComposer,
+          $$DisplaySettingsTableCreateCompanionBuilder,
+          $$DisplaySettingsTableUpdateCompanionBuilder,
+          (
+            DisplaySettingsRow,
+            BaseReferences<
+              _$AppDatabase,
+              $DisplaySettingsTable,
+              DisplaySettingsRow
+            >,
+          ),
+          DisplaySettingsRow,
+          PrefetchHooks Function()
+        > {
+  $$DisplaySettingsTableTableManager(
+    _$AppDatabase db,
+    $DisplaySettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DisplaySettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DisplaySettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DisplaySettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<VisualProfile> visualProfile = const Value.absent(),
+                Value<bool> timedMatches = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+              }) => DisplaySettingsCompanion(
+                id: id,
+                visualProfile: visualProfile,
+                timedMatches: timedMatches,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<VisualProfile> visualProfile = const Value.absent(),
+                Value<bool> timedMatches = const Value.absent(),
+                required int updatedAt,
+              }) => DisplaySettingsCompanion.insert(
+                id: id,
+                visualProfile: visualProfile,
+                timedMatches: timedMatches,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DisplaySettingsTable, DisplaySettingsRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $DisplaySettingsTable,
+                    DisplaySettingsRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DisplaySettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DisplaySettingsTable,
+      DisplaySettingsRow,
+      $$DisplaySettingsTableFilterComposer,
+      $$DisplaySettingsTableOrderingComposer,
+      $$DisplaySettingsTableAnnotationComposer,
+      $$DisplaySettingsTableCreateCompanionBuilder,
+      $$DisplaySettingsTableUpdateCompanionBuilder,
+      (
+        DisplaySettingsRow,
+        BaseReferences<
+          _$AppDatabase,
+          $DisplaySettingsTable,
+          DisplaySettingsRow
+        >,
+      ),
+      DisplaySettingsRow,
+      PrefetchHooks Function()
+    >;
+typedef $$GameStatsTableCreateCompanionBuilder =
+    GameStatsCompanion Function({
+      Value<int> id,
+      required int playedAt,
+      required String playedDay,
+      required String categoryId,
+      required int pairCount,
+      required int matchedPairs,
+      required int moves,
+      required int memoryErrors,
+      required int hintsUsed,
+      required int secondsElapsed,
+      required int timeLimitSeconds,
+      required bool timed,
+      required bool won,
+      required int score,
+    });
+typedef $$GameStatsTableUpdateCompanionBuilder =
+    GameStatsCompanion Function({
+      Value<int> id,
+      Value<int> playedAt,
+      Value<String> playedDay,
+      Value<String> categoryId,
+      Value<int> pairCount,
+      Value<int> matchedPairs,
+      Value<int> moves,
+      Value<int> memoryErrors,
+      Value<int> hintsUsed,
+      Value<int> secondsElapsed,
+      Value<int> timeLimitSeconds,
+      Value<bool> timed,
+      Value<bool> won,
+      Value<int> score,
+    });
+
+class $$GameStatsTableFilterComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get playedDay => $composableBuilder(
+    column: $table.playedDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pairCount => $composableBuilder(
+    column: $table.pairCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get matchedPairs => $composableBuilder(
+    column: $table.matchedPairs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get moves => $composableBuilder(
+    column: $table.moves,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get memoryErrors => $composableBuilder(
+    column: $table.memoryErrors,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get hintsUsed => $composableBuilder(
+    column: $table.hintsUsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get secondsElapsed => $composableBuilder(
+    column: $table.secondsElapsed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get timeLimitSeconds => $composableBuilder(
+    column: $table.timeLimitSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get timed => $composableBuilder(
+    column: $table.timed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get won => $composableBuilder(
+    column: $table.won,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$GameStatsTableOrderingComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get playedAt => $composableBuilder(
+    column: $table.playedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get playedDay => $composableBuilder(
+    column: $table.playedDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pairCount => $composableBuilder(
+    column: $table.pairCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get matchedPairs => $composableBuilder(
+    column: $table.matchedPairs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get moves => $composableBuilder(
+    column: $table.moves,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get memoryErrors => $composableBuilder(
+    column: $table.memoryErrors,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get hintsUsed => $composableBuilder(
+    column: $table.hintsUsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get secondsElapsed => $composableBuilder(
+    column: $table.secondsElapsed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get timeLimitSeconds => $composableBuilder(
+    column: $table.timeLimitSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get timed => $composableBuilder(
+    column: $table.timed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get won => $composableBuilder(
+    column: $table.won,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get score => $composableBuilder(
+    column: $table.score,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$GameStatsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $GameStatsTable> {
+  $$GameStatsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get playedAt =>
+      $composableBuilder(column: $table.playedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get playedDay =>
+      $composableBuilder(column: $table.playedDay, builder: (column) => column);
+
+  GeneratedColumn<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get pairCount =>
+      $composableBuilder(column: $table.pairCount, builder: (column) => column);
+
+  GeneratedColumn<int> get matchedPairs => $composableBuilder(
+    column: $table.matchedPairs,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get moves =>
+      $composableBuilder(column: $table.moves, builder: (column) => column);
+
+  GeneratedColumn<int> get memoryErrors => $composableBuilder(
+    column: $table.memoryErrors,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get hintsUsed =>
+      $composableBuilder(column: $table.hintsUsed, builder: (column) => column);
+
+  GeneratedColumn<int> get secondsElapsed => $composableBuilder(
+    column: $table.secondsElapsed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get timeLimitSeconds => $composableBuilder(
+    column: $table.timeLimitSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get timed =>
+      $composableBuilder(column: $table.timed, builder: (column) => column);
+
+  GeneratedColumn<bool> get won =>
+      $composableBuilder(column: $table.won, builder: (column) => column);
+
+  GeneratedColumn<int> get score =>
+      $composableBuilder(column: $table.score, builder: (column) => column);
+}
+
+class $$GameStatsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $GameStatsTable,
+          GameStatsRow,
+          $$GameStatsTableFilterComposer,
+          $$GameStatsTableOrderingComposer,
+          $$GameStatsTableAnnotationComposer,
+          $$GameStatsTableCreateCompanionBuilder,
+          $$GameStatsTableUpdateCompanionBuilder,
+          (
+            GameStatsRow,
+            BaseReferences<_$AppDatabase, $GameStatsTable, GameStatsRow>,
+          ),
+          GameStatsRow,
+          PrefetchHooks Function()
+        > {
+  $$GameStatsTableTableManager(_$AppDatabase db, $GameStatsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$GameStatsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$GameStatsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$GameStatsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<int> playedAt = const Value.absent(),
+                Value<String> playedDay = const Value.absent(),
+                Value<String> categoryId = const Value.absent(),
+                Value<int> pairCount = const Value.absent(),
+                Value<int> matchedPairs = const Value.absent(),
+                Value<int> moves = const Value.absent(),
+                Value<int> memoryErrors = const Value.absent(),
+                Value<int> hintsUsed = const Value.absent(),
+                Value<int> secondsElapsed = const Value.absent(),
+                Value<int> timeLimitSeconds = const Value.absent(),
+                Value<bool> timed = const Value.absent(),
+                Value<bool> won = const Value.absent(),
+                Value<int> score = const Value.absent(),
+              }) => GameStatsCompanion(
+                id: id,
+                playedAt: playedAt,
+                playedDay: playedDay,
+                categoryId: categoryId,
+                pairCount: pairCount,
+                matchedPairs: matchedPairs,
+                moves: moves,
+                memoryErrors: memoryErrors,
+                hintsUsed: hintsUsed,
+                secondsElapsed: secondsElapsed,
+                timeLimitSeconds: timeLimitSeconds,
+                timed: timed,
+                won: won,
+                score: score,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required int playedAt,
+                required String playedDay,
+                required String categoryId,
+                required int pairCount,
+                required int matchedPairs,
+                required int moves,
+                required int memoryErrors,
+                required int hintsUsed,
+                required int secondsElapsed,
+                required int timeLimitSeconds,
+                required bool timed,
+                required bool won,
+                required int score,
+              }) => GameStatsCompanion.insert(
+                id: id,
+                playedAt: playedAt,
+                playedDay: playedDay,
+                categoryId: categoryId,
+                pairCount: pairCount,
+                matchedPairs: matchedPairs,
+                moves: moves,
+                memoryErrors: memoryErrors,
+                hintsUsed: hintsUsed,
+                secondsElapsed: secondsElapsed,
+                timeLimitSeconds: timeLimitSeconds,
+                timed: timed,
+                won: won,
+                score: score,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$GameStatsTable, GameStatsRow>(table),
+                  BaseReferences<_$AppDatabase, $GameStatsTable, GameStatsRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$GameStatsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $GameStatsTable,
+      GameStatsRow,
+      $$GameStatsTableFilterComposer,
+      $$GameStatsTableOrderingComposer,
+      $$GameStatsTableAnnotationComposer,
+      $$GameStatsTableCreateCompanionBuilder,
+      $$GameStatsTableUpdateCompanionBuilder,
+      (
+        GameStatsRow,
+        BaseReferences<_$AppDatabase, $GameStatsTable, GameStatsRow>,
+      ),
+      GameStatsRow,
+      PrefetchHooks Function()
+    >;
+typedef $$CategoryLevelsTableCreateCompanionBuilder =
+    CategoryLevelsCompanion Function({
+      required String categoryId,
+      Value<int> level,
+      required double skill,
+      required int pairCount,
+      Value<int> consecutiveLosses,
+      Value<int> roundsPlayed,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CategoryLevelsTableUpdateCompanionBuilder =
+    CategoryLevelsCompanion Function({
+      Value<String> categoryId,
+      Value<int> level,
+      Value<double> skill,
+      Value<int> pairCount,
+      Value<int> consecutiveLosses,
+      Value<int> roundsPlayed,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CategoryLevelsTableFilterComposer
+    extends Composer<_$AppDatabase, $CategoryLevelsTable> {
+  $$CategoryLevelsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get level => $composableBuilder(
+    column: $table.level,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get skill => $composableBuilder(
+    column: $table.skill,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pairCount => $composableBuilder(
+    column: $table.pairCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get consecutiveLosses => $composableBuilder(
+    column: $table.consecutiveLosses,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CategoryLevelsTableOrderingComposer
+    extends Composer<_$AppDatabase, $CategoryLevelsTable> {
+  $$CategoryLevelsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get level => $composableBuilder(
+    column: $table.level,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get skill => $composableBuilder(
+    column: $table.skill,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pairCount => $composableBuilder(
+    column: $table.pairCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get consecutiveLosses => $composableBuilder(
+    column: $table.consecutiveLosses,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CategoryLevelsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CategoryLevelsTable> {
+  $$CategoryLevelsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get categoryId => $composableBuilder(
+    column: $table.categoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get level =>
+      $composableBuilder(column: $table.level, builder: (column) => column);
+
+  GeneratedColumn<double> get skill =>
+      $composableBuilder(column: $table.skill, builder: (column) => column);
+
+  GeneratedColumn<int> get pairCount =>
+      $composableBuilder(column: $table.pairCount, builder: (column) => column);
+
+  GeneratedColumn<int> get consecutiveLosses => $composableBuilder(
+    column: $table.consecutiveLosses,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roundsPlayed => $composableBuilder(
+    column: $table.roundsPlayed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CategoryLevelsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CategoryLevelsTable,
+          CategoryLevelRow,
+          $$CategoryLevelsTableFilterComposer,
+          $$CategoryLevelsTableOrderingComposer,
+          $$CategoryLevelsTableAnnotationComposer,
+          $$CategoryLevelsTableCreateCompanionBuilder,
+          $$CategoryLevelsTableUpdateCompanionBuilder,
+          (
+            CategoryLevelRow,
+            BaseReferences<
+              _$AppDatabase,
+              $CategoryLevelsTable,
+              CategoryLevelRow
+            >,
+          ),
+          CategoryLevelRow,
+          PrefetchHooks Function()
+        > {
+  $$CategoryLevelsTableTableManager(
+    _$AppDatabase db,
+    $CategoryLevelsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CategoryLevelsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CategoryLevelsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CategoryLevelsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> categoryId = const Value.absent(),
+                Value<int> level = const Value.absent(),
+                Value<double> skill = const Value.absent(),
+                Value<int> pairCount = const Value.absent(),
+                Value<int> consecutiveLosses = const Value.absent(),
+                Value<int> roundsPlayed = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CategoryLevelsCompanion(
+                categoryId: categoryId,
+                level: level,
+                skill: skill,
+                pairCount: pairCount,
+                consecutiveLosses: consecutiveLosses,
+                roundsPlayed: roundsPlayed,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String categoryId,
+                Value<int> level = const Value.absent(),
+                required double skill,
+                required int pairCount,
+                Value<int> consecutiveLosses = const Value.absent(),
+                Value<int> roundsPlayed = const Value.absent(),
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CategoryLevelsCompanion.insert(
+                categoryId: categoryId,
+                level: level,
+                skill: skill,
+                pairCount: pairCount,
+                consecutiveLosses: consecutiveLosses,
+                roundsPlayed: roundsPlayed,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CategoryLevelsTable, CategoryLevelRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $CategoryLevelsTable,
+                    CategoryLevelRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CategoryLevelsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CategoryLevelsTable,
+      CategoryLevelRow,
+      $$CategoryLevelsTableFilterComposer,
+      $$CategoryLevelsTableOrderingComposer,
+      $$CategoryLevelsTableAnnotationComposer,
+      $$CategoryLevelsTableCreateCompanionBuilder,
+      $$CategoryLevelsTableUpdateCompanionBuilder,
+      (
+        CategoryLevelRow,
+        BaseReferences<_$AppDatabase, $CategoryLevelsTable, CategoryLevelRow>,
+      ),
+      CategoryLevelRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6961,4 +9730,10 @@ class $AppDatabaseManager {
       $$LivesStatesTableTableManager(_db, _db.livesStates);
   $$SyncOperationsTableTableManager get syncOperations =>
       $$SyncOperationsTableTableManager(_db, _db.syncOperations);
+  $$DisplaySettingsTableTableManager get displaySettings =>
+      $$DisplaySettingsTableTableManager(_db, _db.displaySettings);
+  $$GameStatsTableTableManager get gameStats =>
+      $$GameStatsTableTableManager(_db, _db.gameStats);
+  $$CategoryLevelsTableTableManager get categoryLevels =>
+      $$CategoryLevelsTableTableManager(_db, _db.categoryLevels);
 }

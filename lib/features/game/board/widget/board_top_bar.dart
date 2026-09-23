@@ -10,11 +10,15 @@ class BoardTopBar extends StatelessWidget {
     required this.progress,
     required this.moves,
     required this.lives,
+    this.isTimed = true,
     required this.isLivesUnlimited,
   });
 
   final double progress;
   final int moves;
+
+  /// False replaces the countdown bar with a calm "no time limit" label.
+  final bool isTimed;
   final int lives;
   final bool isLivesUnlimited;
 
@@ -22,19 +26,42 @@ class BoardTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.timer_outlined, color: AppColors.primary, size: 22),
-        const SizedBox(width: 8),
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(999),
-            child: LinearProgressIndicator(
-              value: progress.clamp(0, 1),
-              minHeight: 10,
-              backgroundColor: AppColors.surfaceContainerHigh,
-              color: AppColors.primaryFixedDim,
+        if (isTimed) ...[
+          const Icon(Icons.timer_outlined, color: AppColors.primary, size: 22),
+          const SizedBox(width: 8),
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(999),
+              child: LinearProgressIndicator(
+                value: progress.clamp(0, 1),
+                minHeight: 10,
+                backgroundColor: AppColors.surfaceContainerHigh,
+                color: AppColors.primaryFixedDim,
+                semanticsLabel: AppLocale.timeLabel.getString(context),
+              ),
             ),
           ),
-        ),
+        ] else
+          Expanded(
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: _Pill(
+                icon: Icons.all_inclusive_rounded,
+                iconColor: AppColors.mintStrong,
+                child: Flexible(
+                  child: Text(
+                    AppLocale.noTimeLimitLabel.getString(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: AppColors.onSurface,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         const SizedBox(width: 12),
         _Pill(
           icon: Icons.favorite_rounded,

@@ -3,27 +3,59 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/theme/app_motion.dart';
+import 'package:memory_companion/core/theme/app_spacing.dart';
+import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/confetti_overlay.dart';
+import 'package:memory_companion/features/game/board/model/star_rating.dart';
 
-/// Full-screen celebration shown when a solo board is completed: a
-/// falling-confetti backdrop, an illustrated banner, a run-summary card
-/// (score / time / coins) and the play-again / back-to-menu actions.
+/// Full-screen result shown when a solo board ends: the title, a 1–3 star
+/// rating, a motivational line, the coins and XP earned, a run summary and
+/// the actions.
+///
+/// Built to pull the player into the next round: after a win the one
+/// prominent action is **Next level**; stats and the menu are quieter
+/// neutral buttons below it. Running out of time shows no stars and offers
+/// a retry instead.
+///
+/// Reads [ProfileTokens]: the vibrant profile gets confetti, stars that pop
+/// in one by one and a counting-up coin total; the accessible profile gets a
+/// calm, opaque backdrop, larger stars that are simply there, and the larger
+/// [AdaptiveButton]s. All motion also stops when the OS asks for less.
 class BoardVictoryOverlay extends StatelessWidget {
   const BoardVictoryOverlay({
     super.key,
+    required this.won,
+    required this.stars,
     required this.score,
+    required this.moves,
     required this.elapsedSeconds,
     required this.coinsEarned,
     required this.xpEarned,
+    required this.onNextLevel,
     required this.onPlayAgain,
+    required this.onViewStats,
     required this.onExit,
   });
 
+  /// False when the countdown ran out before the board was cleared.
+  final bool won;
+
+  /// 0–[StarRating.maxStars]. See [StarRating].
+  final int stars;
   final int score;
+  final int moves;
   final int elapsedSeconds;
   final int coinsEarned;
   final int xpEarned;
+
+  /// The primary action after a win.
+  final VoidCallback onNextLevel;
+
+  /// The primary action after running out of time.
   final VoidCallback onPlayAgain;
+  final VoidCallback onViewStats;
   final VoidCallback onExit;
 
   String get _timeLabel {
@@ -32,22 +64,57 @@ class BoardVictoryOverlay extends StatelessWidget {
     return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
+  /// Two lines per star count, picked from the result so consecutive games
+  /// do not always say the same thing.
+  String get _messageKey {
+    if (!won) return AppLocale.resultMessageTimeUp;
+    final alternate = (moves + elapsedSeconds).isOdd;
+    return switch (stars) {
+      >= StarRating.maxStars =>
+        alternate
+            ? AppLocale.resultMessageStars3b
+            : AppLocale.resultMessageStars3a,
+      2 =>
+        alternate
+            ? AppLocale.resultMessageStars2b
+            : AppLocale.resultMessageStars2a,
+      _ =>
+        alternate
+            ? AppLocale.resultMessageStars1b
+            : AppLocale.resultMessageStars1a,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final tokens = ProfileTokens.of(context);
+    final textTheme = Theme.of(context).textTheme;
+    final title = won ? AppLocale.completedTitle : AppLocale.timeUpTitle;
+    final message = _messageKey.getString(context);
+
     return Stack(
       fit: StackFit.expand,
       children: [
-        Container(color: const Color(0x99000000)),
-        const ConfettiOverlay(),
+        ColoredBox(color: tokens.scrimColor),
+        if (won && tokens.celebrationEffects) const ConfettiOverlay(),
         Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 32),
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+              margin: EdgeInsets.symmetric(
+                horizontal: tokens.isAccessible
+                    ? AppSpacing.lg
+                    : AppSpacing.xxxl,
+              ),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.xxl,
+                AppSpacing.xl,
+                AppSpacing.xxl,
+              ),
               decoration: BoxDecoration(
                 color: AppColors.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(28),
+                borderRadius: BorderRadius.circular(AppRadius.xxl),
                 boxShadow: const [
                   BoxShadow(
                     color: Color(0x40000000),
@@ -59,39 +126,73 @@ class BoardVictoryOverlay extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const _VictoryIllustration(),
-                  const SizedBox(height: 20),
-                  Text(
-                    AppLocale.completedTitle.getString(context),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1,
+                  // Title and message are announced together as soon as the
+                  // overlay appears, so a screen-reader user learns how the
+                  // match ended without hunting for it.
+                  Semantics(
+                    liveRegion: true,
+                    header: true,
+                    label: '${title.getString(context)}. $message',
+                    excludeSemantics: true,
+                    child: Text(
+                      title.getString(context),
+                      textAlign: TextAlign.center,
+                      style: textTheme.headlineMedium?.copyWith(
+                        color: won ? AppColors.primary : AppColors.warning,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 1,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  if (won) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    StarRatingWidget(stars: stars),
+                  ],
+                  const SizedBox(height: AppSpacing.lg),
+                  ExcludeSemantics(
+                    child: Text(
+                      message,
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyLarge?.copyWith(
+                        color: tokens.supportingTextColor,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xl),
+                  _RewardBanner(coins: coinsEarned, xp: xpEarned),
+                  const SizedBox(height: AppSpacing.lg),
                   _SummaryCard(
                     score: score,
                     timeLabel: _timeLabel,
-                    coinsEarned: coinsEarned,
-                    xpEarned: xpEarned,
+                    moves: moves,
                   ),
-                  const SizedBox(height: 20),
-                  _VictoryActionButton(
-                    label: AppLocale.playAgain.getString(context),
-                    icon: Icons.refresh_rounded,
-                    background: AppColors.primaryFixedDim,
-                    foreground: AppColors.onPrimaryFixed,
-                    onTap: onPlayAgain,
+                  const SizedBox(height: AppSpacing.xxl),
+                  if (won)
+                    AdaptiveButton(
+                      label: AppLocale.nextLevelLabel.getString(context),
+                      icon: Icons.arrow_forward_rounded,
+                      onPressed: onNextLevel,
+                    )
+                  else
+                    AdaptiveButton(
+                      label: AppLocale.playAgain.getString(context),
+                      icon: Icons.refresh_rounded,
+                      onPressed: onPlayAgain,
+                    ),
+                  SizedBox(height: tokens.controlGap),
+                  AdaptiveButton(
+                    label: AppLocale.viewStatsLabel.getString(context),
+                    icon: Icons.bar_chart_rounded,
+                    variant: AdaptiveButtonVariant.neutral,
+                    onPressed: onViewStats,
                   ),
-                  const SizedBox(height: 12),
-                  _VictoryActionButton(
+                  SizedBox(height: tokens.controlGap),
+                  AdaptiveButton(
                     label: AppLocale.backToHome.getString(context),
                     icon: Icons.home_rounded,
-                    background: AppColors.secondaryFixed,
-                    foreground: AppColors.onSecondaryFixedVariant,
-                    onTap: onExit,
+                    variant: AdaptiveButtonVariant.neutral,
+                    onPressed: onExit,
                   ),
                 ],
               ),
@@ -103,82 +204,218 @@ class BoardVictoryOverlay extends StatelessWidget {
   }
 }
 
-class _VictoryIllustration extends StatelessWidget {
-  const _VictoryIllustration();
+/// A row of [StarRating.maxStars] stars, [stars] of them filled.
+///
+/// Earned and missing stars differ in shape (filled vs outlined), not only
+/// colour, so the result reads the same for colour-blind players. In the
+/// vibrant profile the middle star sits higher and the earned ones pop in
+/// one after another; in the accessible profile all three are the same,
+/// larger size and appear at once.
+class StarRatingWidget extends StatelessWidget {
+  const StarRatingWidget({super.key, required this.stars});
+
+  final int stars;
+
+  static const _popStagger = Duration(milliseconds: 250);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 96,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [AppColors.primaryFixed, AppColors.primaryFixedDim],
-                ),
+    final tokens = ProfileTokens.of(context);
+    final animate = !MediaQuery.disableAnimationsOf(context);
+    final earned = stars.clamp(0, StarRating.maxStars);
+
+    return Semantics(
+      label: AppLocale.starsEarnedSemantics
+          .getString(context)
+          .replaceAll('{n}', '$earned'),
+      excludeSemantics: true,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          for (var i = 0; i < StarRating.maxStars; i++)
+            Padding(
+              padding: EdgeInsets.only(
+                left: i == 0 ? 0 : AppSpacing.xs,
+                // Arcade-style arc: the middle star is lifted.
+                bottom: !tokens.isAccessible && i == 1 ? AppSpacing.md : 0,
+              ),
+              child: _Star(
+                filled: i < earned,
+                size: tokens.isAccessible
+                    ? 56
+                    : (i == 1 ? 60 : 48),
+                delay: animate && i < earned ? _popStagger * i : null,
               ),
             ),
-            const Positioned(
-              top: 10,
-              left: 18,
-              child: _Confetto(Color(0xFF00BDFD)),
-            ),
-            const Positioned(
-              top: 16,
-              right: 28,
-              child: _Confetto(Color(0xFFFFFFFF)),
-            ),
-            const Positioned(
-              bottom: 12,
-              left: 40,
-              child: _Confetto(Color(0xFF9B7BFF)),
-            ),
-            const Positioned(
-              bottom: 16,
-              right: 20,
-              child: _Confetto(Color(0xFF4CD97B)),
-            ),
-            Center(
-              child: Container(
-                width: 56,
-                height: 56,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.emoji_events_rounded,
-                  color: AppColors.primaryFixedDim,
-                  size: 32,
-                ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Star extends StatelessWidget {
+  const _Star({required this.filled, required this.size, this.delay});
+
+  final bool filled;
+  final double size;
+
+  /// When set, the star pops in after this long. Null draws it at rest.
+  final Duration? delay;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = ProfileTokens.of(context);
+    final icon = Icon(
+      filled ? Icons.star_rounded : Icons.star_outline_rounded,
+      size: size,
+      color: filled ? AppColors.sunDeep : tokens.outlineColor,
+      shadows: filled && !tokens.isAccessible
+          ? const [
+              Shadow(
+                color: Color(0x66E0A400),
+                blurRadius: 12,
+                offset: Offset(0, 4),
               ),
-            ),
-          ],
+            ]
+          : null,
+    );
+
+    final delay = this.delay;
+    if (delay == null) return icon;
+
+    // One tween per star with the stagger folded into its curve, so there
+    // is no timer to cancel if the overlay goes away mid-animation.
+    final total = delay + AppMotion.celebrate;
+    final start = delay.inMilliseconds / total.inMilliseconds;
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: total,
+      curve: Interval(start, 1, curve: AppMotion.bounce),
+      child: icon,
+      builder: (context, t, child) => Transform.scale(
+        scale: t,
+        child: Opacity(opacity: t.clamp(0.0, 1.0), child: child),
+      ),
+    );
+  }
+}
+
+/// The coins and XP earned, as two bright pills. The coin total counts up
+/// from zero unless motion is reduced.
+class _RewardBanner extends StatelessWidget {
+  const _RewardBanner({required this.coins, required this.xp});
+
+  final int coins;
+  final int xp;
+
+  @override
+  Widget build(BuildContext context) {
+    final animate = !MediaQuery.disableAnimationsOf(context);
+
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        if (coins > 0)
+          _RewardPill(
+            icon: Icons.monetization_on_rounded,
+            iconColor: AppColors.sunDeep,
+            background: AppColors.sunSoft,
+            foreground: AppColors.onSun,
+            semanticLabel:
+                '${AppLocale.coinsEarnedLabel.getString(context)}, +$coins',
+            child: animate
+                ? TweenAnimationBuilder<int>(
+                    tween: IntTween(begin: 0, end: coins),
+                    duration: AppMotion.celebrate * 2,
+                    curve: AppMotion.enter,
+                    builder: (context, value, _) => _PillText('+$value'),
+                  )
+                : _PillText('+$coins'),
+          ),
+        _RewardPill(
+          icon: Icons.flash_on_rounded,
+          iconColor: AppColors.violetStrong,
+          background: AppColors.violetSoft,
+          foreground: AppColors.onViolet,
+          semanticLabel:
+              '${AppLocale.experienceLabel.getString(context)}, +$xp XP',
+          child: _PillText('+$xp XP'),
+        ),
+      ],
+    );
+  }
+}
+
+class _RewardPill extends StatelessWidget {
+  const _RewardPill({
+    required this.icon,
+    required this.iconColor,
+    required this.background,
+    required this.foreground,
+    required this.semanticLabel,
+    required this.child,
+  });
+
+  final IconData icon;
+  final Color iconColor;
+  final Color background;
+  final Color foreground;
+
+  /// Read once, with the final value — never the numbers counting up.
+  final String semanticLabel;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final tokens = ProfileTokens.of(context);
+
+    return Semantics(
+      label: semanticLabel,
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(AppRadius.pill),
+          border: tokens.isAccessible
+              ? Border.all(color: foreground, width: tokens.buttonBorderWidth)
+              : null,
+        ),
+        child: DefaultTextStyle.merge(
+          style: TextStyle(color: foreground),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: iconColor, size: tokens.buttonIconSize),
+              const SizedBox(width: AppSpacing.xs),
+              child,
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _Confetto extends StatelessWidget {
-  const _Confetto(this.color);
+class _PillText extends StatelessWidget {
+  const _PillText(this.text);
 
-  final Color color;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 8,
-      height: 8,
-      decoration: BoxDecoration(
-        color: color,
-        borderRadius: BorderRadius.circular(2),
+    return Text(
+      text,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+        color: DefaultTextStyle.of(context).style.color,
+        fontWeight: FontWeight.w800,
+        fontFeatures: const [FontFeature.tabularFigures()],
       ),
     );
   }
@@ -188,23 +425,27 @@ class _SummaryCard extends StatelessWidget {
   const _SummaryCard({
     required this.score,
     required this.timeLabel,
-    required this.coinsEarned,
-    required this.xpEarned,
+    required this.moves,
   });
 
   final int score;
   final String timeLabel;
-  final int coinsEarned;
-  final int xpEarned;
+  final int moves;
 
   @override
   Widget build(BuildContext context) {
+    final tokens = ProfileTokens.of(context);
+    final divider = Divider(height: 1, color: tokens.outlineColor);
+
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.xs,
+      ),
       decoration: BoxDecoration(
         color: AppColors.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: const Border(
           top: BorderSide(color: AppColors.secondaryContainer, width: 3),
         ),
@@ -216,49 +457,17 @@ class _SummaryCard extends StatelessWidget {
             label: AppLocale.scoreLabel.getString(context),
             value: _thousands(score),
           ),
-          const Divider(height: 1, color: AppColors.outlineVariant),
+          divider,
           _SummaryRow(
             icon: Icons.timer_rounded,
             label: AppLocale.timeLabel.getString(context),
             value: timeLabel,
           ),
-          const Divider(height: 1, color: AppColors.outlineVariant),
+          divider,
           _SummaryRow(
-            icon: Icons.monetization_on_rounded,
-            label: AppLocale.coinsEarnedLabel.getString(context),
-            valueWidget: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.secondaryFixed,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                '+$coinsEarned',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.onPrimaryFixedVariant,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ),
-          const Divider(height: 1, color: AppColors.outlineVariant),
-          _SummaryRow(
-            icon: Icons.flash_on_rounded,
-            label: 'Experiencia',
-            valueWidget: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppColors.primaryFixed,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                '+$xpEarned XP',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  color: AppColors.onPrimaryFixed,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
+            icon: Icons.touch_app_rounded,
+            label: AppLocale.movesLabel.getString(context),
+            value: '$moves',
           ),
         ],
       ),
@@ -277,96 +486,52 @@ class _SummaryCard extends StatelessWidget {
   }
 }
 
+/// One label/value line. Merged into a single semantics node so a screen
+/// reader says "Score, 1,250" instead of two unrelated fragments.
 class _SummaryRow extends StatelessWidget {
   const _SummaryRow({
     required this.icon,
     required this.label,
-    this.value,
-    this.valueWidget,
+    required this.value,
   });
 
   final IconData icon;
   final String label;
-  final String? value;
-  final Widget? valueWidget;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: AppColors.secondary, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(color: AppColors.onSurface),
+    final textTheme = Theme.of(context).textTheme;
+
+    return MergeSemantics(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.md),
+        child: Row(
+          children: [
+            ExcludeSemantics(
+              child: Icon(
+                icon,
+                color: AppColors.secondary,
+                size: AppSize.iconSm,
+              ),
             ),
-          ),
-          valueWidget ??
-              Text(
-                value ?? '',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                label,
+                style: textTheme.bodyLarge?.copyWith(
                   color: AppColors.onSurface,
-                  fontWeight: FontWeight.w700,
                 ),
               ),
-        ],
-      ),
-    );
-  }
-}
-
-class _VictoryActionButton extends StatelessWidget {
-  const _VictoryActionButton({
-    required this.label,
-    required this.icon,
-    required this.background,
-    required this.foreground,
-    required this.onTap,
-  });
-
-  final String label;
-  final IconData icon;
-  final Color background;
-  final Color foreground;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      child: Material(
-        color: background,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 52),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, color: foreground, size: 20),
-                const SizedBox(width: 8),
-                Flexible(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: foreground,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ),
-              ],
             ),
-          ),
+            Text(
+              value,
+              style: textTheme.titleMedium?.copyWith(
+                color: AppColors.onSurface,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
         ),
       ),
     );

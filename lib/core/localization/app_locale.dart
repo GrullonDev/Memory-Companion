@@ -157,6 +157,106 @@ mixin AppLocale {
   static const String viewProfileLabel = 'viewProfileLabel';
   static const String coinsSemanticLabel = 'coinsSemanticLabel';
   static const String streakSemanticLabel = 'streakSemanticLabel';
+  static const String appearanceSectionTitle = 'appearanceSectionTitle';
+  static const String appearanceSectionSubtitle = 'appearanceSectionSubtitle';
+  static const String profileVibrantName = 'profileVibrantName';
+  static const String profileVibrantDescription = 'profileVibrantDescription';
+  static const String profileAccessibleName = 'profileAccessibleName';
+  static const String profileAccessibleDescription = 'profileAccessibleDescription';
+  static const String profileSelectedLabel = 'profileSelectedLabel';
+  static const String gameplaySectionTitle = 'gameplaySectionTitle';
+  static const String timedMatchesTitle = 'timedMatchesTitle';
+  static const String timedMatchesOnSubtitle = 'timedMatchesOnSubtitle';
+  static const String timedMatchesOffSubtitle = 'timedMatchesOffSubtitle';
+  static const String openSettingsLabel = 'openSettingsLabel';
+  static const String experienceLabel = 'experienceLabel';
+  static const String noTimeLimitLabel = 'noTimeLimitLabel';
+  static const String cardLabel = 'cardLabel';
+  static const String cardFaceDownLabel = 'cardFaceDownLabel';
+  static const String cardMatchedLabel = 'cardMatchedLabel';
+  static const String categoryClassicName = 'categoryClassicName';
+  static const String categoryClassicDescription = 'categoryClassicDescription';
+  static const String categoryNumericName = 'categoryNumericName';
+  static const String categoryNumericDescription = 'categoryNumericDescription';
+  static const String categoryAssociationName = 'categoryAssociationName';
+  static const String categoryAssociationDescription = 'categoryAssociationDescription';
+  static const String dailyChallengeNumberLabel = 'dailyChallengeNumberLabel';
+  static const String dailyMovesUnit = 'dailyMovesUnit';
+  static const String dailyShareCta = 'dailyShareCta';
+  static const String dailyShareButton = 'dailyShareButton';
+  static const String dailyResultTitle = 'dailyResultTitle';
+  static const String dailyComeBackTomorrow = 'dailyComeBackTomorrow';
+  static const String dailyGridLegend = 'dailyGridLegend';
+
+  static const String statisticsTitle = 'statisticsTitle';
+  static const String statsCurrentStreak = 'statsCurrentStreak';
+  static const String statsGamesPlayed = 'statsGamesPlayed';
+  static const String statsRecordTime = 'statsRecordTime';
+  static const String statsOverallAccuracy = 'statsOverallAccuracy';
+  static const String statsDaysUnit = 'statsDaysUnit';
+  static const String statsDayUnit = 'statsDayUnit';
+  static const String statsBestStreakCaption = 'statsBestStreakCaption';
+  static const String statsWinsCaption = 'statsWinsCaption';
+  static const String statsPairsCaption = 'statsPairsCaption';
+  static const String statsAccuracyCaption = 'statsAccuracyCaption';
+  static const String statsNoRecordYet = 'statsNoRecordYet';
+  static const String statsTrendTitle = 'statsTrendTitle';
+  static const String statsTrendSubtitle = 'statsTrendSubtitle';
+  static const String statsTrendImproving = 'statsTrendImproving';
+  static const String statsTrendSteady = 'statsTrendSteady';
+  static const String statsTrendDeclining = 'statsTrendDeclining';
+  static const String statsTrendNotEnough = 'statsTrendNotEnough';
+  static const String statsSpeedLabel = 'statsSpeedLabel';
+  static const String statsAccuracyLabel = 'statsAccuracyLabel';
+  static const String statsErrorsLabel = 'statsErrorsLabel';
+  static const String statsChangeFaster = 'statsChangeFaster';
+  static const String statsChangeSlower = 'statsChangeSlower';
+  static const String statsChangeFewer = 'statsChangeFewer';
+  static const String statsChangeMore = 'statsChangeMore';
+  static const String statsChangePointsUp = 'statsChangePointsUp';
+  static const String statsChangePointsDown = 'statsChangePointsDown';
+  static const String statsChangeSteady = 'statsChangeSteady';
+  static const String statsChangeBetter = 'statsChangeBetter';
+  static const String statsChangeWorse = 'statsChangeWorse';
+  static const String statsErrorsShortLabel = 'statsErrorsShortLabel';
+  static const String statsLowerIsBetter = 'statsLowerIsBetter';
+  static const String statsChangeNoData = 'statsChangeNoData';
+  static const String statsEvolutionTitle = 'statsEvolutionTitle';
+  static const String statsEvolutionSubtitle = 'statsEvolutionSubtitle';
+  static const String statsSecondsPerPairUnit = 'statsSecondsPerPairUnit';
+  static const String statsErrorsPerPairUnit = 'statsErrorsPerPairUnit';
+  static const String statsNoGamesThatWeek = 'statsNoGamesThatWeek';
+  static const String statsHistoryTitle = 'statsHistoryTitle';
+  static const String statsLoadMore = 'statsLoadMore';
+  static const String statsEmptyTitle = 'statsEmptyTitle';
+  static const String statsEmptySubtitle = 'statsEmptySubtitle';
+  static const String statsPrivacyNote = 'statsPrivacyNote';
+  static const String statsWonLabel = 'statsWonLabel';
+  static const String statsLostLabel = 'statsLostLabel';
+  static const String statsErrorsCount = 'statsErrorsCount';
+  static const String statsOpenLabel = 'statsOpenLabel';
+
+  static const String minigameHubTitle = 'minigameHubTitle';
+  static const String minigameHubSubtitle = 'minigameHubSubtitle';
+  static const String brainGamesLabel = 'brainGamesLabel';
+  static const String seeAllLabel = 'seeAllLabel';
+  static const String minigameMemoryTitle = 'minigameMemoryTitle';
+  static const String minigameMemoryDescription = 'minigameMemoryDescription';
+
+  static const String timeUpTitle = 'timeUpTitle';
+  static const String viewStatsLabel = 'viewStatsLabel';
+  static const String starsEarnedSemantics = 'starsEarnedSemantics';
+  static const String resultMessageStars3a = 'resultMessageStars3a';
+  static const String resultMessageStars3b = 'resultMessageStars3b';
+  static const String resultMessageStars2a = 'resultMessageStars2a';
+  static const String resultMessageStars2b = 'resultMessageStars2b';
+  static const String resultMessageStars1a = 'resultMessageStars1a';
+  static const String resultMessageStars1b = 'resultMessageStars1b';
+  static const String resultMessageTimeUp = 'resultMessageTimeUp';
+
+  static const String levelNodeCompleted = 'levelNodeCompleted';
+  static const String levelNodeCurrent = 'levelNodeCurrent';
+  static const String levelNodeLocked = 'levelNodeLocked';
 
   // --- Offline-first: guardado y cuenta ---
   static const String saveStateInCloud = 'saveStateInCloud';
@@ -339,28 +439,102 @@ mixin AppLocale {
     viewProfileLabel: 'Ver tu perfil',
     coinsSemanticLabel: 'Monedas',
     streakSemanticLabel: 'Racha diaria',
-    saveStateInCloud: 'Guardado',
-    saveStateSyncing: 'Sincronizando…',
-    saveStateOnDevice: 'Guardado en este dispositivo',
-    saveProgressTitle: 'Guarda tu progreso',
-    saveProgressSubtitle: 'Crea una cuenta y llévate todo contigo',
-    saveProgressBenefitRecover: 'Recupera tu progreso',
-    saveProgressBenefitDevices: 'Juega en otros dispositivos',
-    saveProgressBenefitFriends: 'Agrega amigos',
-    saveProgressBenefitCompete: 'Compite con otros jugadores',
-    linkConflictTitle: 'Ya tienes un progreso guardado',
-    linkConflictSubtitle: '¿Con cuál quieres seguir?',
-    linkInThisAccount: 'En esta cuenta',
-    linkOnThisDevice: 'En este dispositivo',
-    linkKeepCloud: 'Seguir con el de la cuenta',
-    linkKeepLocal: 'Usar el de este dispositivo',
-    linkedMessage: '¡Listo! Tu progreso ya está a salvo',
-    accountSectionTitle: 'Tu cuenta',
-    accountSignedInAs: 'Sesión iniciada',
-    accountPlayingLocally: 'Juegas sin cuenta',
-    signOutLabel: 'Cerrar sesión',
-    levelShortLabel: 'Nivel',
-    coinsShortLabel: 'monedas',
+    appearanceSectionTitle: 'Apariencia',
+    appearanceSectionSubtitle: 'Elige cómo quieres ver el juego. Puedes cambiarlo cuando quieras.',
+    profileVibrantName: 'Dinámico',
+    profileVibrantDescription: 'Animaciones, confeti y colores vivos',
+    profileAccessibleName: 'Vista clara',
+    profileAccessibleDescription: 'Letra grande, alto contraste, botones amplios y sin prisas',
+    profileSelectedLabel: 'Seleccionado',
+    gameplaySectionTitle: 'Partida',
+    timedMatchesTitle: 'Jugar contra el reloj',
+    timedMatchesOnSubtitle: 'Cada partida tiene una cuenta atrás',
+    timedMatchesOffSubtitle: 'Sin límite de tiempo: juega a tu ritmo',
+    openSettingsLabel: 'Abrir ajustes',
+    experienceLabel: 'Experiencia',
+    noTimeLimitLabel: 'Sin límite de tiempo',
+    cardLabel: 'Carta',
+    cardFaceDownLabel: 'boca abajo',
+    cardMatchedLabel: 'pareja encontrada',
+    categoryClassicName: 'Clásico',
+    categoryClassicDescription: 'Encuentra dos imágenes iguales',
+    categoryNumericName: 'Números',
+    categoryNumericDescription: 'Une cada operación con su resultado',
+    categoryAssociationName: 'Asociación',
+    categoryAssociationDescription: 'Une las palabras que van juntas',
+    dailyChallengeNumberLabel: 'Reto',
+    dailyMovesUnit: 'movimientos',
+    dailyShareCta: '¡Pruébalo hoy!',
+    dailyShareButton: 'Compartir resultado',
+    dailyResultTitle: '¡Reto del día superado!',
+    dailyComeBackTomorrow: 'Vuelve mañana para el reto #{n}',
+    dailyGridLegend: '🟩 a la primera · 🟨 casi · 🟥 costó',
+    statisticsTitle: 'Tu progreso',
+    statsCurrentStreak: 'Racha actual',
+    statsGamesPlayed: 'Partidas jugadas',
+    statsRecordTime: 'Tiempo récord',
+    statsOverallAccuracy: 'Precisión general',
+    statsDaysUnit: 'días',
+    statsDayUnit: 'día',
+    statsBestStreakCaption: 'Mejor racha: {n}',
+    statsWinsCaption: '{n} ganadas',
+    statsPairsCaption: 'Tablero de {n} parejas',
+    statsAccuracyCaption: 'Parejas halladas por turno',
+    statsNoRecordYet: 'Gana una partida',
+    statsTrendTitle: 'Esta semana',
+    statsTrendSubtitle: 'Comparado con los 7 días anteriores',
+    statsTrendImproving: '¡Tu memoria está en forma!',
+    statsTrendSteady: 'Mantienes un ritmo constante',
+    statsTrendDeclining: 'Una semana más exigente. Jugar a diario ayuda.',
+    statsTrendNotEnough: 'Juega al menos 2 partidas esta semana y la anterior para ver tu evolución.',
+    statsSpeedLabel: 'Velocidad',
+    statsAccuracyLabel: 'Precisión',
+    statsErrorsLabel: 'Errores de memoria',
+    statsChangeFaster: '{n}% más rápido',
+    statsChangeSlower: '{n}% más lento',
+    statsChangeFewer: '{n}% menos',
+    statsChangeMore: '{n}% más',
+    statsChangePointsUp: '+{n} puntos',
+    statsChangePointsDown: '−{n} puntos',
+    statsChangeSteady: 'Sin cambios',
+    statsChangeBetter: 'Mejorando',
+    statsChangeWorse: 'Algo más exigente',
+    statsErrorsShortLabel: 'Errores',
+    statsLowerIsBetter: 'Cuanto más bajo, mejor',
+    statsChangeNoData: 'Faltan partidas',
+    statsEvolutionTitle: 'Evolución',
+    statsEvolutionSubtitle: 'Últimas 8 semanas',
+    statsSecondsPerPairUnit: 's por pareja',
+    statsErrorsPerPairUnit: 'errores por pareja',
+    statsNoGamesThatWeek: 'sin partidas',
+    statsHistoryTitle: 'Historial de partidas',
+    statsLoadMore: 'Ver más',
+    statsEmptyTitle: 'Aún no hay partidas',
+    statsEmptySubtitle: 'Termina tu primera partida y aquí verás cómo evoluciona tu memoria.',
+    statsPrivacyNote: 'Tus estadísticas se guardan solo en este dispositivo. Son una guía de práctica, no una evaluación médica.',
+    statsWonLabel: 'Completada',
+    statsLostLabel: 'Tiempo agotado',
+    statsErrorsCount: '{n} errores',
+    statsOpenLabel: 'Ver mis estadísticas',
+    minigameHubTitle: 'Juegos mentales',
+    minigameHubSubtitle: 'Elige un juego para entrenar tu mente hoy.',
+    brainGamesLabel: 'Juegos mentales',
+    seeAllLabel: 'Ver todos',
+    minigameMemoryTitle: 'Memoria',
+    minigameMemoryDescription: 'Encuentra las parejas escondidas.',
+    timeUpTitle: '¡SE ACABÓ EL TIEMPO!',
+    viewStatsLabel: 'Ver estadísticas',
+    starsEarnedSemantics: '{n} de 3 estrellas',
+    resultMessageStars3a: '¡Memoria perfecta! Eres una estrella.',
+    resultMessageStars3b: '¡Impecable! ¿Te atreves con el siguiente?',
+    resultMessageStars2a: '¡Muy bien! La tercera estrella está al alcance.',
+    resultMessageStars2b: '¡Qué buena memoria! Sigue así.',
+    resultMessageStars1a: '¡Lo lograste! Cada partida entrena tu memoria.',
+    resultMessageStars1b: '¡Tablero completo! Con menos movimientos ganarás más estrellas.',
+    resultMessageTimeUp: '¡Casi lo logras! Respira y vuelve a intentarlo.',
+    levelNodeCompleted: 'completado',
+    levelNodeCurrent: 'nivel actual, toca para jugar',
+    levelNodeLocked: 'bloqueado',
   };
 
   static const Map<String, dynamic> en = {
@@ -520,27 +694,101 @@ mixin AppLocale {
     viewProfileLabel: 'View your profile',
     coinsSemanticLabel: 'Coins',
     streakSemanticLabel: 'Daily streak',
-    saveStateInCloud: 'Saved',
-    saveStateSyncing: 'Syncing…',
-    saveStateOnDevice: 'Saved on this device',
-    saveProgressTitle: 'Save your progress',
-    saveProgressSubtitle: 'Create an account and take it all with you',
-    saveProgressBenefitRecover: 'Recover your progress',
-    saveProgressBenefitDevices: 'Play on other devices',
-    saveProgressBenefitFriends: 'Add friends',
-    saveProgressBenefitCompete: 'Compete with other players',
-    linkConflictTitle: 'You already have saved progress',
-    linkConflictSubtitle: 'Which one do you want to keep?',
-    linkInThisAccount: 'In this account',
-    linkOnThisDevice: 'On this device',
-    linkKeepCloud: 'Keep the account one',
-    linkKeepLocal: 'Use this device one',
-    linkedMessage: 'Done! Your progress is safe now',
-    accountSectionTitle: 'Your account',
-    accountSignedInAs: 'Signed in',
-    accountPlayingLocally: 'Playing without an account',
-    signOutLabel: 'Sign out',
-    levelShortLabel: 'Level',
-    coinsShortLabel: 'coins',
+    appearanceSectionTitle: 'Appearance',
+    appearanceSectionSubtitle: 'Choose how the game looks. You can change it any time.',
+    profileVibrantName: 'Dynamic',
+    profileVibrantDescription: 'Animations, confetti and bright colours',
+    profileAccessibleName: 'Clear view',
+    profileAccessibleDescription: 'Large text, high contrast, big buttons and no rush',
+    profileSelectedLabel: 'Selected',
+    gameplaySectionTitle: 'Gameplay',
+    timedMatchesTitle: 'Play against the clock',
+    timedMatchesOnSubtitle: 'Each match has a countdown',
+    timedMatchesOffSubtitle: 'No time limit: play at your own pace',
+    openSettingsLabel: 'Open settings',
+    experienceLabel: 'Experience',
+    noTimeLimitLabel: 'No time limit',
+    cardLabel: 'Card',
+    cardFaceDownLabel: 'face down',
+    cardMatchedLabel: 'pair found',
+    categoryClassicName: 'Classic',
+    categoryClassicDescription: 'Find two matching pictures',
+    categoryNumericName: 'Numbers',
+    categoryNumericDescription: 'Match each sum with its answer',
+    categoryAssociationName: 'Associations',
+    categoryAssociationDescription: 'Match words that belong together',
+    dailyChallengeNumberLabel: 'Challenge',
+    dailyMovesUnit: 'moves',
+    dailyShareCta: 'Try it today!',
+    dailyShareButton: 'Share result',
+    dailyResultTitle: 'Daily challenge cleared!',
+    dailyComeBackTomorrow: 'Come back tomorrow for challenge #{n}',
+    dailyGridLegend: '🟩 first try · 🟨 close · 🟥 tough',
+    statisticsTitle: 'Your progress',
+    statsCurrentStreak: 'Current streak',
+    statsGamesPlayed: 'Games played',
+    statsRecordTime: 'Record time',
+    statsOverallAccuracy: 'Overall accuracy',
+    statsDaysUnit: 'days',
+    statsDayUnit: 'day',
+    statsBestStreakCaption: 'Best: {n}',
+    statsWinsCaption: '{n} won',
+    statsPairsCaption: '{n}-pair board',
+    statsAccuracyCaption: 'Pairs found per turn',
+    statsNoRecordYet: 'Win a game',
+    statsTrendTitle: 'This week',
+    statsTrendSubtitle: 'Compared with the previous 7 days',
+    statsTrendImproving: 'Your memory is getting sharper!',
+    statsTrendSteady: 'You are keeping a steady pace',
+    statsTrendDeclining: 'A tougher week. Playing a little every day helps.',
+    statsTrendNotEnough: 'Play at least 2 games this week and last week to see your trend.',
+    statsSpeedLabel: 'Speed',
+    statsAccuracyLabel: 'Accuracy',
+    statsErrorsLabel: 'Memory errors',
+    statsChangeFaster: '{n}% faster',
+    statsChangeSlower: '{n}% slower',
+    statsChangeFewer: '{n}% fewer',
+    statsChangeMore: '{n}% more',
+    statsChangePointsUp: '+{n} points',
+    statsChangePointsDown: '−{n} points',
+    statsChangeSteady: 'No change',
+    statsChangeBetter: 'Improving',
+    statsChangeWorse: 'A bit harder',
+    statsErrorsShortLabel: 'Errors',
+    statsLowerIsBetter: 'Lower is better',
+    statsChangeNoData: 'Not enough games',
+    statsEvolutionTitle: 'Evolution',
+    statsEvolutionSubtitle: 'Last 8 weeks',
+    statsSecondsPerPairUnit: 's per pair',
+    statsErrorsPerPairUnit: 'errors per pair',
+    statsNoGamesThatWeek: 'no games',
+    statsHistoryTitle: 'Game history',
+    statsLoadMore: 'Show more',
+    statsEmptyTitle: 'No games yet',
+    statsEmptySubtitle: 'Finish your first game and you will see how your memory evolves here.',
+    statsPrivacyNote: 'Your statistics stay on this device. They are a practice guide, not a medical assessment.',
+    statsWonLabel: 'Completed',
+    statsLostLabel: 'Out of time',
+    statsErrorsCount: '{n} errors',
+    statsOpenLabel: 'View my statistics',
+    minigameHubTitle: 'Brain games',
+    minigameHubSubtitle: 'Pick a game to train your mind today.',
+    brainGamesLabel: 'Brain games',
+    seeAllLabel: 'See all',
+    minigameMemoryTitle: 'Memory',
+    minigameMemoryDescription: 'Find the hidden pairs.',
+    timeUpTitle: "TIME'S UP!",
+    viewStatsLabel: 'View stats',
+    starsEarnedSemantics: '{n} of 3 stars',
+    resultMessageStars3a: 'Perfect memory! You are a star.',
+    resultMessageStars3b: 'Flawless! Ready for the next one?',
+    resultMessageStars2a: 'Great job! The third star is within reach.',
+    resultMessageStars2b: 'Sharp memory! Keep it up.',
+    resultMessageStars1a: 'You did it! Every game trains your memory.',
+    resultMessageStars1b: 'Board complete! Fewer moves earn more stars.',
+    resultMessageTimeUp: 'So close! Take a breath and try again.',
+    levelNodeCompleted: 'completed',
+    levelNodeCurrent: 'current level, tap to play',
+    levelNodeLocked: 'locked',
   };
 }
