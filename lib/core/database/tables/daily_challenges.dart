@@ -28,15 +28,26 @@ class DailyChallengeDefs extends Table {
 
 /// El **progreso** del jugador en un reto concreto. Local primero, nube
 /// después.
+///
+/// Para el reto diario generado en local, `challengeId` es la fecha
+/// `'YYYY-MM-DD'`: la racha se deriva de estas filas, no de un contador.
 @DataClassName('DailyChallengeProgressRow')
 class DailyChallengeProgress extends Table {
-  TextColumn get playerLocalId =>
-      text().references(PlayerProfiles, #localId)();
+  TextColumn get playerLocalId => text().references(PlayerProfiles, #localId)();
   TextColumn get challengeId => text()();
 
   BoolColumn get completed => boolean().withDefault(const Constant(false))();
   IntColumn get score => integer().withDefault(const Constant(0))();
   IntColumn get completedAt => integer().nullable()();
+
+  // Lo necesario para volver a compartir el resultado más tarde (v4).
+  IntColumn get moves => integer().withDefault(const Constant(0))();
+  IntColumn get elapsedSeconds => integer().withDefault(const Constant(0))();
+  IntColumn get hintsUsed => integer().withDefault(const Constant(0))();
+
+  /// Cuadrícula de emojis codificada, p. ej. `'ggyg|gggr'`. Ver
+  /// `DailyResult.encodedGrid`.
+  TextColumn get grid => text().withDefault(const Constant(''))();
 
   TextColumn get syncStatus => textEnum<SyncStatus>()();
 

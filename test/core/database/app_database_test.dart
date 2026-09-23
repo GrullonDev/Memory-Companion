@@ -46,10 +46,11 @@ void main() {
     );
   }
 
-  test('el esquema arranca en la versión 1 y vacío', () async {
-    expect(db.schemaVersion, 1);
+  test('el esquema arranca en la versión 5 y vacío', () async {
+    expect(db.schemaVersion, 5);
     expect(await db.select(db.playerProfiles).get(), isEmpty);
     expect(await db.select(db.syncOperations).get(), isEmpty);
+    expect(await db.select(db.displaySettings).get(), isEmpty);
   });
 
   test('un perfil nuevo empieza con los acumulados a cero', () async {
@@ -97,7 +98,9 @@ void main() {
     await db.into(db.playerProfiles).insert(buildPlayer('local-1'));
 
     Future<void> insertLevel(int bestScore) {
-      return db.into(db.levelProgress).insert(
+      return db
+          .into(db.levelProgress)
+          .insert(
             LevelProgressCompanion.insert(
               playerLocalId: 'local-1',
               levelNumber: 3,
@@ -120,7 +123,9 @@ void main() {
     await db.into(db.playerProfiles).insert(buildPlayer('local-1'));
 
     Future<void> enqueue(String opId, SyncStatus status, int nextAttemptAt) {
-      return db.into(db.syncOperations).insert(
+      return db
+          .into(db.syncOperations)
+          .insert(
             SyncOperationsCompanion.insert(
               opId: opId,
               playerLocalId: 'local-1',
@@ -139,10 +144,11 @@ void main() {
     await enqueue('op-esperando', SyncStatus.pending, 9999999999999);
     await enqueue('op-hecha', SyncStatus.synced, 0);
 
-    final eligible = await (db.select(db.syncOperations)
-          ..where((o) => o.status.equalsValue(SyncStatus.pending))
-          ..where((o) => o.nextAttemptAt.isSmallerOrEqualValue(1000)))
-        .get();
+    final eligible =
+        await (db.select(db.syncOperations)
+              ..where((o) => o.status.equalsValue(SyncStatus.pending))
+              ..where((o) => o.nextAttemptAt.isSmallerOrEqualValue(1000)))
+            .get();
 
     expect(eligible.map((o) => o.opId), ['op-lista']);
   });
