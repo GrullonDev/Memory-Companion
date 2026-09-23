@@ -8,6 +8,8 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/section_header.dart';
+import 'package:memory_companion/features/daily_challenge/controller/daily_challenge_controller.dart';
+import 'package:memory_companion/features/daily_challenge/model/daily_challenge.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/daily_challenge_card.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
@@ -16,14 +18,9 @@ import 'package:memory_companion/features/home/widget/level_progress_card.dart';
 import 'package:memory_companion/features/home/widget/primary_play_card.dart';
 import 'package:memory_companion/features/home/widget/recent_match_card.dart';
 import 'package:memory_companion/features/home/widget/secondary_mode_row.dart';
+import 'package:memory_companion/features/minigames/hub/widget/minigame_grid.dart';
+import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
-
-/// Coins awarded for clearing the daily challenge.
-///
-/// Design placeholder: the daily challenge is not implemented yet, so this
-/// is the figure the card advertises. Move it to the challenge's own
-/// controller once that feature lands.
-const int _dailyChallengeReward = 50;
 
 /// The Home, rebuilt around a single clear hierarchy.
 ///
@@ -41,6 +38,10 @@ class HomeScreen extends ConsumerWidget {
     final wallet = ref.watch(walletControllerProvider);
     final summary = ref.watch(homeSummaryProvider);
     final recentMatch = ref.watch(homeControllerProvider);
+    final dailyStatus = ref.watch(
+      dailyStatusProvider(ref.watch(todayChallengeProvider)),
+    );
+    final minigames = ref.watch(minigamesProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -71,6 +72,8 @@ class HomeScreen extends ConsumerWidget {
                       Navigator.of(context).pushNamed(RoutePaths.profile),
                   onCoinsTap: () =>
                       Navigator.of(context).pushNamed(RoutePaths.shop),
+                  onSettingsTap: () =>
+                      Navigator.of(context).pushNamed(RoutePaths.settings),
                 ),
                 const SizedBox(height: AppSpacing.xl),
 
@@ -89,13 +92,21 @@ class HomeScreen extends ConsumerWidget {
                 const SizedBox(height: AppSpacing.gutter),
 
                 DailyChallengeCard(
-                  rewardCoins: _dailyChallengeReward,
-                  onTap: () => ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(AppLocale.comingSoon.getString(context)),
-                    ),
-                  ),
+                  rewardCoins: DailyChallenge.rewardCoins,
+                  completed: dailyStatus.value?.completedToday ?? false,
+                  onTap: () => Navigator.of(
+                    context,
+                  ).pushNamed(RoutePaths.dailyChallenge),
                 ),
+                const SizedBox(height: AppSpacing.sectionGap),
+
+                SectionHeader(
+                  title: AppLocale.brainGamesLabel.getString(context),
+                  actionLabel: AppLocale.seeAllLabel.getString(context),
+                  onAction: () =>
+                      Navigator.of(context).pushNamed(RoutePaths.minigameHub),
+                ),
+                MinigameGrid(games: minigames),
                 const SizedBox(height: AppSpacing.sectionGap),
 
                 SectionHeader(

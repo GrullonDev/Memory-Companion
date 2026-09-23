@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/avatar_picker.dart';
@@ -14,6 +16,7 @@ import 'package:memory_companion/features/profile/widget/next_level_card.dart';
 import 'package:memory_companion/features/profile/widget/performance_chart_card.dart';
 import 'package:memory_companion/features/profile/widget/profile_header.dart';
 import 'package:memory_companion/features/profile/widget/profile_stat_grid.dart';
+import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -146,12 +149,7 @@ class ProfileScreen extends ConsumerWidget {
                   const SizedBox(height: 12),
                   AchievementsGrid(achievements: data.achievements),
                   const SizedBox(height: 24),
-                  PerformanceChartCard(
-                    points: [
-                      for (final point in data.performancePoints)
-                        (label: point.label, value: point.value),
-                    ],
-                  ),
+                  const _WeeklyAccuracy(),
                   const SizedBox(height: 24),
                   Align(
                     alignment: Alignment.centerLeft,
@@ -174,6 +172,42 @@ class ProfileScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The last seven weeks' memory accuracy from the local statistics, with a
+/// way into the full statistics screen. Weeks without games are left out
+/// rather than drawn as zero.
+class _WeeklyAccuracy extends ConsumerWidget {
+  const _WeeklyAccuracy();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weeks = ref.watch(statisticsOverviewProvider).value?.weeks ?? [];
+    final dateLabel = DateFormat.Md(
+      Localizations.localeOf(context).languageCode,
+    );
+    final recent = weeks.length > 7 ? weeks.sublist(weeks.length - 7) : weeks;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        PerformanceChartCard(
+          points: [
+            for (final week in recent)
+              if (week.stats.accuracy case final accuracy?)
+                (label: dateLabel.format(week.start), value: accuracy),
+          ],
+        ),
+        const SizedBox(height: 12),
+        FilledButton.tonalIcon(
+          onPressed: () =>
+              Navigator.of(context).pushNamed(RoutePaths.statistics),
+          icon: const Icon(Icons.insights_rounded),
+          label: Text(AppLocale.statsOpenLabel.getString(context)),
+        ),
+      ],
     );
   }
 }

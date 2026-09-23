@@ -28,7 +28,6 @@ class ProfileController extends AsyncNotifier<ProfileData> {
         totalCoins: '0',
         achievements: [],
         matches: [],
-        performancePoints: [],
         avatarSeed: 0,
       );
     }
@@ -65,7 +64,6 @@ class ProfileController extends AsyncNotifier<ProfileData> {
       totalCoins: totalCoinsFormatted,
       achievements: _getUnlockedAchievements(appUser),
       matches: profileMatches,
-      performancePoints: _getPerformancePoints(),
       avatarSeed: appUser.avatarSeed,
     );
   }
@@ -141,20 +139,6 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     return achievements;
   }
 
-  /// Get performance points for the week
-  List<PerformancePoint> _getPerformancePoints() {
-    // Placeholder - will be updated with real data
-    return [
-      PerformancePoint(label: 'Lun', value: 0.6),
-      PerformancePoint(label: 'Mar', value: 0.72),
-      PerformancePoint(label: 'Mié', value: 0.65),
-      PerformancePoint(label: 'Jue', value: 0.85),
-      PerformancePoint(label: 'Vie', value: 0.78),
-      PerformancePoint(label: 'Sáb', value: 0.92),
-      PerformancePoint(label: 'Dom', value: 0.88),
-    ];
-  }
-
   /// Randomize avatar and save to Firestore
   Future<void> randomizeAvatar() async {
     final current = state.value;
@@ -164,9 +148,9 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     state = AsyncValue.data(current.copyWith(avatarSeed: newSeed));
 
     // Save to Firestore
-    await ref.read(userControllerProvider.notifier).updateProfile(
-      avatarSeed: newSeed,
-    );
+    await ref
+        .read(userControllerProvider.notifier)
+        .updateProfile(avatarSeed: newSeed);
   }
 }
 

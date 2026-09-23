@@ -1,13 +1,6 @@
 import 'package:memory_companion/features/profile/model/achievement.dart';
 import 'package:memory_companion/features/profile/model/profile_match.dart';
 
-class PerformancePoint {
-  const PerformancePoint({required this.label, required this.value});
-
-  final String label;
-  final double value;
-}
-
 /// Everything the Profile screen renders beyond the shared coin balance.
 class ProfileData {
   const ProfileData({
@@ -22,7 +15,6 @@ class ProfileData {
     required this.totalCoins,
     required this.achievements,
     required this.matches,
-    required this.performancePoints,
     this.avatarSeed = 0,
   });
 
@@ -37,7 +29,6 @@ class ProfileData {
   final String totalCoins;
   final List<Achievement> achievements;
   final List<ProfileMatch> matches;
-  final List<PerformancePoint> performancePoints;
   final int avatarSeed;
 
   ProfileData copyWith({int? avatarSeed}) {
@@ -53,7 +44,6 @@ class ProfileData {
       totalCoins: totalCoins,
       achievements: achievements,
       matches: matches,
-      performancePoints: performancePoints,
       avatarSeed: avatarSeed ?? this.avatarSeed,
     );
   }

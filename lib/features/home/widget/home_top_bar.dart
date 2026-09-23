@@ -24,6 +24,7 @@ class HomeTopBar extends StatelessWidget {
     required this.coins,
     this.onAvatarTap,
     this.onCoinsTap,
+    this.onSettingsTap,
   });
 
   /// Empty while the profile loads — the fallback keeps the layout stable
@@ -32,6 +33,7 @@ class HomeTopBar extends StatelessWidget {
   final int coins;
   final VoidCallback? onAvatarTap;
   final VoidCallback? onCoinsTap;
+  final VoidCallback? onSettingsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +98,12 @@ class HomeTopBar extends StatelessWidget {
           semanticLabel:
               '${AppLocale.coinsSemanticLabel.getString(context)}: $coins',
         ),
+        if (onSettingsTap != null)
+          IconButton(
+            onPressed: onSettingsTap,
+            tooltip: AppLocale.openSettingsLabel.getString(context),
+            icon: const Icon(Icons.settings_rounded),
+          ),
       ],
     );
   }
