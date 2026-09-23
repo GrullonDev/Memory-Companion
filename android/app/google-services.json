@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1049848624178:android:c26ade07c48144a8b8f82b",
         "android_client_info": {
-          "package_name": "com.GrullonDev.memory_arcade"
+          "package_name": "com.grullondev.memory_arcade"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "1049848624178-2lnp5sbv5g02rl3vv6nenuikjanqmjlo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.GrullonDev.memory_arcade",
+            "package_name": "com.grullondev.memory_arcade",
             "certificate_hash": "65dd2e88070708d073324ec097ab63d0580d1f19"
           }
         },

@@ -1,4 +1,4 @@
-package com.GrullonDev.memory_arcade
+package com.grullondev.memory_arcade
 
 import io.flutter.embedding.android.FlutterActivity
 
