@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/minigames/modules/digits/digits_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/memory/memory_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/words/words_game_module.dart';
 
 /// Every mini-game the platform offers, in hub order.
 ///
@@ -12,7 +14,8 @@ import 'package:memory_companion/features/minigames/modules/memory/memory_game_m
 abstract final class MinigameRegistry {
   static const List<BaseMinigame> all = [
     MemoryGameModule(),
-    // SequenceGameModule(),  ← a new game is one line here.
+    DigitsGameModule(),
+    WordsGameModule(),
   ];
 
   static BaseMinigame? byId(String id) =>
