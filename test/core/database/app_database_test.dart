@@ -46,8 +46,8 @@ void main() {
     );
   }
 
-  test('el esquema arranca en la versión 5 y vacío', () async {
-    expect(db.schemaVersion, 5);
+  test('el esquema arranca en la versión 6 y vacío', () async {
+    expect(db.schemaVersion, 6);
     expect(await db.select(db.playerProfiles).get(), isEmpty);
     expect(await db.select(db.syncOperations).get(), isEmpty);
     expect(await db.select(db.displaySettings).get(), isEmpty);
@@ -151,5 +151,52 @@ void main() {
             .get();
 
     expect(eligible.map((o) => o.opId), ['op-lista']);
+  });
+
+  test('migra de la versión 5 a la 6 sin perder partidas ni ajustes', () async {
+    final old = AppDatabase.forTesting(
+      NativeDatabase.memory(
+        setup: (raw) {
+          // Las dos tablas que toca la versión 6, tal como eran en la 5.
+          raw.execute('''
+            CREATE TABLE game_stats (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              played_at INTEGER NOT NULL, played_day TEXT NOT NULL,
+              category_id TEXT NOT NULL, pair_count INTEGER NOT NULL,
+              matched_pairs INTEGER NOT NULL, moves INTEGER NOT NULL,
+              memory_errors INTEGER NOT NULL, hints_used INTEGER NOT NULL,
+              seconds_elapsed INTEGER NOT NULL,
+              time_limit_seconds INTEGER NOT NULL, timed INTEGER NOT NULL,
+              won INTEGER NOT NULL, score INTEGER NOT NULL)''');
+          raw.execute('''
+            CREATE TABLE display_settings (
+              id INTEGER NOT NULL PRIMARY KEY,
+              visual_profile TEXT NOT NULL DEFAULT 'vibrant',
+              timed_matches INTEGER NOT NULL DEFAULT 1,
+              updated_at INTEGER NOT NULL)''');
+          raw.execute(
+            "INSERT INTO game_stats VALUES (1, 1000, '2026-09-01', 'classic', "
+            '6, 6, 8, 1, 0, 40, 90, 1, 1, 700)',
+          );
+          raw.execute(
+            "INSERT INTO display_settings VALUES (0, 'accessible', 0, 1000)",
+          );
+          raw.execute('PRAGMA user_version = 5');
+        },
+      ),
+    );
+    addTearDown(old.close);
+
+    final [game] = await old.select(old.gameStats).get();
+    expect(game.score, 700);
+    expect(game.placeId, isNull);
+    expect(game.nearby, isNull);
+
+    final settings = await old.select(old.displaySettings).getSingle();
+    expect(settings.timedMatches, isFalse);
+    expect(settings.contextLocation, isFalse, reason: 'nace apagado');
+    expect(settings.contextNearby, isFalse);
+
+    expect(await old.select(old.places).get(), isEmpty);
   });
 }

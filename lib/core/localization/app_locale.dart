@@ -385,6 +385,64 @@ mixin AppLocale {
   static const String duelSubmitFailed = 'duelSubmitFailed';
   static const String duelPointsLabel = 'duelPointsLabel';
 
+  static const String searchTitle = 'searchTitle';
+  static const String searchHint = 'searchHint';
+  static const String searchEntry = 'searchEntry';
+  static const String searchPrivacyNote = 'searchPrivacyNote';
+  static const String searchExampleBestFriday = 'searchExampleBestFriday';
+  static const String searchExampleImproved = 'searchExampleImproved';
+  static const String searchExampleWhoPark = 'searchExampleWhoPark';
+  static const String searchExampleWhere = 'searchExampleWhere';
+  static const String searchExampleWhen = 'searchExampleWhen';
+  static const String searchBestGameTitle = 'searchBestGameTitle';
+  static const String searchWorstGameTitle = 'searchWorstGameTitle';
+  static const String searchImprovedTitle = 'searchImprovedTitle';
+  static const String searchNotImprovedTitle = 'searchNotImprovedTitle';
+  static const String searchImprovedDetail = 'searchImprovedDetail';
+  static const String searchPeopleTitle = 'searchPeopleTitle';
+  static const String searchNobodyNearby = 'searchNobodyNearby';
+  static const String searchGamesCount = 'searchGamesCount';
+  static const String searchUnknownPlayer = 'searchUnknownPlayer';
+  static const String searchPlaceTitle = 'searchPlaceTitle';
+  static const String searchTimeTitle = 'searchTimeTitle';
+  static const String searchAccuracyGames = 'searchAccuracyGames';
+  static const String searchCountTitle = 'searchCountTitle';
+  static const String searchGamesTitle = 'searchGamesTitle';
+  static const String searchNoGames = 'searchNoGames';
+  static const String searchNoNearby = 'searchNoNearby';
+  static const String searchNoPlaces = 'searchNoPlaces';
+  static const String searchNoComparison = 'searchNoComparison';
+  static const String searchUnmatchedPlace = 'searchUnmatchedPlace';
+  static const String searchFailed = 'searchFailed';
+  static const String searchUnderstood = 'searchUnderstood';
+  static const String searchEveryWeekday = 'searchEveryWeekday';
+  static const String slotMorning = 'slotMorning';
+  static const String slotAfternoon = 'slotAfternoon';
+  static const String slotEvening = 'slotEvening';
+  static const String slotNight = 'slotNight';
+  static const String placeUnnamed = 'placeUnnamed';
+  static const String contextSectionTitle = 'contextSectionTitle';
+  static const String contextSectionSubtitle = 'contextSectionSubtitle';
+  static const String contextLocationTitle = 'contextLocationTitle';
+  static const String contextLocationSubtitle = 'contextLocationSubtitle';
+  static const String contextNearbyTitle = 'contextNearbyTitle';
+  static const String contextNearbySubtitle = 'contextNearbySubtitle';
+  static const String contextPermissionDenied = 'contextPermissionDenied';
+  static const String placesTitle = 'placesTitle';
+  static const String placesEmpty = 'placesEmpty';
+  static const String placeRenameTitle = 'placeRenameTitle';
+  static const String placeRenameHint = 'placeRenameHint';
+  static const String saveLabel = 'saveLabel';
+  static const String cancelLabel = 'cancelLabel';
+  static const String nearbyTitle = 'nearbyTitle';
+  static const String nearbySubtitle = 'nearbySubtitle';
+  static const String nearbySearchLabel = 'nearbySearchLabel';
+  static const String nearbySearching = 'nearbySearching';
+  static const String nearbyNoneFound = 'nearbyNoneFound';
+  static const String nearbyPermissionDenied = 'nearbyPermissionDenied';
+  static const String nearbyUnavailable = 'nearbyUnavailable';
+  static const String nearbyPendingLabel = 'nearbyPendingLabel';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -738,6 +796,63 @@ mixin AppLocale {
     duelResultSaved: 'Tu resultado quedó guardado. Vuelve a Versus para ver quién ganó cuando {name} juegue.',
     duelSubmitFailed: 'No se pudo enviar tu resultado. Revisa tu conexión.',
     duelPointsLabel: '{n} pts',
+    searchTitle: 'Pregúntale a tu historial',
+    searchHint: 'Ej.: ¿Cuál fue mi mejor partida del viernes?',
+    searchEntry: 'Pregúntale a tu historial…',
+    searchPrivacyNote: 'La búsqueda se hace en este dispositivo: tus preguntas y tu historial no salen de él.',
+    searchExampleBestFriday: '¿Cuál fue mi mejor partida del viernes?',
+    searchExampleImproved: '¿En qué categoría mejoré más este mes?',
+    searchExampleWhoPark: '¿Contra quién jugué la semana pasada en el parque?',
+    searchExampleWhere: '¿Dónde me concentro mejor?',
+    searchExampleWhen: '¿A qué hora rindo mejor?',
+    searchBestGameTitle: 'Tu mejor partida',
+    searchWorstGameTitle: 'Tu partida más floja',
+    searchImprovedTitle: 'Mejoraste más en {category}',
+    searchNotImprovedTitle: 'Ninguna categoría mejoró; la que mejor se mantuvo fue {category}',
+    searchImprovedDetail: 'Precisión: {before} antes → {after} ahora',
+    searchPeopleTitle: 'Jugaste cerca de:',
+    searchNobodyNearby: 'No había nadie cerca en esas partidas.',
+    searchGamesCount: '{n} partidas',
+    searchUnknownPlayer: 'Jugador {code}',
+    searchPlaceTitle: 'Te concentras mejor en {place}',
+    searchTimeTitle: 'Rindes mejor {slot}',
+    searchAccuracyGames: '{accuracy} de precisión · {n} partidas',
+    searchCountTitle: '{n} partidas, {wins} ganadas',
+    searchGamesTitle: 'Las partidas que más se parecen',
+    searchNoGames: 'No encontré partidas con esos filtros.',
+    searchNoNearby: 'Aún no hay registro de personas cercanas. Actívalo en Ajustes › Contexto automático.',
+    searchNoPlaces: 'Aún no hay lugares registrados. Activa la ubicación en Ajustes › Contexto automático.',
+    searchNoComparison: 'Aún no hay partidas suficientes para comparar.',
+    searchUnmatchedPlace: 'No tienes ningún lugar llamado "{place}". Ponles nombre a tus lugares en Ajustes.',
+    searchFailed: 'No se pudo buscar. Inténtalo de nuevo.',
+    searchUnderstood: 'Entendí: {filters}',
+    searchEveryWeekday: 'todos los {day}',
+    slotMorning: 'por la mañana',
+    slotAfternoon: 'por la tarde',
+    slotEvening: 'por la noche',
+    slotNight: 'de madrugada',
+    placeUnnamed: 'Lugar {n}',
+    contextSectionTitle: 'Contexto automático',
+    contextSectionSubtitle: 'Opcional y apagado por defecto. Lo que se guarda no sale de este dispositivo.',
+    contextLocationTitle: 'Guardar dónde juegas',
+    contextLocationSubtitle: 'Agrupa tus partidas por lugar para ver dónde te concentras mejor.',
+    contextNearbyTitle: 'Personas cercanas',
+    contextNearbySubtitle: 'Por Bluetooth: te anuncias con tu código de amigo y registras quién jugaba cerca. Requiere cuenta.',
+    contextPermissionDenied: 'Sin el permiso no se puede activar. Puedes concederlo en los ajustes del sistema.',
+    placesTitle: 'Tus lugares',
+    placesEmpty: 'Aún no hay lugares. Aparecerán al jugar con la ubicación activada.',
+    placeRenameTitle: 'Nombre del lugar',
+    placeRenameHint: 'Casa, Parque, Trabajo…',
+    saveLabel: 'Guardar',
+    cancelLabel: 'Cancelar',
+    nearbyTitle: 'Cerca de ti',
+    nearbySubtitle: 'Encuentra jugadores con Memory Arcade abierto a tu alrededor. Los dos tienen que estar buscando a la vez.',
+    nearbySearchLabel: 'Buscar cerca',
+    nearbySearching: 'Buscando…',
+    nearbyNoneFound: 'No se encontró a nadie cerca.',
+    nearbyPermissionDenied: 'Hace falta el permiso de Bluetooth para buscar.',
+    nearbyUnavailable: 'Enciende el Bluetooth para buscar.',
+    nearbyPendingLabel: 'Pendiente',
   };
 
   static const Map<String, dynamic> en = {
@@ -1093,5 +1208,62 @@ mixin AppLocale {
     duelResultSaved: 'Your result is saved. Check Versus to see who won once {name} plays.',
     duelSubmitFailed: "Couldn't send your result. Check your connection.",
     duelPointsLabel: '{n} pts',
+    searchTitle: 'Ask your history',
+    searchHint: 'E.g.: What was my best game on Friday?',
+    searchEntry: 'Ask your history…',
+    searchPrivacyNote: 'Search runs on this device: your questions and your history never leave it.',
+    searchExampleBestFriday: 'What was my best game on Friday?',
+    searchExampleImproved: 'Which category did I improve most this month?',
+    searchExampleWhoPark: 'Who did I play with last week at the park?',
+    searchExampleWhere: 'Where do I focus best?',
+    searchExampleWhen: 'What time of day do I play best?',
+    searchBestGameTitle: 'Your best game',
+    searchWorstGameTitle: 'Your weakest game',
+    searchImprovedTitle: 'You improved most in {category}',
+    searchNotImprovedTitle: 'No category improved; {category} held up best',
+    searchImprovedDetail: 'Accuracy: {before} before → {after} now',
+    searchPeopleTitle: 'You played near:',
+    searchNobodyNearby: 'Nobody was nearby in those games.',
+    searchGamesCount: '{n} games',
+    searchUnknownPlayer: 'Player {code}',
+    searchPlaceTitle: 'You focus best at {place}',
+    searchTimeTitle: 'You play best {slot}',
+    searchAccuracyGames: '{accuracy} accuracy · {n} games',
+    searchCountTitle: '{n} games, {wins} won',
+    searchGamesTitle: 'The closest matching games',
+    searchNoGames: 'No games match those filters.',
+    searchNoNearby: 'No nearby players recorded yet. Turn it on in Settings › Automatic context.',
+    searchNoPlaces: 'No places recorded yet. Turn on location in Settings › Automatic context.',
+    searchNoComparison: 'Not enough games to compare yet.',
+    searchUnmatchedPlace: 'You have no place called "{place}". Name your places in Settings.',
+    searchFailed: 'Search failed. Try again.',
+    searchUnderstood: 'Understood: {filters}',
+    searchEveryWeekday: 'every {day}',
+    slotMorning: 'in the morning',
+    slotAfternoon: 'in the afternoon',
+    slotEvening: 'in the evening',
+    slotNight: 'late at night',
+    placeUnnamed: 'Place {n}',
+    contextSectionTitle: 'Automatic context',
+    contextSectionSubtitle: 'Optional and off by default. What is stored never leaves this device.',
+    contextLocationTitle: 'Remember where you play',
+    contextLocationSubtitle: 'Groups your games by place to show where you focus best.',
+    contextNearbyTitle: 'Nearby players',
+    contextNearbySubtitle: 'Over Bluetooth: you broadcast your friend code and record who was playing nearby. Needs an account.',
+    contextPermissionDenied: 'It cannot be turned on without the permission. You can grant it in the system settings.',
+    placesTitle: 'Your places',
+    placesEmpty: 'No places yet. They appear as you play with location on.',
+    placeRenameTitle: 'Place name',
+    placeRenameHint: 'Home, Park, Work…',
+    saveLabel: 'Save',
+    cancelLabel: 'Cancel',
+    nearbyTitle: 'Near you',
+    nearbySubtitle: 'Find players around you with Memory Arcade open. Both of you need to be searching at the same time.',
+    nearbySearchLabel: 'Search nearby',
+    nearbySearching: 'Searching…',
+    nearbyNoneFound: 'Nobody found nearby.',
+    nearbyPermissionDenied: 'Bluetooth permission is needed to search.',
+    nearbyUnavailable: 'Turn on Bluetooth to search.',
+    nearbyPendingLabel: 'Pending',
   };
 }

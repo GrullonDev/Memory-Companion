@@ -16,6 +16,9 @@ class RoutePaths {
   static const String dailyChallenge = '/daily-challenge';
   static const String profile = '/profile';
   static const String statistics = '/statistics';
+
+  /// Questions about the history in plain language, answered on the device.
+  static const String historySearch = '/statistics/search';
   static const String settings = '/settings';
   static const String minigameHub = '/games';
 
