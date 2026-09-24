@@ -4086,6 +4086,36 @@ class $DisplaySettingsTable extends DisplaySettings
     ),
     defaultValue: const Constant(true),
   );
+  static const VerificationMeta _contextLocationMeta = const VerificationMeta(
+    'contextLocation',
+  );
+  @override
+  late final GeneratedColumn<bool> contextLocation = GeneratedColumn<bool>(
+    'context_location',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("context_location" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _contextNearbyMeta = const VerificationMeta(
+    'contextNearby',
+  );
+  @override
+  late final GeneratedColumn<bool> contextNearby = GeneratedColumn<bool>(
+    'context_nearby',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("context_nearby" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -4102,6 +4132,8 @@ class $DisplaySettingsTable extends DisplaySettings
     id,
     visualProfile,
     timedMatches,
+    contextLocation,
+    contextNearby,
     updatedAt,
   ];
   @override
@@ -4125,6 +4157,24 @@ class $DisplaySettingsTable extends DisplaySettings
         timedMatches.isAcceptableOrUnknown(
           data['timed_matches']!,
           _timedMatchesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('context_location')) {
+      context.handle(
+        _contextLocationMeta,
+        contextLocation.isAcceptableOrUnknown(
+          data['context_location']!,
+          _contextLocationMeta,
+        ),
+      );
+    }
+    if (data.containsKey('context_nearby')) {
+      context.handle(
+        _contextNearbyMeta,
+        contextNearby.isAcceptableOrUnknown(
+          data['context_nearby']!,
+          _contextNearbyMeta,
         ),
       );
     }
@@ -4159,6 +4209,14 @@ class $DisplaySettingsTable extends DisplaySettings
         DriftSqlType.bool,
         data['${effectivePrefix}timed_matches'],
       )!,
+      contextLocation: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}context_location'],
+      )!,
+      contextNearby: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}context_nearby'],
+      )!,
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}updated_at'],
@@ -4187,11 +4245,21 @@ class DisplaySettingsRow extends DataClass
   /// Si la partida corre contra el reloj. Se reinicia al valor por defecto
   /// del perfil cada vez que se elige uno, y después el jugador manda.
   final bool timedMatches;
+
+  /// Contexto automático: guardar en qué lugar se jugó cada partida. Nace
+  /// apagado y solo se enciende tras conceder el permiso de ubicación.
+  final bool contextLocation;
+
+  /// Contexto automático: anunciarse y buscar jugadores cercanos por
+  /// Bluetooth. Nace apagado, igual que la ubicación.
+  final bool contextNearby;
   final int updatedAt;
   const DisplaySettingsRow({
     required this.id,
     required this.visualProfile,
     required this.timedMatches,
+    required this.contextLocation,
+    required this.contextNearby,
     required this.updatedAt,
   });
   @override
@@ -4204,6 +4272,8 @@ class DisplaySettingsRow extends DataClass
       );
     }
     map['timed_matches'] = Variable<bool>(timedMatches);
+    map['context_location'] = Variable<bool>(contextLocation);
+    map['context_nearby'] = Variable<bool>(contextNearby);
     map['updated_at'] = Variable<int>(updatedAt);
     return map;
   }
@@ -4213,6 +4283,8 @@ class DisplaySettingsRow extends DataClass
       id: Value(id),
       visualProfile: Value(visualProfile),
       timedMatches: Value(timedMatches),
+      contextLocation: Value(contextLocation),
+      contextNearby: Value(contextNearby),
       updatedAt: Value(updatedAt),
     );
   }
@@ -4228,6 +4300,8 @@ class DisplaySettingsRow extends DataClass
         serializer.fromJson<String>(json['visualProfile']),
       ),
       timedMatches: serializer.fromJson<bool>(json['timedMatches']),
+      contextLocation: serializer.fromJson<bool>(json['contextLocation']),
+      contextNearby: serializer.fromJson<bool>(json['contextNearby']),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
     );
   }
@@ -4240,6 +4314,8 @@ class DisplaySettingsRow extends DataClass
         $DisplaySettingsTable.$convertervisualProfile.toJson(visualProfile),
       ),
       'timedMatches': serializer.toJson<bool>(timedMatches),
+      'contextLocation': serializer.toJson<bool>(contextLocation),
+      'contextNearby': serializer.toJson<bool>(contextNearby),
       'updatedAt': serializer.toJson<int>(updatedAt),
     };
   }
@@ -4248,11 +4324,15 @@ class DisplaySettingsRow extends DataClass
     int? id,
     VisualProfile? visualProfile,
     bool? timedMatches,
+    bool? contextLocation,
+    bool? contextNearby,
     int? updatedAt,
   }) => DisplaySettingsRow(
     id: id ?? this.id,
     visualProfile: visualProfile ?? this.visualProfile,
     timedMatches: timedMatches ?? this.timedMatches,
+    contextLocation: contextLocation ?? this.contextLocation,
+    contextNearby: contextNearby ?? this.contextNearby,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   DisplaySettingsRow copyWithCompanion(DisplaySettingsCompanion data) {
@@ -4264,6 +4344,12 @@ class DisplaySettingsRow extends DataClass
       timedMatches: data.timedMatches.present
           ? data.timedMatches.value
           : this.timedMatches,
+      contextLocation: data.contextLocation.present
+          ? data.contextLocation.value
+          : this.contextLocation,
+      contextNearby: data.contextNearby.present
+          ? data.contextNearby.value
+          : this.contextNearby,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -4274,13 +4360,22 @@ class DisplaySettingsRow extends DataClass
           ..write('id: $id, ')
           ..write('visualProfile: $visualProfile, ')
           ..write('timedMatches: $timedMatches, ')
+          ..write('contextLocation: $contextLocation, ')
+          ..write('contextNearby: $contextNearby, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, visualProfile, timedMatches, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    visualProfile,
+    timedMatches,
+    contextLocation,
+    contextNearby,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4288,6 +4383,8 @@ class DisplaySettingsRow extends DataClass
           other.id == this.id &&
           other.visualProfile == this.visualProfile &&
           other.timedMatches == this.timedMatches &&
+          other.contextLocation == this.contextLocation &&
+          other.contextNearby == this.contextNearby &&
           other.updatedAt == this.updatedAt);
 }
 
@@ -4295,29 +4392,39 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
   final Value<int> id;
   final Value<VisualProfile> visualProfile;
   final Value<bool> timedMatches;
+  final Value<bool> contextLocation;
+  final Value<bool> contextNearby;
   final Value<int> updatedAt;
   const DisplaySettingsCompanion({
     this.id = const Value.absent(),
     this.visualProfile = const Value.absent(),
     this.timedMatches = const Value.absent(),
+    this.contextLocation = const Value.absent(),
+    this.contextNearby = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   DisplaySettingsCompanion.insert({
     this.id = const Value.absent(),
     this.visualProfile = const Value.absent(),
     this.timedMatches = const Value.absent(),
+    this.contextLocation = const Value.absent(),
+    this.contextNearby = const Value.absent(),
     required int updatedAt,
   }) : updatedAt = Value(updatedAt);
   static Insertable<DisplaySettingsRow> custom({
     Expression<int>? id,
     Expression<String>? visualProfile,
     Expression<bool>? timedMatches,
+    Expression<bool>? contextLocation,
+    Expression<bool>? contextNearby,
     Expression<int>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (visualProfile != null) 'visual_profile': visualProfile,
       if (timedMatches != null) 'timed_matches': timedMatches,
+      if (contextLocation != null) 'context_location': contextLocation,
+      if (contextNearby != null) 'context_nearby': contextNearby,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
@@ -4326,12 +4433,16 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     Value<int>? id,
     Value<VisualProfile>? visualProfile,
     Value<bool>? timedMatches,
+    Value<bool>? contextLocation,
+    Value<bool>? contextNearby,
     Value<int>? updatedAt,
   }) {
     return DisplaySettingsCompanion(
       id: id ?? this.id,
       visualProfile: visualProfile ?? this.visualProfile,
       timedMatches: timedMatches ?? this.timedMatches,
+      contextLocation: contextLocation ?? this.contextLocation,
+      contextNearby: contextNearby ?? this.contextNearby,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -4352,6 +4463,12 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     if (timedMatches.present) {
       map['timed_matches'] = Variable<bool>(timedMatches.value);
     }
+    if (contextLocation.present) {
+      map['context_location'] = Variable<bool>(contextLocation.value);
+    }
+    if (contextNearby.present) {
+      map['context_nearby'] = Variable<bool>(contextNearby.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<int>(updatedAt.value);
     }
@@ -4364,6 +4481,8 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
           ..write('id: $id, ')
           ..write('visualProfile: $visualProfile, ')
           ..write('timedMatches: $timedMatches, ')
+          ..write('contextLocation: $contextLocation, ')
+          ..write('contextNearby: $contextNearby, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -4530,6 +4649,26 @@ class $GameStatsTable extends GameStats
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _placeIdMeta = const VerificationMeta(
+    'placeId',
+  );
+  @override
+  late final GeneratedColumn<int> placeId = GeneratedColumn<int>(
+    'place_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _nearbyMeta = const VerificationMeta('nearby');
+  @override
+  late final GeneratedColumn<String> nearby = GeneratedColumn<String>(
+    'nearby',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -4546,6 +4685,8 @@ class $GameStatsTable extends GameStats
     timed,
     won,
     score,
+    placeId,
+    nearby,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -4678,6 +4819,18 @@ class $GameStatsTable extends GameStats
     } else if (isInserting) {
       context.missing(_scoreMeta);
     }
+    if (data.containsKey('place_id')) {
+      context.handle(
+        _placeIdMeta,
+        placeId.isAcceptableOrUnknown(data['place_id']!, _placeIdMeta),
+      );
+    }
+    if (data.containsKey('nearby')) {
+      context.handle(
+        _nearbyMeta,
+        nearby.isAcceptableOrUnknown(data['nearby']!, _nearbyMeta),
+      );
+    }
     return context;
   }
 
@@ -4743,6 +4896,14 @@ class $GameStatsTable extends GameStats
         DriftSqlType.int,
         data['${effectivePrefix}score'],
       )!,
+      placeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}place_id'],
+      ),
+      nearby: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nearby'],
+      ),
     );
   }
 
@@ -4784,6 +4945,15 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
   final bool timed;
   final bool won;
   final int score;
+
+  /// `Places.id` donde se jugó, si el jugador activó la ubicación. Sin clave
+  /// foránea, como el resto de la tabla: borrar un lugar no debe borrar
+  /// partidas.
+  final int? placeId;
+
+  /// Jugadores detectados por Bluetooth al terminar, como lista JSON de
+  /// `{code, name}`. Null si el jugador no activó "personas cercanas".
+  final String? nearby;
   const GameStatsRow({
     required this.id,
     required this.playedAt,
@@ -4799,6 +4969,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
     required this.timed,
     required this.won,
     required this.score,
+    this.placeId,
+    this.nearby,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4817,6 +4989,12 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
     map['timed'] = Variable<bool>(timed);
     map['won'] = Variable<bool>(won);
     map['score'] = Variable<int>(score);
+    if (!nullToAbsent || placeId != null) {
+      map['place_id'] = Variable<int>(placeId);
+    }
+    if (!nullToAbsent || nearby != null) {
+      map['nearby'] = Variable<String>(nearby);
+    }
     return map;
   }
 
@@ -4836,6 +5014,12 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
       timed: Value(timed),
       won: Value(won),
       score: Value(score),
+      placeId: placeId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placeId),
+      nearby: nearby == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nearby),
     );
   }
 
@@ -4859,6 +5043,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
       timed: serializer.fromJson<bool>(json['timed']),
       won: serializer.fromJson<bool>(json['won']),
       score: serializer.fromJson<int>(json['score']),
+      placeId: serializer.fromJson<int?>(json['placeId']),
+      nearby: serializer.fromJson<String?>(json['nearby']),
     );
   }
   @override
@@ -4879,6 +5065,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
       'timed': serializer.toJson<bool>(timed),
       'won': serializer.toJson<bool>(won),
       'score': serializer.toJson<int>(score),
+      'placeId': serializer.toJson<int?>(placeId),
+      'nearby': serializer.toJson<String?>(nearby),
     };
   }
 
@@ -4897,6 +5085,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
     bool? timed,
     bool? won,
     int? score,
+    Value<int?> placeId = const Value.absent(),
+    Value<String?> nearby = const Value.absent(),
   }) => GameStatsRow(
     id: id ?? this.id,
     playedAt: playedAt ?? this.playedAt,
@@ -4912,6 +5102,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
     timed: timed ?? this.timed,
     won: won ?? this.won,
     score: score ?? this.score,
+    placeId: placeId.present ? placeId.value : this.placeId,
+    nearby: nearby.present ? nearby.value : this.nearby,
   );
   GameStatsRow copyWithCompanion(GameStatsCompanion data) {
     return GameStatsRow(
@@ -4939,6 +5131,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
       timed: data.timed.present ? data.timed.value : this.timed,
       won: data.won.present ? data.won.value : this.won,
       score: data.score.present ? data.score.value : this.score,
+      placeId: data.placeId.present ? data.placeId.value : this.placeId,
+      nearby: data.nearby.present ? data.nearby.value : this.nearby,
     );
   }
 
@@ -4958,7 +5152,9 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
           ..write('timeLimitSeconds: $timeLimitSeconds, ')
           ..write('timed: $timed, ')
           ..write('won: $won, ')
-          ..write('score: $score')
+          ..write('score: $score, ')
+          ..write('placeId: $placeId, ')
+          ..write('nearby: $nearby')
           ..write(')'))
         .toString();
   }
@@ -4979,6 +5175,8 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
     timed,
     won,
     score,
+    placeId,
+    nearby,
   );
   @override
   bool operator ==(Object other) =>
@@ -4997,7 +5195,9 @@ class GameStatsRow extends DataClass implements Insertable<GameStatsRow> {
           other.timeLimitSeconds == this.timeLimitSeconds &&
           other.timed == this.timed &&
           other.won == this.won &&
-          other.score == this.score);
+          other.score == this.score &&
+          other.placeId == this.placeId &&
+          other.nearby == this.nearby);
 }
 
 class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
@@ -5015,6 +5215,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
   final Value<bool> timed;
   final Value<bool> won;
   final Value<int> score;
+  final Value<int?> placeId;
+  final Value<String?> nearby;
   const GameStatsCompanion({
     this.id = const Value.absent(),
     this.playedAt = const Value.absent(),
@@ -5030,6 +5232,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
     this.timed = const Value.absent(),
     this.won = const Value.absent(),
     this.score = const Value.absent(),
+    this.placeId = const Value.absent(),
+    this.nearby = const Value.absent(),
   });
   GameStatsCompanion.insert({
     this.id = const Value.absent(),
@@ -5046,6 +5250,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
     required bool timed,
     required bool won,
     required int score,
+    this.placeId = const Value.absent(),
+    this.nearby = const Value.absent(),
   }) : playedAt = Value(playedAt),
        playedDay = Value(playedDay),
        categoryId = Value(categoryId),
@@ -5074,6 +5280,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
     Expression<bool>? timed,
     Expression<bool>? won,
     Expression<int>? score,
+    Expression<int>? placeId,
+    Expression<String>? nearby,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -5090,6 +5298,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
       if (timed != null) 'timed': timed,
       if (won != null) 'won': won,
       if (score != null) 'score': score,
+      if (placeId != null) 'place_id': placeId,
+      if (nearby != null) 'nearby': nearby,
     });
   }
 
@@ -5108,6 +5318,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
     Value<bool>? timed,
     Value<bool>? won,
     Value<int>? score,
+    Value<int?>? placeId,
+    Value<String?>? nearby,
   }) {
     return GameStatsCompanion(
       id: id ?? this.id,
@@ -5124,6 +5336,8 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
       timed: timed ?? this.timed,
       won: won ?? this.won,
       score: score ?? this.score,
+      placeId: placeId ?? this.placeId,
+      nearby: nearby ?? this.nearby,
     );
   }
 
@@ -5172,6 +5386,12 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
     if (score.present) {
       map['score'] = Variable<int>(score.value);
     }
+    if (placeId.present) {
+      map['place_id'] = Variable<int>(placeId.value);
+    }
+    if (nearby.present) {
+      map['nearby'] = Variable<String>(nearby.value);
+    }
     return map;
   }
 
@@ -5191,7 +5411,9 @@ class GameStatsCompanion extends UpdateCompanion<GameStatsRow> {
           ..write('timeLimitSeconds: $timeLimitSeconds, ')
           ..write('timed: $timed, ')
           ..write('won: $won, ')
-          ..write('score: $score')
+          ..write('score: $score, ')
+          ..write('placeId: $placeId, ')
+          ..write('nearby: $nearby')
           ..write(')'))
         .toString();
   }
@@ -5674,6 +5896,357 @@ class CategoryLevelsCompanion extends UpdateCompanion<CategoryLevelRow> {
   }
 }
 
+class $PlacesTable extends Places with TableInfo<$PlacesTable, PlaceRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PlacesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    name,
+    latitude,
+    longitude,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'places';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PlaceRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PlaceRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PlaceRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PlacesTable createAlias(String alias) {
+    return $PlacesTable(attachedDatabase, alias);
+  }
+}
+
+class PlaceRow extends DataClass implements Insertable<PlaceRow> {
+  final int id;
+
+  /// Lo que el jugador le puso ("Casa", "Parque"). Null hasta que lo nombra;
+  /// mientras tanto la app lo muestra como "Lugar N".
+  final String? name;
+  final double latitude;
+  final double longitude;
+  final int createdAt;
+  const PlaceRow({
+    required this.id,
+    this.name,
+    required this.latitude,
+    required this.longitude,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    map['created_at'] = Variable<int>(createdAt);
+    return map;
+  }
+
+  PlacesCompanion toCompanion(bool nullToAbsent) {
+    return PlacesCompanion(
+      id: Value(id),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory PlaceRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PlaceRow(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String?>(json['name']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String?>(name),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+      'createdAt': serializer.toJson<int>(createdAt),
+    };
+  }
+
+  PlaceRow copyWith({
+    int? id,
+    Value<String?> name = const Value.absent(),
+    double? latitude,
+    double? longitude,
+    int? createdAt,
+  }) => PlaceRow(
+    id: id ?? this.id,
+    name: name.present ? name.value : this.name,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  PlaceRow copyWithCompanion(PlacesCompanion data) {
+    return PlaceRow(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlaceRow(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, latitude, longitude, createdAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PlaceRow &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.createdAt == this.createdAt);
+}
+
+class PlacesCompanion extends UpdateCompanion<PlaceRow> {
+  final Value<int> id;
+  final Value<String?> name;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  final Value<int> createdAt;
+  const PlacesCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  PlacesCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    required double latitude,
+    required double longitude,
+    required int createdAt,
+  }) : latitude = Value(latitude),
+       longitude = Value(longitude),
+       createdAt = Value(createdAt);
+  static Insertable<PlaceRow> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<int>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  PlacesCompanion copyWith({
+    Value<int>? id,
+    Value<String?>? name,
+    Value<double>? latitude,
+    Value<double>? longitude,
+    Value<int>? createdAt,
+  }) {
+    return PlacesCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PlacesCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5691,6 +6264,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $GameStatsTable gameStats = $GameStatsTable(this);
   late final $CategoryLevelsTable categoryLevels = $CategoryLevelsTable(this);
+  late final $PlacesTable places = $PlacesTable(this);
   late final Index idxMatchesPlayerPlayedAt = Index(
     'idx_matches_player_played_at',
     'CREATE INDEX idx_matches_player_played_at ON matches (player_local_id, played_at)',
@@ -5730,6 +6304,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     displaySettings,
     gameStats,
     categoryLevels,
+    places,
     idxMatchesPlayerPlayedAt,
     idxMatchesSyncStatus,
     idxSyncOpsStatusNextAttempt,
@@ -8871,6 +9446,8 @@ typedef $$DisplaySettingsTableCreateCompanionBuilder =
       Value<int> id,
       Value<VisualProfile> visualProfile,
       Value<bool> timedMatches,
+      Value<bool> contextLocation,
+      Value<bool> contextNearby,
       required int updatedAt,
     });
 typedef $$DisplaySettingsTableUpdateCompanionBuilder =
@@ -8878,6 +9455,8 @@ typedef $$DisplaySettingsTableUpdateCompanionBuilder =
       Value<int> id,
       Value<VisualProfile> visualProfile,
       Value<bool> timedMatches,
+      Value<bool> contextLocation,
+      Value<bool> contextNearby,
       Value<int> updatedAt,
     });
 
@@ -8903,6 +9482,16 @@ class $$DisplaySettingsTableFilterComposer
 
   ColumnFilters<bool> get timedMatches => $composableBuilder(
     column: $table.timedMatches,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get contextLocation => $composableBuilder(
+    column: $table.contextLocation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get contextNearby => $composableBuilder(
+    column: $table.contextNearby,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -8936,6 +9525,16 @@ class $$DisplaySettingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get contextLocation => $composableBuilder(
+    column: $table.contextLocation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get contextNearby => $composableBuilder(
+    column: $table.contextNearby,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -8962,6 +9561,16 @@ class $$DisplaySettingsTableAnnotationComposer
 
   GeneratedColumn<bool> get timedMatches => $composableBuilder(
     column: $table.timedMatches,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get contextLocation => $composableBuilder(
+    column: $table.contextLocation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get contextNearby => $composableBuilder(
+    column: $table.contextNearby,
     builder: (column) => column,
   );
 
@@ -9009,11 +9618,15 @@ class $$DisplaySettingsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<VisualProfile> visualProfile = const Value.absent(),
                 Value<bool> timedMatches = const Value.absent(),
+                Value<bool> contextLocation = const Value.absent(),
+                Value<bool> contextNearby = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
               }) => DisplaySettingsCompanion(
                 id: id,
                 visualProfile: visualProfile,
                 timedMatches: timedMatches,
+                contextLocation: contextLocation,
+                contextNearby: contextNearby,
                 updatedAt: updatedAt,
               ),
           createCompanionCallback:
@@ -9021,11 +9634,15 @@ class $$DisplaySettingsTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<VisualProfile> visualProfile = const Value.absent(),
                 Value<bool> timedMatches = const Value.absent(),
+                Value<bool> contextLocation = const Value.absent(),
+                Value<bool> contextNearby = const Value.absent(),
                 required int updatedAt,
               }) => DisplaySettingsCompanion.insert(
                 id: id,
                 visualProfile: visualProfile,
                 timedMatches: timedMatches,
+                contextLocation: contextLocation,
+                contextNearby: contextNearby,
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
@@ -9082,6 +9699,8 @@ typedef $$GameStatsTableCreateCompanionBuilder =
       required bool timed,
       required bool won,
       required int score,
+      Value<int?> placeId,
+      Value<String?> nearby,
     });
 typedef $$GameStatsTableUpdateCompanionBuilder =
     GameStatsCompanion Function({
@@ -9099,6 +9718,8 @@ typedef $$GameStatsTableUpdateCompanionBuilder =
       Value<bool> timed,
       Value<bool> won,
       Value<int> score,
+      Value<int?> placeId,
+      Value<String?> nearby,
     });
 
 class $$GameStatsTableFilterComposer
@@ -9177,6 +9798,16 @@ class $$GameStatsTableFilterComposer
 
   ColumnFilters<int> get score => $composableBuilder(
     column: $table.score,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get placeId => $composableBuilder(
+    column: $table.placeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nearby => $composableBuilder(
+    column: $table.nearby,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -9259,6 +9890,16 @@ class $$GameStatsTableOrderingComposer
     column: $table.score,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get placeId => $composableBuilder(
+    column: $table.placeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nearby => $composableBuilder(
+    column: $table.nearby,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$GameStatsTableAnnotationComposer
@@ -9321,6 +9962,12 @@ class $$GameStatsTableAnnotationComposer
 
   GeneratedColumn<int> get score =>
       $composableBuilder(column: $table.score, builder: (column) => column);
+
+  GeneratedColumn<int> get placeId =>
+      $composableBuilder(column: $table.placeId, builder: (column) => column);
+
+  GeneratedColumn<String> get nearby =>
+      $composableBuilder(column: $table.nearby, builder: (column) => column);
 }
 
 class $$GameStatsTableTableManager
@@ -9368,6 +10015,8 @@ class $$GameStatsTableTableManager
                 Value<bool> timed = const Value.absent(),
                 Value<bool> won = const Value.absent(),
                 Value<int> score = const Value.absent(),
+                Value<int?> placeId = const Value.absent(),
+                Value<String?> nearby = const Value.absent(),
               }) => GameStatsCompanion(
                 id: id,
                 playedAt: playedAt,
@@ -9383,6 +10032,8 @@ class $$GameStatsTableTableManager
                 timed: timed,
                 won: won,
                 score: score,
+                placeId: placeId,
+                nearby: nearby,
               ),
           createCompanionCallback:
               ({
@@ -9400,6 +10051,8 @@ class $$GameStatsTableTableManager
                 required bool timed,
                 required bool won,
                 required int score,
+                Value<int?> placeId = const Value.absent(),
+                Value<String?> nearby = const Value.absent(),
               }) => GameStatsCompanion.insert(
                 id: id,
                 playedAt: playedAt,
@@ -9415,6 +10068,8 @@ class $$GameStatsTableTableManager
                 timed: timed,
                 won: won,
                 score: score,
+                placeId: placeId,
+                nearby: nearby,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -9709,6 +10364,203 @@ typedef $$CategoryLevelsTableProcessedTableManager =
       CategoryLevelRow,
       PrefetchHooks Function()
     >;
+typedef $$PlacesTableCreateCompanionBuilder =
+    PlacesCompanion Function({
+      Value<int> id,
+      Value<String?> name,
+      required double latitude,
+      required double longitude,
+      required int createdAt,
+    });
+typedef $$PlacesTableUpdateCompanionBuilder =
+    PlacesCompanion Function({
+      Value<int> id,
+      Value<String?> name,
+      Value<double> latitude,
+      Value<double> longitude,
+      Value<int> createdAt,
+    });
+
+class $$PlacesTableFilterComposer
+    extends Composer<_$AppDatabase, $PlacesTable> {
+  $$PlacesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PlacesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PlacesTable> {
+  $$PlacesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PlacesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PlacesTable> {
+  $$PlacesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$PlacesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PlacesTable,
+          PlaceRow,
+          $$PlacesTableFilterComposer,
+          $$PlacesTableOrderingComposer,
+          $$PlacesTableAnnotationComposer,
+          $$PlacesTableCreateCompanionBuilder,
+          $$PlacesTableUpdateCompanionBuilder,
+          (PlaceRow, BaseReferences<_$AppDatabase, $PlacesTable, PlaceRow>),
+          PlaceRow,
+          PrefetchHooks Function()
+        > {
+  $$PlacesTableTableManager(_$AppDatabase db, $PlacesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PlacesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PlacesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PlacesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+              }) => PlacesCompanion(
+                id: id,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String?> name = const Value.absent(),
+                required double latitude,
+                required double longitude,
+                required int createdAt,
+              }) => PlacesCompanion.insert(
+                id: id,
+                name: name,
+                latitude: latitude,
+                longitude: longitude,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$PlacesTable, PlaceRow>(table),
+                  BaseReferences<_$AppDatabase, $PlacesTable, PlaceRow>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PlacesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PlacesTable,
+      PlaceRow,
+      $$PlacesTableFilterComposer,
+      $$PlacesTableOrderingComposer,
+      $$PlacesTableAnnotationComposer,
+      $$PlacesTableCreateCompanionBuilder,
+      $$PlacesTableUpdateCompanionBuilder,
+      (PlaceRow, BaseReferences<_$AppDatabase, $PlacesTable, PlaceRow>),
+      PlaceRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9736,4 +10588,6 @@ class $AppDatabaseManager {
       $$GameStatsTableTableManager(_db, _db.gameStats);
   $$CategoryLevelsTableTableManager get categoryLevels =>
       $$CategoryLevelsTableTableManager(_db, _db.categoryLevels);
+  $$PlacesTableTableManager get places =>
+      $$PlacesTableTableManager(_db, _db.places);
 }

@@ -9,6 +9,7 @@ import 'package:memory_companion/core/database/tables/game_stats.dart';
 import 'package:memory_companion/core/database/tables/level_progress.dart';
 import 'package:memory_companion/core/database/tables/lives_states.dart';
 import 'package:memory_companion/core/database/tables/matches.dart';
+import 'package:memory_companion/core/database/tables/places.dart';
 import 'package:memory_companion/core/database/tables/player_profiles.dart';
 import 'package:memory_companion/core/database/tables/sync_operations.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
@@ -35,6 +36,7 @@ part 'app_database.g.dart';
     DisplaySettings,
     GameStats,
     CategoryLevels,
+    Places,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -53,8 +55,11 @@ class AppDatabase extends _$AppDatabase {
   ///     cuadrícula del resultado, para poder volver a compartirlo.
   ///  5. `category_levels` — nivel explícito y habilidad adaptativa por
   ///     categoría, para que la progresión sobreviva al cierre de la app.
+  ///  6. Contexto automático: `places`, el lugar y los jugadores cercanos de
+  ///     cada partida en `game_stats`, y los dos permisos opcionales en
+  ///     `display_settings`. Todo solo local.
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -77,6 +82,14 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(progress, progress.grid);
         }
         if (from < 5) await m.createTable(categoryLevels);
+        if (from < 6) {
+          await m.createTable(places);
+          await m.addColumn(gameStats, gameStats.placeId);
+          await m.addColumn(gameStats, gameStats.nearby);
+          final settings = displaySettings;
+          await m.addColumn(settings, settings.contextLocation);
+          await m.addColumn(settings, settings.contextNearby);
+        }
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,
