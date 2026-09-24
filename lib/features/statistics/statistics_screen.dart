@@ -3,10 +3,14 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/section_header.dart';
+import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
+import 'package:memory_companion/features/game_context/model/place.dart';
+import 'package:memory_companion/features/history_search/history_search_screen.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
 import 'package:memory_companion/features/statistics/model/statistics_overview.dart';
 import 'package:memory_companion/features/statistics/widget/game_history_tile.dart';
@@ -43,6 +47,16 @@ class StatisticsScreen extends ConsumerWidget {
               ),
               sliver: SliverToBoxAdapter(child: _Header()),
             ),
+            if (!isEmpty)
+              const SliverPadding(
+                padding: EdgeInsets.fromLTRB(
+                  AppSpacing.screenMargin,
+                  AppSpacing.md,
+                  AppSpacing.screenMargin,
+                  0,
+                ),
+                sliver: SliverToBoxAdapter(child: _AskHistoryEntry()),
+              ),
             SliverPadding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSpacing.screenMargin,
@@ -77,6 +91,10 @@ class StatisticsScreen extends ConsumerWidget {
   List<Widget> _historySlivers(BuildContext context, WidgetRef ref) {
     final history = ref.watch(gameHistoryProvider).value;
     final games = history?.games ?? const [];
+    // Only games with a place need the places table.
+    final places = games.any((g) => g.placeId != null)
+        ? ref.watch(placesProvider).value ?? const <Place>[]
+        : const <Place>[];
     const margin = EdgeInsets.symmetric(horizontal: AppSpacing.screenMargin);
 
     return [
@@ -92,7 +110,12 @@ class StatisticsScreen extends ConsumerWidget {
         padding: margin,
         sliver: SliverList.separated(
           itemCount: games.length,
-          itemBuilder: (context, i) => GameHistoryTile(game: games[i]),
+          itemBuilder: (context, i) => GameHistoryTile(
+            game: games[i],
+            placeLabel: games[i].placeId == null
+                ? null
+                : placeLabel(context, places, games[i].placeId),
+          ),
           separatorBuilder: (_, _) => const SizedBox(height: AppSpacing.sm),
         ),
       ),
@@ -159,6 +182,48 @@ class _Overview extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         StatsEvolutionChart(weeks: overview.weeks),
       ],
+    );
+  }
+}
+
+/// Looks like a search field; opens the history search.
+class _AskHistoryEntry extends StatelessWidget {
+  const _AskHistoryEntry();
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surfaceContainerLowest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppSpacing.lg),
+        side: const BorderSide(color: AppColors.outlineVariant),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppSpacing.lg),
+        onTap: () => Navigator.of(context).pushNamed(RoutePaths.historySearch),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minHeight: AppSize.touchComfortable,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+            child: Row(
+              children: [
+                const Icon(Icons.search_rounded, color: AppColors.outline),
+                const SizedBox(width: AppSpacing.sm),
+                Expanded(
+                  child: Text(
+                    AppLocale.searchEntry.getString(context),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      color: AppColors.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

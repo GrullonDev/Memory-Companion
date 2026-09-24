@@ -112,6 +112,16 @@ class StatsRepository {
     return [for (final row in rows) GameStats.fromRow(row)];
   }
 
+  /// Every game, oldest first, re-emitted after each write. Feeds the
+  /// history search, which embeds them all in memory.
+  Stream<List<GameStats>> watchAll() {
+    final query = _db.select(_db.gameStats)
+      ..orderBy([(g) => OrderingTerm.asc(g.id)]);
+    return query.watch().map(
+      (rows) => [for (final row in rows) GameStats.fromRow(row)],
+    );
+  }
+
   Selectable<QueryRow> _totalsQuery() {
     return _db.customSelect(
       'SELECT $_bucketColumns FROM game_stats',

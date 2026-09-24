@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart' show Value;
 
 import 'package:memory_companion/core/database/app_database.dart';
+import 'package:memory_companion/features/game_context/model/nearby_player.dart';
 
 /// Metrics of one finished game, as the statistics panel sees it.
 ///
@@ -22,6 +23,8 @@ class GameStats {
     required this.won,
     required this.score,
     this.id,
+    this.placeId,
+    this.nearby,
   });
 
   /// Null until the row is stored.
@@ -38,6 +41,13 @@ class GameStats {
   final bool timed;
   final bool won;
   final int score;
+
+  /// Where it was played, when location context is on.
+  final int? placeId;
+
+  /// Who was around, when nearby context is on. Null means nobody looked;
+  /// an empty list means someone looked and found no one.
+  final List<NearbyPlayer>? nearby;
 
   /// Share of turns that found a pair: 1.0 is a perfect game, one turn per
   /// pair. A game with no turns (lost before the first flip) scores 0.
@@ -62,6 +72,8 @@ class GameStats {
       timed: row.timed,
       won: row.won,
       score: row.score,
+      placeId: row.placeId,
+      nearby: NearbyPlayer.decodeList(row.nearby),
     );
   }
 
@@ -80,6 +92,8 @@ class GameStats {
       timed: timed,
       won: won,
       score: score,
+      placeId: Value(placeId),
+      nearby: Value(NearbyPlayer.encodeList(nearby)),
     ).copyWith(id: id == null ? const Value.absent() : Value(id!));
   }
 
@@ -100,6 +114,10 @@ class GameStats {
       'won': won,
       'score': score,
       'accuracy': accuracy,
+      'placeId': placeId,
+      'nearby': nearby == null
+          ? null
+          : [for (final player in nearby!) player.toJson()],
     };
   }
 
@@ -118,6 +136,35 @@ class GameStats {
       timed: json['timed']! as bool,
       won: json['won']! as bool,
       score: json['score']! as int,
+      placeId: json['placeId'] as int?,
+      nearby: switch (json['nearby']) {
+        final List<Object?> list => [
+          for (final item in list)
+            NearbyPlayer.fromJson((item! as Map).cast<String, Object?>()),
+        ],
+        _ => null,
+      },
+    );
+  }
+
+  /// This game with its context attached, as the reporter stores it.
+  GameStats withContext({int? placeId, List<NearbyPlayer>? nearby}) {
+    return GameStats(
+      id: id,
+      date: date,
+      categoryId: categoryId,
+      pairCount: pairCount,
+      matchedPairs: matchedPairs,
+      moves: moves,
+      memoryErrors: memoryErrors,
+      hintsUsed: hintsUsed,
+      timeSeconds: timeSeconds,
+      timeLimitSeconds: timeLimitSeconds,
+      timed: timed,
+      won: won,
+      score: score,
+      placeId: placeId,
+      nearby: nearby,
     );
   }
 }
