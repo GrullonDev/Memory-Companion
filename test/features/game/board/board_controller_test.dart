@@ -14,6 +14,7 @@ import 'package:memory_companion/features/game/board/difficulty/adaptive_difficu
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/game/model/match_rewards.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 import 'package:memory_companion/features/settings/model/display_preferences.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
@@ -23,12 +24,14 @@ import 'package:memory_companion/features/statistics/model/game_stats.dart';
 class _FakeGameController extends GameController {
   @override
   Future<void> completeSoloGame({
+    required String matchId,
     required int score,
     required int moves,
     required int secondsElapsed,
     required int timeLimit,
     required bool won,
-    int currentLevel = 1,
+    required MatchRewards rewards,
+    int? levelNumber,
   }) async {}
 }
 
