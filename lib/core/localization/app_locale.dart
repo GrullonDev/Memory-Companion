@@ -233,6 +233,7 @@ mixin AppLocale {
   static const String statsPrivacyNote = 'statsPrivacyNote';
   static const String statsWonLabel = 'statsWonLabel';
   static const String statsLostLabel = 'statsLostLabel';
+  static const String statsNotCompletedLabel = 'statsNotCompletedLabel';
   static const String statsErrorsCount = 'statsErrorsCount';
   static const String statsOpenLabel = 'statsOpenLabel';
 
@@ -242,6 +243,40 @@ mixin AppLocale {
   static const String seeAllLabel = 'seeAllLabel';
   static const String minigameMemoryTitle = 'minigameMemoryTitle';
   static const String minigameMemoryDescription = 'minigameMemoryDescription';
+  static const String minigameDigitsTitle = 'minigameDigitsTitle';
+  static const String minigameDigitsDescription = 'minigameDigitsDescription';
+  static const String minigameWordsTitle = 'minigameWordsTitle';
+  static const String minigameWordsDescription = 'minigameWordsDescription';
+  static const String minigameStartLabel = 'minigameStartLabel';
+  static const String minigameResultTitle = 'minigameResultTitle';
+  static const String minigameCorrectLabel = 'minigameCorrectLabel';
+
+  static const String digitsIntro = 'digitsIntro';
+  static const String digitsModeForward = 'digitsModeForward';
+  static const String digitsModeReverse = 'digitsModeReverse';
+  static const String digitsModeReverseHint = 'digitsModeReverseHint';
+  static const String digitsMemorizeLabel = 'digitsMemorizeLabel';
+  static const String digitsTypeForward = 'digitsTypeForward';
+  static const String digitsTypeReverse = 'digitsTypeReverse';
+  static const String digitsSpanLabel = 'digitsSpanLabel';
+  static const String digitsAnswerWas = 'digitsAnswerWas';
+  static const String digitsCheckLabel = 'digitsCheckLabel';
+  static const String digitsDeleteLabel = 'digitsDeleteLabel';
+  static const String digitsBestSpanLabel = 'digitsBestSpanLabel';
+  static const String digitsResultWon = 'digitsResultWon';
+  static const String digitsResultLost = 'digitsResultLost';
+
+  static const String wordsIntro = 'wordsIntro';
+  static const String wordsStudyTitle = 'wordsStudyTitle';
+  static const String wordsReadyLabel = 'wordsReadyLabel';
+  static const String wordsQuestion = 'wordsQuestion';
+  static const String wordsYesLabel = 'wordsYesLabel';
+  static const String wordsNoLabel = 'wordsNoLabel';
+  static const String wordsLevelLabel = 'wordsLevelLabel';
+  static const String wordsProgressLabel = 'wordsProgressLabel';
+  static const String wordsScoreLabel = 'wordsScoreLabel';
+  static const String wordsResultWon = 'wordsResultWon';
+  static const String wordsResultLost = 'wordsResultLost';
 
   static const String timeUpTitle = 'timeUpTitle';
   static const String viewStatsLabel = 'viewStatsLabel';
@@ -514,6 +549,7 @@ mixin AppLocale {
     statsPrivacyNote: 'Tus estadísticas se guardan solo en este dispositivo. Son una guía de práctica, no una evaluación médica.',
     statsWonLabel: 'Completada',
     statsLostLabel: 'Tiempo agotado',
+    statsNotCompletedLabel: 'Sin superar',
     statsErrorsCount: '{n} errores',
     statsOpenLabel: 'Ver mis estadísticas',
     minigameHubTitle: 'Juegos mentales',
@@ -522,6 +558,38 @@ mixin AppLocale {
     seeAllLabel: 'Ver todos',
     minigameMemoryTitle: 'Memoria',
     minigameMemoryDescription: 'Encuentra las parejas escondidas.',
+    minigameDigitsTitle: 'Dígitos',
+    minigameDigitsDescription: 'Recuerda números cada vez más largos.',
+    minigameWordsTitle: 'Palabras',
+    minigameWordsDescription: '¿Estaba en la lista? Entrena el reconocimiento.',
+    minigameStartLabel: 'Empezar',
+    minigameResultTitle: '¡Buen entrenamiento!',
+    minigameCorrectLabel: '¡Correcto!',
+    digitsIntro: 'Verás un número unos segundos. Memorízalo y escríbelo cuando desaparezca. Cada acierto suma un dígito; dos fallos seguidos terminan la partida.',
+    digitsModeForward: 'En orden',
+    digitsModeReverse: 'Al revés',
+    digitsModeReverseHint: 'Al revés: escribe los dígitos del último al primero.',
+    digitsMemorizeLabel: 'Memoriza',
+    digitsTypeForward: 'Escribe el número',
+    digitsTypeReverse: 'Escríbelo al revés',
+    digitsSpanLabel: '{n} dígitos',
+    digitsAnswerWas: 'Era {n}',
+    digitsCheckLabel: 'Comprobar',
+    digitsDeleteLabel: 'Borrar',
+    digitsBestSpanLabel: 'Tu mejor marca',
+    digitsResultWon: '¡Superaste la meta de {n} dígitos!',
+    digitsResultLost: 'La meta son {n} dígitos. ¡Sigue practicando!',
+    wordsIntro: 'Memoriza una lista de palabras. Después verás palabras una a una: dinos si estaban en la lista.',
+    wordsStudyTitle: 'Memoriza estas palabras',
+    wordsReadyLabel: 'Ya las memoricé',
+    wordsQuestion: '¿Estaba en la lista?',
+    wordsYesLabel: 'Sí, estaba',
+    wordsNoLabel: 'No estaba',
+    wordsLevelLabel: '{n} palabras',
+    wordsProgressLabel: '{n} de {total}',
+    wordsScoreLabel: '{n} de {total} aciertos',
+    wordsResultWon: '¡Excelente! Siguiente nivel: {n} palabras.',
+    wordsResultLost: 'Acierta el 80 % para subir de nivel.',
     timeUpTitle: '¡SE ACABÓ EL TIEMPO!',
     viewStatsLabel: 'Ver estadísticas',
     starsEarnedSemantics: '{n} de 3 estrellas',
@@ -769,6 +837,7 @@ mixin AppLocale {
     statsPrivacyNote: 'Your statistics stay on this device. They are a practice guide, not a medical assessment.',
     statsWonLabel: 'Completed',
     statsLostLabel: 'Out of time',
+    statsNotCompletedLabel: 'Not passed',
     statsErrorsCount: '{n} errors',
     statsOpenLabel: 'View my statistics',
     minigameHubTitle: 'Brain games',
@@ -777,6 +846,38 @@ mixin AppLocale {
     seeAllLabel: 'See all',
     minigameMemoryTitle: 'Memory',
     minigameMemoryDescription: 'Find the hidden pairs.',
+    minigameDigitsTitle: 'Digits',
+    minigameDigitsDescription: 'Recall ever longer numbers.',
+    minigameWordsTitle: 'Words',
+    minigameWordsDescription: 'Was it on the list? Train recognition.',
+    minigameStartLabel: 'Start',
+    minigameResultTitle: 'Nice workout!',
+    minigameCorrectLabel: 'Correct!',
+    digitsIntro: 'A number appears for a few seconds. Memorize it and type it once it disappears. Each correct answer adds a digit; two misses in a row end the game.',
+    digitsModeForward: 'In order',
+    digitsModeReverse: 'Backwards',
+    digitsModeReverseHint: 'Backwards: type the digits from last to first.',
+    digitsMemorizeLabel: 'Memorize',
+    digitsTypeForward: 'Type the number',
+    digitsTypeReverse: 'Type it backwards',
+    digitsSpanLabel: '{n} digits',
+    digitsAnswerWas: 'It was {n}',
+    digitsCheckLabel: 'Check',
+    digitsDeleteLabel: 'Delete',
+    digitsBestSpanLabel: 'Your best',
+    digitsResultWon: 'You beat the {n}-digit goal!',
+    digitsResultLost: 'The goal is {n} digits. Keep practicing!',
+    wordsIntro: 'Memorize a list of words. Then words appear one at a time: tell us whether each was on the list.',
+    wordsStudyTitle: 'Memorize these words',
+    wordsReadyLabel: "I've got them",
+    wordsQuestion: 'Was it on the list?',
+    wordsYesLabel: 'Yes, it was',
+    wordsNoLabel: "No, it wasn't",
+    wordsLevelLabel: '{n} words',
+    wordsProgressLabel: '{n} of {total}',
+    wordsScoreLabel: '{n} of {total} right',
+    wordsResultWon: 'Excellent! Next level: {n} words.',
+    wordsResultLost: 'Get 80% right to level up.',
     timeUpTitle: "TIME'S UP!",
     viewStatsLabel: 'View stats',
     starsEarnedSemantics: '{n} of 3 stars',
