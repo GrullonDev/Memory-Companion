@@ -13,6 +13,8 @@ import 'package:memory_companion/features/game/board/difficulty/difficulty_setti
 import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/features/game/board/rules/round_tracker.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/game/model/match_rewards.dart';
+import 'package:memory_companion/features/level_map/controller/level_map_controller.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
 import 'package:memory_companion/features/minigames/modules/memory/memory_game_module.dart';
@@ -98,6 +100,8 @@ class BoardController extends Notifier<BoardState> {
 
     _startTimer();
     return BoardState(
+      // Una partida nueva, con identidad nueva: reintentar no reusa el id.
+      matchId: const Uuid().v4(),
       // Dealt face up for the preview; [_tick] turns them over.
       cards: [for (final c in cards) c.copyWith(isFaceUp: true)],
       totalSeconds: _settings.timeLimitSeconds,
@@ -150,8 +154,8 @@ class BoardController extends Notifier<BoardState> {
   /// distintos para el mismo evento: el jugador veía un número, cobraba otro
   /// y conservaba un tercero.
   Future<void> _onGameCompleted() async {
-    final currentState = state;
-    final won = currentState.cards.every((c) => c.isMatched);
+    final finished = state;
+    final won = finished.cards.every((c) => c.isMatched);
 
     // Before anything async: the next round, even one started straight from
     // the victory overlay, must already be dealt with the adjusted settings.
@@ -163,55 +167,56 @@ class BoardController extends Notifier<BoardState> {
           .recordRound(
             _category,
             RoundPerformance(
-              pairCount: currentState.pairCount,
-              matchedPairs: currentState.matchedPairs,
+              pairCount: finished.pairCount,
+              matchedPairs: finished.matchedPairs,
               memoryErrors: _tracker.memoryErrors,
-              hintsUsed: currentState.hintsUsed,
-              secondsRemaining: currentState.secondsRemaining,
-              timeLimitSeconds: currentState.totalSeconds,
+              hintsUsed: finished.hintsUsed,
+              secondsRemaining: finished.secondsRemaining,
+              timeLimitSeconds: finished.totalSeconds,
               won: won,
             ),
           );
     }
 
-    // Calculate rewards
-    final rewards = won
-        ? _calculateRewards(
-            score: currentState.score,
-            moves: currentState.moves,
-            secondsElapsed: currentState.elapsedSeconds,
-            timeLimit: currentState.totalSeconds,
-          )
-        : {'coins': 0, 'xp': 10}; // Small XP for playing even if lost
-
-    // Update state with rewards
-    state = state.copyWith(
-      coinsEarned: rewards['coins'] as int,
-      xpEarned: rewards['xp'] as int,
+    final rewards = calculateMatchRewards(
+      score: finished.score,
+      moves: finished.moves,
+      timeLimit: finished.totalSeconds,
+      secondsElapsed: finished.elapsedSeconds,
       won: won,
     );
 
-    // Local statistics, on their own: they need no account and no network,
-    // and a Firestore failure must not cost the player a game. Started, not
-    // awaited, before the next `ref.read`: if the player leaves the board
-    // meanwhile, this provider is disposed and `ref` stops working.
-    final statsSaved = _recordStats(currentState, won: won);
+    state = state.copyWith(
+      coinsEarned: rewards.coins,
+      xpEarned: rewards.xp,
+      won: won,
+    );
 
-    // Save the game result to Firestore
-    try {
-      await ref
-          .read(gameControllerProvider.notifier)
-          .completeSoloGame(
-            score: currentState.score,
-            moves: currentState.moves,
-            secondsElapsed: currentState.elapsedSeconds,
-            timeLimit: currentState.totalSeconds,
-            won: won,
-          );
-    } catch (e) {
-      // Silent fail - game is still playable even if Firestore is down
-      print('Error saving game to Firestore: $e');
-    }
+    // Local statistics, on their own: they need no account and no network.
+    // Started, not awaited, before the next `ref.read`: if the player leaves
+    // the board meanwhile, this provider is disposed and `ref` stops working.
+    final statsSaved = _recordStats(finished, won: won);
+
+    // Escritura local: sin red de por medio, así que tampoco hace falta
+    // tragarse el error con un `print`. Lo que falle aquí es un fallo real que
+    // debe verse, no una desconexión que haya que tolerar.
+    //
+    // Only the level map's category has levels on the map; `finished.level`
+    // is the level just played, read before [recordRound] raised it.
+    await ref
+        .read(gameControllerProvider.notifier)
+        .completeSoloGame(
+          matchId: finished.matchId,
+          score: finished.score,
+          moves: finished.moves,
+          secondsElapsed: finished.elapsedSeconds,
+          timeLimit: finished.totalSeconds,
+          won: won,
+          rewards: rewards,
+          levelNumber: _category.id == levelMapCategory.id
+              ? finished.level
+              : null,
+        );
     await statsSaved;
   }
 
@@ -235,51 +240,6 @@ class BoardController extends Notifier<BoardState> {
             won: won,
             score: finished.score,
           ),
-        );
-  }
-
-  /// Calculate rewards based on performance
-  Map<String, int> _calculateRewards({
-    required int score,
-    required int moves,
-    required int secondsElapsed,
-    required int timeLimit,
-  }) {
-    // Base coins from score
-    int coins = (score / 100).ceil();
-
-    // Time bonus (up to 50% if finished in half the time)
-    if (secondsElapsed < timeLimit ~/ 2) {
-      coins += (coins * 0.5).ceil();
-    }
-
-    // Efficiency bonus (fewer moves = more coins)
-    if (moves < 20) {
-      coins += (coins * 0.3).ceil();
-    }
-
-    // XP calculation
-    int xp = 50; // Base XP
-    xp += (score / 100).ceil(); // Bonus from score
-    if (secondsElapsed < timeLimit ~/ 2) {
-      xp += 30; // Speed bonus
-    }
-    if (moves < 20) {
-      xp += 20; // Efficiency bonus
-    }
-
-    // Escritura local: sin red de por medio, así que tampoco hace falta
-    // tragarse el error con un `print`. Lo que falle aquí es un fallo real que
-    // debe verse, no una desconexión que haya que tolerar.
-    await ref.read(gameControllerProvider.notifier).completeSoloGame(
-          matchId: finished.matchId,
-          score: finished.score,
-          moves: finished.moves,
-          secondsElapsed: finished.elapsedSeconds,
-          timeLimit: finished.totalSeconds,
-          won: won,
-          rewards: rewards,
-          levelNumber: ref.read(selectedLevelProvider),
         );
   }
 
