@@ -1,25 +1,32 @@
 import 'dart:math';
 
+import 'package:drift/drift.dart' show driftRuntimeOptions;
+import 'package:drift/native.dart';
 import 'package:fake_async/fake_async.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:memory_companion/core/database/app_database.dart';
+import 'package:memory_companion/core/database/database_provider.dart';
 import 'package:memory_companion/features/daily_challenge/model/daily_challenge.dart';
 import 'package:memory_companion/features/game/board/controller/board_controller.dart';
 import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/game/model/match_rewards.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 import 'package:memory_companion/features/settings/model/display_preferences.dart';
 
 class _FakeGameController extends GameController {
   @override
   Future<void> completeSoloGame({
+    required String matchId,
     required int score,
     required int moves,
     required int secondsElapsed,
     required int timeLimit,
     required bool won,
-    int currentLevel = 1,
+    required MatchRewards rewards,
+    int? levelNumber,
   }) async {}
 }
 
@@ -27,15 +34,24 @@ void main() {
   final challenge = DailyChallenge.forDate(DateTime(2026, 9, 23));
   final setup = (challenge: challenge, languageCode: 'es');
 
-  ProviderContainer buildContainer() => ProviderContainer(
-    overrides: [
-      // A random the daily board must ignore: if it leaked in, two
-      // containers would deal different boards.
-      boardRandomProvider.overrideWith((_) => Random()),
-      gameControllerProvider.overrideWith(_FakeGameController.new),
-      displayPreferencesProvider.overrideWithValue(DisplayPreferences.defaults),
-    ],
-  );
+  // Cada contenedor lleva su propia base en memoria: el test de los dos
+  // dispositivos abre dos a la vez, y es a propósito.
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+
+  ProviderContainer buildContainer() {
+    final db = AppDatabase.forTesting(NativeDatabase.memory());
+    addTearDown(db.close);
+    return ProviderContainer(
+      overrides: [
+        appDatabaseProvider.overrideWithValue(db),
+        // A random the daily board must ignore: if it leaked in, two
+        // containers would deal different boards.
+        boardRandomProvider.overrideWith((_) => Random()),
+        gameControllerProvider.overrideWith(_FakeGameController.new),
+        displayPreferencesProvider.overrideWithValue(DisplayPreferences.defaults),
+      ],
+    );
+  }
 
   test('dos dispositivos reciben el mismo tablero', () {
     final a = buildContainer();
