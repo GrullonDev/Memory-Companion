@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Si lo activas en Ajustes, Memory Arcade guarda en qué lugar juegas cada partida. La ubicación no sale de tu dispositivo.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Si lo activas, Memory Arcade usa Bluetooth para encontrar jugadores cerca y que ellos te encuentren a ti.</string>
 </dict>
 </plist>
