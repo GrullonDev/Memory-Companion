@@ -20,6 +20,7 @@
 - **Hub de minijuegos:** registrar un juego nuevo es una línea en `MinigameRegistry`. Además del tablero de memoria incluye:
   - **Dígitos:** recuerda un número que crece un dígito por acierto, en orden o al revés (memoria de trabajo).
   - **Palabras:** estudia una lista y luego di qué palabras estaban en ella; cada nivel superado suma dos palabras (memoria de reconocimiento).
+  - **Crucigrama:** desliza el dedo sobre una rueda de 3 a 6 letras para formar palabras que llenan un pequeño crucigrama, con pistas y botón de mezclar. 12 niveles en español y 12 en inglés; el progreso se guarda por idioma.
 - **Cuenta opcional:** Google, teléfono o correo con Firebase Auth. El progreso de un jugador local se migra al vincular la cuenta.
 - **Perfiles visuales y ajustes de pantalla**, con textos en español e inglés.
 

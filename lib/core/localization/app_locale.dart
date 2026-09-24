@@ -278,6 +278,22 @@ mixin AppLocale {
   static const String wordsResultWon = 'wordsResultWon';
   static const String wordsResultLost = 'wordsResultLost';
 
+  static const String minigameCrosswordTitle = 'minigameCrosswordTitle';
+  static const String minigameCrosswordDescription = 'minigameCrosswordDescription';
+  static const String crosswordLevelLabel = 'crosswordLevelLabel';
+  static const String crosswordProgressLabel = 'crosswordProgressLabel';
+  static const String crosswordInstructions = 'crosswordInstructions';
+  static const String crosswordFoundFeedback = 'crosswordFoundFeedback';
+  static const String crosswordRepeatedFeedback = 'crosswordRepeatedFeedback';
+  static const String crosswordInvalidFeedback = 'crosswordInvalidFeedback';
+  static const String crosswordShuffleLabel = 'crosswordShuffleLabel';
+  static const String crosswordHintLabel = 'crosswordHintLabel';
+  static const String crosswordClearLabel = 'crosswordClearLabel';
+  static const String crosswordSubmitLabel = 'crosswordSubmitLabel';
+  static const String crosswordLevelCleared = 'crosswordLevelCleared';
+  static const String crosswordCompleteMessage = 'crosswordCompleteMessage';
+  static const String crosswordCompleteNoHints = 'crosswordCompleteNoHints';
+
   static const String timeUpTitle = 'timeUpTitle';
   static const String viewStatsLabel = 'viewStatsLabel';
   static const String starsEarnedSemantics = 'starsEarnedSemantics';
@@ -590,6 +606,21 @@ mixin AppLocale {
     wordsScoreLabel: '{n} de {total} aciertos',
     wordsResultWon: '¡Excelente! Siguiente nivel: {n} palabras.',
     wordsResultLost: 'Acierta el 80 % para subir de nivel.',
+    minigameCrosswordTitle: 'Crucigrama',
+    minigameCrosswordDescription: 'Forma palabras con pocas letras.',
+    crosswordLevelLabel: 'Nivel {n}',
+    crosswordProgressLabel: '{n} de {total} palabras',
+    crosswordInstructions: 'Desliza el dedo sobre las letras, o tócalas una a una, para formar palabras.',
+    crosswordFoundFeedback: '¡{n}!',
+    crosswordRepeatedFeedback: '{n} ya está en el crucigrama',
+    crosswordInvalidFeedback: '{n} no está en este crucigrama',
+    crosswordShuffleLabel: 'Mezclar letras',
+    crosswordHintLabel: 'Pista: revelar una letra',
+    crosswordClearLabel: 'Borrar',
+    crosswordSubmitLabel: 'Enviar',
+    crosswordLevelCleared: 'Nivel superado',
+    crosswordCompleteMessage: '¡Crucigrama completo! Usaste {n} pistas.',
+    crosswordCompleteNoHints: '¡Crucigrama completo y sin pistas!',
     timeUpTitle: '¡SE ACABÓ EL TIEMPO!',
     viewStatsLabel: 'Ver estadísticas',
     starsEarnedSemantics: '{n} de 3 estrellas',
@@ -878,6 +909,21 @@ mixin AppLocale {
     wordsScoreLabel: '{n} of {total} right',
     wordsResultWon: 'Excellent! Next level: {n} words.',
     wordsResultLost: 'Get 80% right to level up.',
+    minigameCrosswordTitle: 'Crossword',
+    minigameCrosswordDescription: 'Make words from a few letters.',
+    crosswordLevelLabel: 'Level {n}',
+    crosswordProgressLabel: '{n} of {total} words',
+    crosswordInstructions: 'Swipe across the letters, or tap them one by one, to make words.',
+    crosswordFoundFeedback: '{n}!',
+    crosswordRepeatedFeedback: '{n} is already on the grid',
+    crosswordInvalidFeedback: '{n} is not in this puzzle',
+    crosswordShuffleLabel: 'Shuffle letters',
+    crosswordHintLabel: 'Hint: reveal a letter',
+    crosswordClearLabel: 'Clear',
+    crosswordSubmitLabel: 'Enter',
+    crosswordLevelCleared: 'Level cleared',
+    crosswordCompleteMessage: 'Puzzle solved! You used {n} hints.',
+    crosswordCompleteNoHints: 'Puzzle solved without hints!',
     timeUpTitle: "TIME'S UP!",
     viewStatsLabel: 'View stats',
     starsEarnedSemantics: '{n} of 3 stars',
