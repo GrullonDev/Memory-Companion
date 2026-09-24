@@ -11,6 +11,7 @@ import 'package:memory_companion/features/game/board/difficulty/adaptive_difficu
 import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty_controller.dart';
 import 'package:memory_companion/features/game/board/difficulty/difficulty_settings.dart';
 import 'package:memory_companion/features/game/board/model/board_state.dart';
+import 'package:memory_companion/features/game/board/model/shared_board.dart';
 import 'package:memory_companion/features/game/board/rules/round_tracker.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/game/model/match_rewards.dart';
@@ -26,6 +27,9 @@ typedef BoardSetup = ({GameCategory category, String languageCode});
 
 /// Which daily board to deal: the day's challenge and the card language.
 typedef DailyBoardSetup = ({DailyChallenge challenge, String languageCode});
+
+/// Any other [SharedBoard] (a versus duel) and the card language.
+typedef SharedBoardSetup = ({SharedBoard board, String languageCode});
 
 /// Source of shuffling. Overridden in tests to deal a known board.
 final boardRandomProvider = Provider<Random>((ref) => Random());
@@ -49,21 +53,29 @@ const _matchRevealDelay = Duration(milliseconds: 600);
 /// so [nextLevel] only has to deal what the engine now says. Losing keeps
 /// the level, and [restart] replays it.
 ///
-/// A [daily] board overrides three of those: it is dealt from the day's
-/// seed, with the day's fixed settings, and never on a countdown — so every
-/// player gets the same board and the result is a time, not a win or loss.
+/// A [shared] board (the daily challenge or a versus duel) overrides three
+/// of those: it is dealt from a fixed seed, with fixed settings, and never on
+/// a countdown — so every player gets the same board and the result is a
+/// time, not a win or loss.
 class BoardController extends Notifier<BoardState> {
-  BoardController(this.setup) : daily = null;
+  BoardController(this.setup) : shared = null;
 
   BoardController.daily(DailyBoardSetup dailySetup)
-    : daily = dailySetup.challenge,
+    : shared = dailySetup.challenge,
       setup = (
         category: dailySetup.challenge.category,
         languageCode: dailySetup.languageCode,
       );
 
+  BoardController.shared(SharedBoardSetup sharedSetup)
+    : shared = sharedSetup.board,
+      setup = (
+        category: sharedSetup.board.category,
+        languageCode: sharedSetup.languageCode,
+      );
+
   final BoardSetup setup;
-  final DailyChallenge? daily;
+  final SharedBoard? shared;
 
   Timer? _timer;
   final List<int> _pendingFlips = [];
@@ -87,7 +99,7 @@ class BoardController extends Notifier<BoardState> {
     _round++;
     _pendingFlips.clear();
     final difficulty = ref.read(adaptiveDifficultyProvider.notifier);
-    _settings = daily?.settings ?? difficulty.settingsFor(_category);
+    _settings = shared?.settings ?? difficulty.settingsFor(_category);
     _tracker = RoundTracker(_category.matchRule);
     _preferences = ref.read(displayPreferencesProvider);
 
@@ -95,7 +107,7 @@ class BoardController extends Notifier<BoardState> {
       category: _category,
       settings: _settings,
       languageCode: setup.languageCode,
-      random: daily?.random ?? ref.read(boardRandomProvider),
+      random: shared?.random ?? ref.read(boardRandomProvider),
     );
 
     _startTimer();
@@ -107,8 +119,8 @@ class BoardController extends Notifier<BoardState> {
       totalSeconds: _settings.timeLimitSeconds,
       secondsRemaining: _settings.timeLimitSeconds,
       previewSecondsRemaining: _settings.previewSeconds,
-      isTimed: daily == null && _preferences.timedMatches,
-      level: daily == null ? difficulty.skillFor(_category).level : null,
+      isTimed: shared == null && _preferences.timedMatches,
+      level: shared == null ? difficulty.skillFor(_category).level : null,
     );
   }
 
@@ -159,9 +171,9 @@ class BoardController extends Notifier<BoardState> {
 
     // Before anything async: the next round, even one started straight from
     // the victory overlay, must already be dealt with the adjusted settings.
-    // The daily board is not the player's own difficulty, so it says nothing
+    // A shared board is not the player's own difficulty, so it says nothing
     // about how the next adaptive board should be.
-    if (daily == null) {
+    if (shared == null) {
       ref
           .read(adaptiveDifficultyProvider.notifier)
           .recordRound(
@@ -362,4 +374,10 @@ final boardControllerProvider = NotifierProvider.autoDispose
 final dailyBoardControllerProvider = NotifierProvider.autoDispose
     .family<BoardController, BoardState, DailyBoardSetup>(
       BoardController.daily,
+    );
+
+/// A duel's shared board. Same lifecycle as [boardControllerProvider].
+final sharedBoardControllerProvider = NotifierProvider.autoDispose
+    .family<BoardController, BoardState, SharedBoardSetup>(
+      BoardController.shared,
     );

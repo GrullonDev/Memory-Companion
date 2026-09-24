@@ -19,7 +19,7 @@ import 'package:memory_companion/features/shop/model/plan.dart';
 ///
 /// Also owns the lives gate: entering the board — and retrying a match —
 /// spends one life via [LivesController]; running out shows a native
-/// modal nudging the player toward the Shop/Pro plan instead of the game.
+/// modal. Its "go to shop" action is hidden while plans are in development.
 ///
 /// The game mode comes from the route: push [RoutePaths.boardSolo] with a
 /// `GameCategory.id` as `arguments` (e.g. `GameCategories.numeric.id`).
@@ -92,14 +92,15 @@ class _BoardPageState extends ConsumerState<BoardPage> {
             },
             child: Text(AppLocale.notNowLabel.getString(dialogContext)),
           ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              if (!canStayOnBoard) Navigator.of(context).pop();
-              Navigator.of(context).pushNamed(RoutePaths.shop);
-            },
-            child: Text(AppLocale.goToShopLabel.getString(dialogContext)),
-          ),
+          // Hidden while the plans shop is in development.
+          // FilledButton(
+          //   onPressed: () {
+          //     Navigator.of(dialogContext).pop();
+          //     if (!canStayOnBoard) Navigator.of(context).pop();
+          //     Navigator.of(context).pushNamed(RoutePaths.shop);
+          //   },
+          //   child: Text(AppLocale.goToShopLabel.getString(dialogContext)),
+          // ),
         ],
       ),
     );
