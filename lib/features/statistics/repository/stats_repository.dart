@@ -51,6 +51,20 @@ class StatsRepository {
     return _db.into(_db.gameStats).insert(game.toCompanion());
   }
 
+  /// Games won under [categoryId]. Level-based mini-games use it as their
+  /// progress, so they need no table of their own.
+  Future<int> countWins(String categoryId) async {
+    final row = await _db
+        .customSelect(
+          'SELECT COUNT(*) AS wins FROM game_stats '
+          'WHERE category_id = ? AND won = 1',
+          variables: [Variable.withString(categoryId)],
+          readsFrom: {_db.gameStats},
+        )
+        .getSingle();
+    return row.read<int>('wins');
+  }
+
   /// Reads the snapshot now, then again after every write to the table.
   ///
   /// [sinceDay] bounds the per-day rows to the chart's window.
