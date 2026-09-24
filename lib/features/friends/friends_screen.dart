@@ -9,10 +9,12 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
+import 'package:memory_companion/features/friends/controller/nearby_search_controller.dart';
 import 'package:memory_companion/features/friends/model/friend.dart';
 import 'package:memory_companion/features/friends/widget/friend_tile.dart';
 import 'package:memory_companion/features/friends/widget/invite_friends_card.dart';
 import 'package:memory_companion/features/friends/widget/lobby_banner.dart';
+import 'package:memory_companion/features/friends/widget/nearby_players_card.dart';
 import 'package:memory_companion/features/friends/widget/social_network_card.dart';
 import 'package:memory_companion/features/friends/widget/social_sign_in_card.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
@@ -147,6 +149,15 @@ class FriendsScreen extends ConsumerWidget {
                       friendCode: code,
                       onShare: () => _shareCode(context, code),
                       onCopyCode: () => _copyCode(context, code),
+                    ),
+                    const SizedBox(height: 20),
+                    NearbyPlayersCard(
+                      state: ref.watch(nearbySearchControllerProvider),
+                      onSearch: () => ref
+                          .read(nearbySearchControllerProvider.notifier)
+                          .search(),
+                      onAdd: (code) => _add(context, ref, code),
+                      onChallenge: (friend) => _challenge(context, ref, friend),
                     ),
                     const SizedBox(height: 20),
                     SocialNetworkCard(
