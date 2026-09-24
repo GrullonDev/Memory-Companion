@@ -21,13 +21,14 @@
   - **Dígitos:** recuerda un número que crece un dígito por acierto, en orden o al revés (memoria de trabajo).
   - **Palabras:** estudia una lista y luego di qué palabras estaban en ella; cada nivel superado suma dos palabras (memoria de reconocimiento).
   - **Crucigrama:** desliza el dedo sobre una rueda de 3 a 6 letras para formar palabras que llenan un pequeño crucigrama, con pistas y botón de mezclar. 12 niveles en español y 12 en inglés; el progreso se guarda por idioma.
-- **Cuenta opcional:** Google, teléfono o correo con Firebase Auth. El progreso de un jugador local se migra al vincular la cuenta.
+- **Amigos:** cada jugador con cuenta tiene un código de amigo de 6 caracteres para compartir o copiar. Se agrega a alguien escribiendo su código; las solicitudes se aceptan o rechazan, y la lista muestra nivel y estado (en línea, en partida o desconectado).
+- **Versus:** duelos asíncronos contra un amigo. Los dos juegan el mismo tablero (misma semilla y dificultad fija), cada uno cuando pueda, y gana la mejor puntuación (desempata el tiempo). La pantalla muestra tu carta frente a la del rival, tu forma en los últimos duelos, los retos pendientes y los resultados.
+- **Cuenta opcional:** Google, teléfono o correo con Firebase Auth. El progreso de un jugador local se migra al vincular la cuenta. Amigos y Versus la requieren.
 - **Perfiles visuales y ajustes de pantalla**, con textos en español e inglés.
 
-### En desarrollo (UI con datos de ejemplo)
+### En desarrollo
 
-- **Amigos** y **Versus:** las pantallas existen, pero los controladores devuelven datos simulados.
-- **Tienda de planes:** la compra aún no está conectada a pagos reales; `ShopController.upgrade` solo cambia el plan activo.
+- **Tienda de planes:** oculta en la UI (pestaña, acceso desde las monedas, tarjeta de la Home y botón del diálogo sin vidas están comentados). El código y la ruta `/shop` siguen en el proyecto; la compra aún no está conectada a pagos reales y `ShopController.upgrade` solo cambia el plan activo.
 
 ---
 
@@ -56,8 +57,9 @@ Preguntar sobre tu historial en lenguaje natural, sin filtros ni etiquetas:
 - [ ] Columnas de contexto (ubicación, dispositivos cercanos) en la tabla `matches` de Drift, más su migración.
 - [ ] `geolocator` para la ubicación y `flutter_blue_plus` para el escaneo de proximidad, siempre con permiso explícito y opcional.
 - [ ] Embeddings locales del historial de partidas para la búsqueda semántica, sin enviar datos fuera del dispositivo.
-- [ ] Conectar Amigos y Versus a Firestore y al descubrimiento por Bluetooth.
-- [ ] Integrar pagos reales en la tienda.
+- [x] Conectar Amigos y Versus a Firestore.
+- [ ] Descubrimiento de amigos cercanos por Bluetooth.
+- [ ] Integrar pagos reales en la tienda y volver a mostrarla.
 
 ---
 
@@ -123,7 +125,11 @@ fvm dart run build_runner build
 
 ### 4. Configurar Firebase
 
-Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE_COMMANDS.md). Las reglas de seguridad están en `firestore.rules`.
+Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE_COMMANDS.md). Las reglas de seguridad están en `firestore.rules`; Amigos y Versus usan las colecciones `user_index`, `friendships` y `duels`, así que hay que desplegar las reglas actualizadas:
+
+```bash
+firebase deploy --only firestore:rules
+```
 
 ### 5. Ejecutar
 
