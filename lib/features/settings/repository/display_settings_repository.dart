@@ -50,6 +50,14 @@ class DisplaySettingsRepository {
     return _upsert(DisplaySettingsCompanion(timedMatches: Value(enabled)));
   }
 
+  Future<void> setContextLocation(bool enabled) {
+    return _upsert(DisplaySettingsCompanion(contextLocation: Value(enabled)));
+  }
+
+  Future<void> setContextNearby(bool enabled) {
+    return _upsert(DisplaySettingsCompanion(contextNearby: Value(enabled)));
+  }
+
   Future<void> _upsert(DisplaySettingsCompanion changes) {
     final updatedAt = Value(_now().millisecondsSinceEpoch);
     return _db
@@ -72,6 +80,8 @@ class DisplaySettingsRepository {
     return DisplayPreferences(
       visualProfile: row.visualProfile,
       timedMatches: row.timedMatches,
+      contextLocation: row.contextLocation,
+      contextNearby: row.contextNearby,
     );
   }
 }
