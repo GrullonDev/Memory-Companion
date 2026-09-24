@@ -332,6 +332,58 @@ mixin AppLocale {
   static const String signOutLabel = 'signOutLabel';
   static const String levelShortLabel = 'levelShortLabel';
   static const String coinsShortLabel = 'coinsShortLabel';
+  static const String friendsModeSubtitle = 'friendsModeSubtitle';
+  static const String yourFriendCodeLabel = 'yourFriendCodeLabel';
+  static const String friendInviteShareText = 'friendInviteShareText';
+  static const String addFriendLabel = 'addFriendLabel';
+  static const String friendRequestsTitle = 'friendRequestsTitle';
+  static const String sentRequestsTitle = 'sentRequestsTitle';
+  static const String pendingLabel = 'pendingLabel';
+  static const String noFriendsYet = 'noFriendsYet';
+  static const String acceptLabel = 'acceptLabel';
+  static const String declineLabel = 'declineLabel';
+  static const String cancelRequestLabel = 'cancelRequestLabel';
+  static const String removeFriendLabel = 'removeFriendLabel';
+  static const String removeFriendConfirm = 'removeFriendConfirm';
+  static const String challengeLabel = 'challengeLabel';
+  static const String unknownPlayerName = 'unknownPlayerName';
+  static const String friendRequestSent = 'friendRequestSent';
+  static const String friendRequestAccepted = 'friendRequestAccepted';
+  static const String friendCodeInvalid = 'friendCodeInvalid';
+  static const String friendNotFound = 'friendNotFound';
+  static const String friendSelfCode = 'friendSelfCode';
+  static const String alreadyFriendsMessage = 'alreadyFriendsMessage';
+  static const String alreadyPendingMessage = 'alreadyPendingMessage';
+  static const String socialActionFailed = 'socialActionFailed';
+  static const String socialSignInTitle = 'socialSignInTitle';
+  static const String socialSignInMessage = 'socialSignInMessage';
+  static const String rankRookie = 'rankRookie';
+  static const String rankApprentice = 'rankApprentice';
+  static const String rankExpert = 'rankExpert';
+  static const String rankMaster = 'rankMaster';
+  static const String rankGrandmaster = 'rankGrandmaster';
+  static const String versusNoRivalTitle = 'versusNoRivalTitle';
+  static const String versusNoRivalMessage = 'versusNoRivalMessage';
+  static const String goToFriendsLabel = 'goToFriendsLabel';
+  static const String chooseRivalLabel = 'chooseRivalLabel';
+  static const String versusHowItWorks = 'versusHowItWorks';
+  static const String duelsToPlayTitle = 'duelsToPlayTitle';
+  static const String duelsWaitingTitle = 'duelsWaitingTitle';
+  static const String duelsFinishedTitle = 'duelsFinishedTitle';
+  static const String duelChallengeFrom = 'duelChallengeFrom';
+  static const String duelOwnChallenge = 'duelOwnChallenge';
+  static const String duelWaitingFor = 'duelWaitingFor';
+  static const String playLabel = 'playLabel';
+  static const String duelWonLabel = 'duelWonLabel';
+  static const String duelLostLabel = 'duelLostLabel';
+  static const String duelDrawLabel = 'duelDrawLabel';
+  static const String duelDeclinedLabel = 'duelDeclinedLabel';
+  static const String duelVsLabel = 'duelVsLabel';
+  static const String duelCreateFailed = 'duelCreateFailed';
+  static const String duelYouLabel = 'duelYouLabel';
+  static const String duelResultSaved = 'duelResultSaved';
+  static const String duelSubmitFailed = 'duelSubmitFailed';
+  static const String duelPointsLabel = 'duelPointsLabel';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -381,10 +433,10 @@ mixin AppLocale {
     performanceSubtitle: 'Precisión de memoria semanal',
     inviteFriendsTitle: 'Invita a tus amigos',
     inviteFriendsSubtitle:
-        'Escanea para unirte a mi sala, o envía un enlace rápido.',
-    inviteLinkLabel: 'Enlace de invitación',
+        'Comparte tu código para que tus amigos te agreguen.',
+    inviteLinkLabel: 'Compartir mi código',
     socialNetworkTitle: 'Red Social',
-    findByUsernameHint: 'Buscar por usuario',
+    findByUsernameHint: 'Código de amigo',
     statusOnline: 'En línea',
     statusInGame: 'En partida',
     statusOffline: 'Desconectado',
@@ -434,7 +486,7 @@ mixin AppLocale {
     upgradeSuccessMessage: '¡Ahora eres Memory Pro!',
     avatarUpdatedMessage: 'Avatar actualizado',
     chooseAvatarTitle: 'Elige tu avatar',
-    searchingOpponentLabel: 'Buscando rival...',
+    searchingOpponentLabel: 'Preparando el duelo...',
     forgotPasswordSentMessage:
         'Te enviamos un enlace para recuperar tu contraseña',
     offlineBannerMessage:
@@ -443,7 +495,7 @@ mixin AppLocale {
     livesLabel: 'Vidas',
     noLivesTitle: '¡Sin vidas!',
     noLivesMessage:
-        'Consigue vidas infinitas con Memory Pro, o espera a que se recarguen.',
+        'Espera a que se recarguen tus vidas para seguir jugando.',
     nextLifeInLabel: 'Próxima vida en',
     goToShopLabel: 'Ir a la Tienda',
     notNowLabel: 'Ahora no',
@@ -634,6 +686,58 @@ mixin AppLocale {
     levelNodeCompleted: 'completado',
     levelNodeCurrent: 'nivel actual, toca para jugar',
     levelNodeLocked: 'bloqueado',
+    friendsModeSubtitle: 'Agrega y reta a tus amigos',
+    yourFriendCodeLabel: 'Tu código de amigo',
+    friendInviteShareText: '¡Juega conmigo en Memory Arcade! Agrégame con mi código de amigo: {code}',
+    addFriendLabel: 'Agregar',
+    friendRequestsTitle: 'Solicitudes',
+    sentRequestsTitle: 'Enviadas',
+    pendingLabel: 'Pendiente',
+    noFriendsYet: 'Aún no tienes amigos. Comparte tu código o escribe el de alguien.',
+    acceptLabel: 'Aceptar',
+    declineLabel: 'Rechazar',
+    cancelRequestLabel: 'Cancelar solicitud',
+    removeFriendLabel: 'Eliminar amigo',
+    removeFriendConfirm: '¿Eliminar a {name} de tus amigos?',
+    challengeLabel: 'Retar',
+    unknownPlayerName: 'Jugador',
+    friendRequestSent: 'Solicitud enviada',
+    friendRequestAccepted: '¡Ahora son amigos!',
+    friendCodeInvalid: 'Los códigos tienen 6 letras y números',
+    friendNotFound: 'No hay nadie con ese código',
+    friendSelfCode: 'Ese es tu propio código',
+    alreadyFriendsMessage: 'Ya son amigos',
+    alreadyPendingMessage: 'Ya le enviaste una solicitud',
+    socialActionFailed: 'No se pudo completar. Revisa tu conexión.',
+    socialSignInTitle: 'Juega con amigos',
+    socialSignInMessage: 'Crea una cuenta para agregar amigos y retarlos a duelos.',
+    rankRookie: 'Novato',
+    rankApprentice: 'Aprendiz',
+    rankExpert: 'Experto',
+    rankMaster: 'Maestro',
+    rankGrandmaster: 'Gran maestro',
+    versusNoRivalTitle: 'Aún no tienes rival',
+    versusNoRivalMessage: 'Agrega amigos para retarlos a un duelo.',
+    goToFriendsLabel: 'Ir a Amigos',
+    chooseRivalLabel: 'Elige a tu rival',
+    versusHowItWorks: 'Los dos juegan el mismo tablero, cada uno cuando pueda. Gana la mejor puntuación.',
+    duelsToPlayTitle: 'Tu turno',
+    duelsWaitingTitle: 'Esperando al rival',
+    duelsFinishedTitle: 'Resultados',
+    duelChallengeFrom: '{name} te retó',
+    duelOwnChallenge: 'Tu reto a {name}',
+    duelWaitingFor: '{name} aún no juega',
+    playLabel: 'Jugar',
+    duelWonLabel: 'Ganaste',
+    duelLostLabel: 'Perdiste',
+    duelDrawLabel: 'Empate',
+    duelDeclinedLabel: 'Rechazado',
+    duelVsLabel: 'contra {name}',
+    duelCreateFailed: 'No se pudo crear el duelo. Revisa tu conexión.',
+    duelYouLabel: 'Tú',
+    duelResultSaved: 'Tu resultado quedó guardado. Vuelve a Versus para ver quién ganó cuando {name} juegue.',
+    duelSubmitFailed: 'No se pudo enviar tu resultado. Revisa tu conexión.',
+    duelPointsLabel: '{n} pts',
   };
 
   static const Map<String, dynamic> en = {
@@ -684,10 +788,10 @@ mixin AppLocale {
     performanceSubtitle: 'Weekly memory accuracy',
     inviteFriendsTitle: 'Invite Friends',
     inviteFriendsSubtitle:
-        'Scan to join my lobby, or send a quick invite link!',
-    inviteLinkLabel: 'Invite Link',
+        'Share your code so friends can add you.',
+    inviteLinkLabel: 'Share my code',
     socialNetworkTitle: 'Social Network',
-    findByUsernameHint: 'Find by Username',
+    findByUsernameHint: 'Friend code',
     statusOnline: 'Online',
     statusInGame: 'In Game',
     statusOffline: 'Offline',
@@ -738,7 +842,7 @@ mixin AppLocale {
     upgradeSuccessMessage: "You're now Memory Pro!",
     avatarUpdatedMessage: 'Avatar updated',
     chooseAvatarTitle: 'Choose your avatar',
-    searchingOpponentLabel: 'Searching for opponent...',
+    searchingOpponentLabel: 'Setting up the duel...',
     forgotPasswordSentMessage: "We've sent you a password reset link",
     offlineBannerMessage:
         "You're offline. Your scores will sync once you reconnect.",
@@ -746,7 +850,7 @@ mixin AppLocale {
     livesLabel: 'Lives',
     noLivesTitle: 'Out of lives!',
     noLivesMessage:
-        'Get unlimited lives with Memory Pro, or wait for them to recharge.',
+        'Wait for your lives to recharge to keep playing.',
     nextLifeInLabel: 'Next life in',
     goToShopLabel: 'Go to Shop',
     notNowLabel: 'Not now',
@@ -937,5 +1041,57 @@ mixin AppLocale {
     levelNodeCompleted: 'completed',
     levelNodeCurrent: 'current level, tap to play',
     levelNodeLocked: 'locked',
+    friendsModeSubtitle: 'Add and challenge friends',
+    yourFriendCodeLabel: 'Your friend code',
+    friendInviteShareText: 'Play with me on Memory Arcade! Add me with my friend code: {code}',
+    addFriendLabel: 'Add',
+    friendRequestsTitle: 'Requests',
+    sentRequestsTitle: 'Sent',
+    pendingLabel: 'Pending',
+    noFriendsYet: "No friends yet. Share your code or enter someone else's.",
+    acceptLabel: 'Accept',
+    declineLabel: 'Decline',
+    cancelRequestLabel: 'Cancel request',
+    removeFriendLabel: 'Remove friend',
+    removeFriendConfirm: 'Remove {name} from your friends?',
+    challengeLabel: 'Challenge',
+    unknownPlayerName: 'Player',
+    friendRequestSent: 'Friend request sent',
+    friendRequestAccepted: "You're now friends!",
+    friendCodeInvalid: 'Codes are 6 letters and numbers',
+    friendNotFound: 'Nobody has that code',
+    friendSelfCode: "That's your own code",
+    alreadyFriendsMessage: "You're already friends",
+    alreadyPendingMessage: 'You already sent a request',
+    socialActionFailed: "Couldn't complete that. Check your connection.",
+    socialSignInTitle: 'Play with friends',
+    socialSignInMessage: 'Create an account to add friends and challenge them to duels.',
+    rankRookie: 'Rookie',
+    rankApprentice: 'Apprentice',
+    rankExpert: 'Expert',
+    rankMaster: 'Master',
+    rankGrandmaster: 'Grandmaster',
+    versusNoRivalTitle: 'No rival yet',
+    versusNoRivalMessage: 'Add friends to challenge them to a duel.',
+    goToFriendsLabel: 'Go to Friends',
+    chooseRivalLabel: 'Choose your rival',
+    versusHowItWorks: 'You both play the same board, whenever you can. Best score wins.',
+    duelsToPlayTitle: 'Your turn',
+    duelsWaitingTitle: 'Waiting for rival',
+    duelsFinishedTitle: 'Results',
+    duelChallengeFrom: '{name} challenged you',
+    duelOwnChallenge: 'Your challenge to {name}',
+    duelWaitingFor: "{name} hasn't played yet",
+    playLabel: 'Play',
+    duelWonLabel: 'You won',
+    duelLostLabel: 'You lost',
+    duelDrawLabel: 'Draw',
+    duelDeclinedLabel: 'Declined',
+    duelVsLabel: 'vs {name}',
+    duelCreateFailed: "Couldn't create the duel. Check your connection.",
+    duelYouLabel: 'You',
+    duelResultSaved: 'Your result is saved. Check Versus to see who won once {name} plays.',
+    duelSubmitFailed: "Couldn't send your result. Check your connection.",
+    duelPointsLabel: '{n} pts',
   };
 }
