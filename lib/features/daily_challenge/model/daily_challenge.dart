@@ -5,6 +5,7 @@ import 'package:memory_companion/features/game/board/category/game_categories.da
 import 'package:memory_companion/features/game/board/category/game_category.dart';
 import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty.dart';
 import 'package:memory_companion/features/game/board/difficulty/difficulty_settings.dart';
+import 'package:memory_companion/features/game/board/model/shared_board.dart';
 
 /// One day's challenge: identical for every player on that local date.
 ///
@@ -12,7 +13,7 @@ import 'package:memory_companion/features/game/board/difficulty/difficulty_setti
 /// board is dealt with [random], the category rotates by day, and the
 /// difficulty is fixed — not adaptive — because results are only worth
 /// comparing if everyone faced the same board.
-class DailyChallenge {
+class DailyChallenge implements SharedBoard {
   DailyChallenge._({
     required this.dateKey,
     required this.number,
@@ -61,12 +62,15 @@ class DailyChallenge {
   /// Public, human number: "Challenge #266".
   final int number;
 
+  @override
   final GameCategory category;
+  @override
   final DifficultySettings settings;
 
   int get seed => DailySeed.seedFor(dateKey);
 
   /// A fresh generator every call, so dealing twice deals the same board.
+  @override
   Random get random => SeededRandom(seed);
 
   @override

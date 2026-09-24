@@ -8,7 +8,8 @@ import 'package:memory_companion/core/theme/app_shadows.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/pressable.dart';
 
-/// Bottom navigation shared by Home, Versus, Friends and Shop.
+/// Bottom navigation shared by Home, Versus and Friends (the Shop tab is
+/// hidden while plans are in development).
 ///
 /// Fixes carried over from the previous version:
 ///  * labels were hard-coded English strings in a bilingual app;
@@ -41,11 +42,12 @@ class HomeBottomNav extends StatelessWidget {
       activeIcon: Icons.groups_rounded,
       labelKey: AppLocale.navFriends,
     ),
-    (
-      icon: Icons.storefront_outlined,
-      activeIcon: Icons.storefront_rounded,
-      labelKey: AppLocale.navShop,
-    ),
+    // Hidden while the plans shop is in development.
+    // (
+    //   icon: Icons.storefront_outlined,
+    //   activeIcon: Icons.storefront_rounded,
+    //   labelKey: AppLocale.navShop,
+    // ),
   ];
 
   @override
