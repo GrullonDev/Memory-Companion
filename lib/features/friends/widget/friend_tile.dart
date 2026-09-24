@@ -5,11 +5,13 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/friends/model/friend.dart';
 
+/// One person in the Friends list: avatar with a presence dot, name, a
+/// status line, and whatever [actions] fit their relation to the player.
 class FriendTile extends StatelessWidget {
-  const FriendTile({super.key, required this.friend, this.onTrailingTap});
+  const FriendTile({super.key, required this.friend, this.actions = const []});
 
   final Friend friend;
-  final VoidCallback? onTrailingTap;
+  final List<Widget> actions;
 
   static const _statusColors = {
     FriendStatus.online: AppColors.mintGreen,
@@ -17,17 +19,34 @@ class FriendTile extends StatelessWidget {
     FriendStatus.offline: AppColors.outline,
   };
 
-  String _statusLabel(BuildContext context) {
-    return switch (friend.status) {
-      FriendStatus.online => AppLocale.statusOnline.getString(context),
-      FriendStatus.inGame => AppLocale.statusInGame.getString(context),
-      FriendStatus.offline => AppLocale.statusOffline.getString(context),
+  static const _avatarColors = [
+    (AppColors.secondaryContainer, AppColors.onSecondaryContainer),
+    (AppColors.tertiaryFixed, AppColors.onTertiaryFixedVariant),
+    (AppColors.primaryFixed, AppColors.onPrimaryFixed),
+    (AppColors.surfaceContainerHigh, AppColors.onSurfaceVariant),
+  ];
+
+  String _subtitle(BuildContext context) {
+    final level = '${AppLocale.levelLabel.getString(context)} ${friend.level}';
+    return switch (friend.relation) {
+      FriendRelation.outgoing => AppLocale.pendingLabel.getString(context),
+      FriendRelation.incoming => level,
+      FriendRelation.friend =>
+        '${switch (friend.status) {
+          FriendStatus.online => AppLocale.statusOnline.getString(context),
+          FriendStatus.inGame => AppLocale.statusInGame.getString(context),
+          FriendStatus.offline => AppLocale.statusOffline.getString(context),
+        }} · $level',
     };
   }
 
   @override
   Widget build(BuildContext context) {
-    final dotColor = _statusColors[friend.status]!;
+    final (avatarColor, onAvatarColor) =
+        _avatarColors[friend.avatarSeed % _avatarColors.length];
+    final showPresence = friend.relation == FriendRelation.friend;
+    final name = displayNameOr(context, friend.name);
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
@@ -41,31 +60,32 @@ class FriendTile extends StatelessWidget {
             children: [
               CircleAvatar(
                 radius: 20,
-                backgroundColor: friend.avatarColor,
+                backgroundColor: avatarColor,
                 child: Text(
                   friend.initials,
                   style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: friend.onAvatarColor,
+                    color: onAvatarColor,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
               ),
-              Positioned(
-                right: -1,
-                bottom: -1,
-                child: Container(
-                  width: 12,
-                  height: 12,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: dotColor,
-                    border: Border.all(
-                      color: AppColors.surfaceContainerLow,
-                      width: 2,
+              if (showPresence)
+                Positioned(
+                  right: -1,
+                  bottom: -1,
+                  child: Container(
+                    width: 12,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: _statusColors[friend.status],
+                      border: Border.all(
+                        color: AppColors.surfaceContainerLow,
+                        width: 2,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(width: 12),
@@ -74,14 +94,18 @@ class FriendTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  friend.name,
+                  name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: AppColors.onSurface,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 Text(
-                  _statusLabel(context),
+                  _subtitle(context),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: AppColors.onSurfaceVariant,
                   ),
@@ -89,52 +113,78 @@ class FriendTile extends StatelessWidget {
               ],
             ),
           ),
-          if (friend.status == FriendStatus.online)
-            _TrailingButton(
-              icon: Icons.add_rounded,
-              background: AppColors.primaryFixed,
-              foreground: AppColors.onPrimaryFixed,
-              onTap: onTrailingTap,
-            )
-          else if (friend.status == FriendStatus.inGame)
-            _TrailingButton(
-              icon: Icons.sports_esports_rounded,
-              background: AppColors.surfaceContainerHigh,
-              foreground: AppColors.onSurfaceVariant,
-              onTap: onTrailingTap,
-            ),
+          for (final action in actions) ...[const SizedBox(width: 6), action],
         ],
       ),
     );
   }
 }
 
-class _TrailingButton extends StatelessWidget {
-  const _TrailingButton({
+/// A round icon action for a [FriendTile].
+class FriendTileAction extends StatelessWidget {
+  const FriendTileAction({
+    super.key,
     required this.icon,
-    required this.background,
-    required this.foreground,
-    this.onTap,
+    required this.tooltip,
+    required this.onTap,
+    this.background = AppColors.surfaceContainerHigh,
+    this.foreground = AppColors.onSurfaceVariant,
   });
 
   final IconData icon;
+  final String tooltip;
+  final VoidCallback? onTap;
   final Color background;
   final Color foreground;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: background,
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Icon(icon, size: 18, color: foreground),
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: background,
+        shape: const CircleBorder(),
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(icon, size: 20, color: foreground),
+          ),
         ),
       ),
     );
   }
+}
+
+/// [name], or a generic "Player" for someone who never set one.
+String displayNameOr(BuildContext context, String name) => name.trim().isEmpty
+    ? AppLocale.unknownPlayerName.getString(context)
+    : name.trim();
+
+/// "Remove {name}?" before a friendship is ended for good.
+Future<bool> confirmRemoveFriend(BuildContext context, Friend friend) async {
+  final name = displayNameOr(context, friend.name);
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) => AlertDialog(
+      backgroundColor: AppColors.surfaceContainerLowest,
+      content: Text(
+        AppLocale.removeFriendConfirm
+            .getString(dialogContext)
+            .replaceAll('{name}', name),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(dialogContext).pop(false),
+          child: Text(AppLocale.notNowLabel.getString(dialogContext)),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(dialogContext).pop(true),
+          child: Text(AppLocale.removeFriendLabel.getString(dialogContext)),
+        ),
+      ],
+    ),
+  );
+  return confirmed ?? false;
 }
