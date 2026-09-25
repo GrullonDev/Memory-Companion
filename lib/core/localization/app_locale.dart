@@ -454,6 +454,27 @@ mixin AppLocale {
   static const String levelRewardChestTitle = 'levelRewardChestTitle';
   static const String levelRewardCoins = 'levelRewardCoins';
 
+  // --- Textos que antes estaban escritos en el código ---
+  static const String levelMapRegionName = 'levelMapRegionName';
+  static const String levelsTitle = 'levelsTitle';
+  static const String levelSelectedSnack = 'levelSelectedSnack';
+  static const String routeNotFound = 'routeNotFound';
+  static const String lobbyChipGameOn = 'lobbyChipGameOn';
+  static const String lobbyChipLevelUp = 'lobbyChipLevelUp';
+  static const String achievementStreak10 = 'achievementStreak10';
+  static const String achievementSprinter = 'achievementSprinter';
+  static const String achievementQuickMind = 'achievementQuickMind';
+  static const String achievementMaster = 'achievementMaster';
+  static const String achievementCollector = 'achievementCollector';
+  static const String achievementSocial = 'achievementSocial';
+  static const String timeAgoJustNow = 'timeAgoJustNow';
+  static const String timeAgoMinutes = 'timeAgoMinutes';
+  static const String timeAgoHours = 'timeAgoHours';
+  static const String timeAgoDays = 'timeAgoDays';
+  static const String timeAgoWeeks = 'timeAgoWeeks';
+  static const String timeAgoOneMonth = 'timeAgoOneMonth';
+  static const String timeAgoMonths = 'timeAgoMonths';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -896,6 +917,25 @@ mixin AppLocale {
     levelRewardGiftTitle: '¡Regalo de nivel!',
     levelRewardChestTitle: '¡Cofre de nivel!',
     levelRewardCoins: '+{coins} monedas',
+    levelMapRegionName: 'Bosque de los Acertijos',
+    levelsTitle: 'Niveles',
+    levelSelectedSnack: 'Nivel {level} · Dificultad: {stars}⭐',
+    routeNotFound: 'No encontramos esta pantalla.',
+    lobbyChipGameOn: '¡A JUGAR!',
+    lobbyChipLevelUp: 'SUBE DE NIVEL',
+    achievementStreak10: 'Racha x10',
+    achievementSprinter: 'Velocista',
+    achievementQuickMind: 'Mente Ágil',
+    achievementMaster: 'Maestro',
+    achievementCollector: 'Coleccionista',
+    achievementSocial: 'Social',
+    timeAgoJustNow: 'Hace unos segundos',
+    timeAgoMinutes: 'Hace {n} min',
+    timeAgoHours: 'Hace {n} h',
+    timeAgoDays: 'Hace {n} d',
+    timeAgoWeeks: 'Hace {n} sem',
+    timeAgoOneMonth: 'Hace 1 mes',
+    timeAgoMonths: 'Hace {n} meses',
   };
 
   static const Map<String, dynamic> en = {
@@ -1340,5 +1380,24 @@ mixin AppLocale {
     levelRewardGiftTitle: 'Level gift!',
     levelRewardChestTitle: 'Level chest!',
     levelRewardCoins: '+{coins} coins',
+    levelMapRegionName: 'Forest of Riddles',
+    levelsTitle: 'Levels',
+    levelSelectedSnack: 'Level {level} · Difficulty: {stars}⭐',
+    routeNotFound: "We couldn't find this screen.",
+    lobbyChipGameOn: 'GAME ON',
+    lobbyChipLevelUp: 'LEVEL UP',
+    achievementStreak10: 'Streak x10',
+    achievementSprinter: 'Sprinter',
+    achievementQuickMind: 'Quick Mind',
+    achievementMaster: 'Master',
+    achievementCollector: 'Collector',
+    achievementSocial: 'Social',
+    timeAgoJustNow: 'Just now',
+    timeAgoMinutes: '{n} min ago',
+    timeAgoHours: '{n} h ago',
+    timeAgoDays: '{n} d ago',
+    timeAgoWeeks: '{n} wk ago',
+    timeAgoOneMonth: '1 month ago',
+    timeAgoMonths: '{n} months ago',
   };
 }

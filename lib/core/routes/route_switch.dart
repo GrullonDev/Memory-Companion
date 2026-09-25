@@ -18,6 +18,8 @@ import 'package:memory_companion/features/statistics/statistics_screen.dart';
 import 'package:memory_companion/features/versus/duel_page.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/versus_screen.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:memory_companion/core/localization/app_locale.dart';
 
 class RouteSwitch {
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
@@ -50,9 +52,7 @@ class RouteSwitch {
       case RoutePaths.shop:
         return MaterialPageRoute(builder: (_) => const ShopScreen());
       case RoutePaths.levelMap:
-        return MaterialPageRoute(
-          builder: (_) => const LevelMapPage(regionName: 'Forest of Riddles'),
-        );
+        return MaterialPageRoute(builder: (_) => const LevelMapPage());
       case RoutePaths.minigameHub:
         return MaterialPageRoute(builder: (_) => const MinigameHubScreen());
       case RoutePaths.dailyChallenge:
@@ -68,7 +68,10 @@ class RouteSwitch {
       default:
         return MaterialPageRoute(
           builder: (context) => Scaffold(
-            body: Center(child: Text('No route defined for ${settings.name}')),
+            appBar: AppBar(),
+            body: Center(
+              child: Text(AppLocale.routeNotFound.getString(context)),
+            ),
           ),
         );
     }
