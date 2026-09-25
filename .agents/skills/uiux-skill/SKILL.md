@@ -352,6 +352,17 @@ Cualquier mejora debe respetar:
 6. **Verificar** que `fvm flutter test` sigue pasando
 7. **Documentar** cualquier nuevo token añadido a `app_colors.dart` o `profile_tokens.dart`
 
+### Auditoría automática
+
+```bash
+python .agents/skills/uiux-skill/scripts/uiux_audit.py          # informe legible
+python .agents/skills/uiux-skill/scripts/uiux_audit.py --json   # JSON
+```
+
+Revisa el Dart de `lib/` (sin `.g.dart`): colores y espaciados literales fuera de `lib/core/theme/`, `InkWell` y `GestureDetector` en lugar de `Pressable`, `AnimatedContainer`, y touch targets por debajo de 48dp. Además comprueba que existan los widgets base, los archivos de tokens, `assets/DESIGN.md` y el clamp de escala de texto, y avisa de lo que falta del plan (modo oscuro, audio, onboarding).
+
+Es un escáner de patrones: sus hallazgos son pistas que hay que confirmar leyendo el código, no veredictos.
+
 ### Priorización recomendada:
 
 | Prioridad | Área | Impacto UX |

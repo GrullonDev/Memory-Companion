@@ -155,7 +155,7 @@ Cualquier mejora debe respetar estos principios no negociables:
 2. **Leer** los archivos del proyecto implicados y confirmar que el estado descrito aquí sigue siendo cierto.
 3. **Evaluar** el impacto en offline-first y en la privacidad de los datos locales.
 4. **Implementar** con código Dart, reglas Firestore o configuración nativa.
-5. **Verificar** que `fvm flutter analyze` y `fvm flutter test` siguen limpios (sin FVM en el PATH: `.fvm/versions/stable/bin/flutter`).
+5. **Verificar** que `fvm flutter analyze` y `fvm flutter test` siguen limpios (sin `fvm` en el PATH: `.fvm/versions/stable/bin/flutter`, si `fvm install` ya creó `.fvm/`).
 6. **Actualizar** la tabla "Estado de seguridad actual" de este documento.
 
 ### Auditoría automática

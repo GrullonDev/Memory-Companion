@@ -252,4 +252,4 @@ Historial de esquema: 1 inicial · 2 `display_settings` · 3 `game_stats` · 4 r
 - **Las reglas de Firestore** validan monotonía en acumulados, listas blancas de campos, e inmutabilidad de partidas.
 - **La búsqueda semántica** es completamente local — no usa servicios externos ni modelos descargados. Usa `LexicalEmbedder` con vectores de 512 dimensiones.
 - **Cuando modifiques tablas de Drift**, sube `schemaVersion`, añade el paso en `migration` y documéntalo en el historial de `app_database.dart`; luego regenera con `fvm dart run build_runner build --delete-conflicting-outputs`.
-- **Flutter vía FVM:** si `flutter` no está en el PATH, usa `.fvm/versions/stable/bin/flutter`.
+- **Flutter vía FVM:** la versión está fijada en `.fvmrc` (`stable`). La carpeta `.fvm/` no está en el repositorio (la ignora `.gitignore`): la crea `fvm install` en cada máquina. Si `fvm` no está en el PATH pero `.fvm/` ya existe, usa `.fvm/versions/stable/bin/flutter`; si no hay FVM, basta con un Flutter del canal stable.
