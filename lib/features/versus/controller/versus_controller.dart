@@ -9,6 +9,7 @@ import 'package:memory_companion/features/game/board/category/game_categories.da
 import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/player/model/player_level.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/room_code.dart';
 import 'package:memory_companion/features/versus/model/versus_player.dart';
 import 'package:memory_companion/features/versus/repository/duel_repository.dart';
 
@@ -73,10 +74,13 @@ class VersusState {
 
   bool get isSignedIn => uid != null;
 
-  /// A rival's name, for the duel lists. Empty if they are no longer a
-  /// friend.
-  String nameOf(String uid) =>
-      rivals.where((friend) => friend.uid == uid).firstOrNull?.name ?? '';
+  /// A rival's name, for the duel lists. Rooms carry their players' names;
+  /// otherwise it comes from the friend list, and is empty for someone who
+  /// is no longer a friend.
+  String nameOf(String uid, {Duel? duel}) =>
+      rivals.where((friend) => friend.uid == uid).firstOrNull?.name ??
+      duel?.names[uid] ??
+      '';
 }
 
 /// The Versus screen: who the player is up against, and their duels.
@@ -140,12 +144,11 @@ class VersusController extends AsyncNotifier<VersusState> {
       ],
       waiting: [
         for (final duel in duels)
-          if (duel.status == DuelStatus.pending && !duel.awaitsTurnOf(uid))
-            duel,
+          if (duel.isActive && !duel.awaitsTurnOf(uid)) duel,
       ],
       finished: [
         for (final duel in duels)
-          if (duel.status != DuelStatus.pending) duel,
+          if (!duel.isActive) duel,
       ],
     );
   }
@@ -182,6 +185,68 @@ class VersusController extends AsyncNotifier<VersusState> {
           );
     } on Exception {
       return null;
+    }
+  }
+
+  /// Opens a room for anyone with its code, dealt in [languageCode].
+  /// Returns the room to play, or null if it could not be created.
+  Future<Duel?> createRoom({required String languageCode}) async {
+    final uid = await ref.read(socialUidProvider.future);
+    if (uid == null) return null;
+    final player = await ref.read(localPlayerProvider.future);
+    final repository = ref.read(duelRepositoryProvider);
+    final random = ref.read(duelRandomProvider);
+    final categories = GameCategories.all;
+    try {
+      // A clash with another open room is unlikely (31^6 codes), but a
+      // shared code would send the guest to a stranger's room.
+      var code = RoomCode.generate(random);
+      for (
+        var i = 0;
+        i < 3 && await repository.findOpenRoom(code) != null;
+        i++
+      ) {
+        code = RoomCode.generate(random);
+      }
+      return await repository.createRoom(
+        hostUid: uid,
+        hostName: player.displayName,
+        roomCode: code,
+        seed: Duel.newSeed(random),
+        categoryId: categories[random.nextInt(categories.length)].id,
+        languageCode: languageCode,
+      );
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// Joins the room behind [input]. The player's own open room is returned
+  /// as is, so the host can enter their code to go back to it.
+  Future<JoinRoomResult> joinRoom(String input) async {
+    final uid = await ref.read(socialUidProvider.future);
+    if (uid == null) return const JoinRoomResult(JoinRoomStatus.signedOut);
+    final code = RoomCode.normalize(input);
+    if (code == null) return const JoinRoomResult(JoinRoomStatus.invalidCode);
+
+    final repository = ref.read(duelRepositoryProvider);
+    try {
+      final room = await repository.findOpenRoom(code);
+      if (room == null) return const JoinRoomResult(JoinRoomStatus.notFound);
+      if (room.challengerUid == uid) {
+        return JoinRoomResult(JoinRoomStatus.joined, room);
+      }
+      final player = await ref.read(localPlayerProvider.future);
+      final joined = await repository.joinRoom(
+        room: room,
+        uid: uid,
+        name: player.displayName,
+      );
+      return joined == null
+          ? const JoinRoomResult(JoinRoomStatus.notFound)
+          : JoinRoomResult(JoinRoomStatus.joined, joined);
+    } on Exception {
+      return const JoinRoomResult(JoinRoomStatus.failed);
     }
   }
 
@@ -223,6 +288,17 @@ class VersusController extends AsyncNotifier<VersusState> {
       return false;
     }
   }
+}
+
+enum JoinRoomStatus { joined, invalidCode, notFound, signedOut, failed }
+
+class JoinRoomResult {
+  const JoinRoomResult(this.status, [this.duel]);
+
+  final JoinRoomStatus status;
+
+  /// The room to play, when [status] is [JoinRoomStatus.joined].
+  final Duel? duel;
 }
 
 final versusControllerProvider =

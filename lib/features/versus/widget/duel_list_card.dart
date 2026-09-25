@@ -33,8 +33,12 @@ class DuelListCard extends StatelessWidget {
     }
     final textTheme = Theme.of(context).textTheme;
 
-    String rivalName(Duel duel) =>
-        displayNameOr(context, state.nameOf(duel.rivalOf(uid)));
+    // An open room has no rival yet: it is named by its code instead.
+    String rivalName(Duel duel) => duel.status == DuelStatus.open
+        ? AppLocale.roomCodeLabel
+              .getString(context)
+              .replaceAll('{code}', duel.roomCode ?? '')
+        : displayNameOr(context, state.nameOf(duel.rivalOf(uid), duel: duel));
 
     Widget section(String titleKey) => Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8),

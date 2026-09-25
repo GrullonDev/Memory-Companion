@@ -187,4 +187,86 @@ void main() {
     expect(state.me.formWins, [true, false]);
     expect(state.rivalCard?.formWins, [false, true]);
   });
+
+  group('salas', () {
+    test('crear una sala la deja abierta y jugable por el anfitrión', () async {
+      final container = open();
+      await container.read(versusControllerProvider.future);
+
+      final room = await container
+          .read(versusControllerProvider.notifier)
+          .createRoom(languageCode: 'es');
+      expect(room, isNotNull);
+      expect(room!.status, DuelStatus.open);
+      expect(room.roomCode, hasLength(6));
+      expect(room.opponentUid, isEmpty);
+
+      final state = await waitFor(container, (s) => s.toPlay.isNotEmpty);
+      expect(state.toPlay.single.id, room.id);
+      expect(state.finished, isEmpty, reason: 'abierta no es terminada');
+    });
+
+    test('otro jugador entra con el código, sin ser amigos', () async {
+      final host = open();
+      await host.read(versusControllerProvider.future);
+      final room = await host
+          .read(versusControllerProvider.notifier)
+          .createRoom(languageCode: 'es');
+
+      final guest = open(uid: 'bob');
+      await guest.read(versusControllerProvider.future);
+      final result = await guest
+          .read(versusControllerProvider.notifier)
+          // Se acepta tal como se escribe a mano.
+          .joinRoom(room!.roomCode!.toLowerCase());
+
+      expect(result.status, JoinRoomStatus.joined);
+      expect(result.duel?.id, room.id);
+      expect(result.duel?.status, DuelStatus.pending);
+      expect(result.duel?.members, ['alice', 'bob']);
+
+      final state = await waitFor(guest, (s) => s.toPlay.isNotEmpty);
+      expect(state.toPlay.single.id, room.id);
+
+      // Ya no está abierta: nadie más puede entrar.
+      final third = open(uid: 'carol');
+      await third.read(versusControllerProvider.future);
+      final late = await third
+          .read(versusControllerProvider.notifier)
+          .joinRoom(room.roomCode!);
+      expect(late.status, JoinRoomStatus.notFound);
+    });
+
+    test('el anfitrión que escribe su código vuelve a su sala', () async {
+      final container = open();
+      await container.read(versusControllerProvider.future);
+      final notifier = container.read(versusControllerProvider.notifier);
+      final room = await notifier.createRoom(languageCode: 'es');
+
+      final result = await notifier.joinRoom(room!.roomCode!);
+      expect(result.status, JoinRoomStatus.joined);
+      expect(result.duel?.status, DuelStatus.open);
+    });
+
+    test('códigos mal formados o sin sala', () async {
+      final container = open();
+      await container.read(versusControllerProvider.future);
+      final notifier = container.read(versusControllerProvider.notifier);
+
+      expect(
+        (await notifier.joinRoom('12')).status,
+        JoinRoomStatus.invalidCode,
+      );
+      expect(
+        (await notifier.joinRoom('ZZZZZZ')).status,
+        JoinRoomStatus.notFound,
+      );
+      expect(
+        (await open(
+          uid: null,
+        ).read(versusControllerProvider.notifier).joinRoom('ZZZZZZ')).status,
+        JoinRoomStatus.signedOut,
+      );
+    });
+  });
 }

@@ -73,7 +73,9 @@ class _DuelPageState extends ConsumerState<DuelPage> {
     final rivalUid = uid == null ? duel.opponentUid : duel.rivalOf(uid);
     final rivalName = displayNameOr(
       context,
-      ref.watch(versusControllerProvider).value?.nameOf(rivalUid) ?? '',
+      ref.watch(versusControllerProvider).value?.nameOf(rivalUid, duel: duel) ??
+          duel.names[rivalUid] ??
+          '',
     );
 
     Widget overlay(DuelScore mine, {required bool celebrate}) =>
