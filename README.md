@@ -23,6 +23,8 @@
   - **Crucigrama:** desliza el dedo sobre una rueda de 3 a 6 letras para formar palabras que llenan un pequeño crucigrama, con pistas y botón de mezclar. 12 niveles en español y 12 en inglés; el progreso se guarda por idioma.
 - **Amigos:** cada jugador con cuenta tiene un código de amigo de 6 caracteres para compartir o copiar. Se agrega a alguien escribiendo su código; las solicitudes se aceptan o rechazan, y la lista muestra nivel y estado (en línea, en partida o desconectado).
 - **Versus:** duelos asíncronos contra un amigo. Los dos juegan el mismo tablero (misma semilla y dificultad fija), cada uno cuando pueda, y gana la mejor puntuación (desempata el tiempo). La pantalla muestra tu carta frente a la del rival, tu forma en los últimos duelos, los retos pendientes y los resultados.
+  - **Contra la CPU:** duelo sin conexión ni cuenta, en tres niveles (fácil, normal, difícil). La CPU juega el mismo tablero con una memoria que olvida: recuerda cada carta vista con una probabilidad según el nivel, y su resultado se puntúa con la misma fórmula del tablero. La semilla del duelo fija el resultado, así que salir y volver no cambia el rival (`lib/features/versus/cpu/`).
+  - **Salas con código:** en Amigos, la tarjeta "Sala de juego" crea una sala con un código aleatorio de 6 caracteres; quien lo escriba se une al duelo sin necesidad de ser amigos. Compartir el código es la invitación.
 - **Cerca de ti (Bluetooth):** en Amigos, "Buscar cerca" encuentra a otros jugadores con la app abierta alrededor, para agregarlos o retarlos sin escribir el código. Los dos tienen que estar buscando a la vez (o tener activadas las "Personas cercanas").
 - **Contexto automático (opcional, apagado por defecto):** en Ajustes › Contexto automático se activa, por separado y solo tras conceder el permiso:
   - **Ubicación:** cada partida guarda en qué _lugar_ se jugó. Las posiciones se agrupan en lugares de unos 150 m que puedes nombrar ("Casa", "Parque"); las partidas no guardan coordenadas.
@@ -35,7 +37,8 @@
   - _"¿Dónde me concentro mejor?"_ / _"¿A qué hora rindo mejor?"_ / _"¿Cuántas partidas gané esta semana?"_
 
   Todo se calcula en el dispositivo (ver [Búsqueda semántica](#-búsqueda-semántica-local)).
-- **Cuenta opcional:** Google, teléfono o correo con Firebase Auth. El progreso de un jugador local se migra al vincular la cuenta. Amigos, Versus y las Personas cercanas la requieren.
+
+- **Cuenta opcional:** Google, teléfono o correo con Firebase Auth. El progreso de un jugador local se migra al vincular la cuenta. Al entrar por teléfono, que no trae nombre, se pide completar el perfil con un nombre visible (`lib/features/auth/complete_profile/`). Amigos, Versus en línea, las salas y las Personas cercanas requieren cuenta.
 - **Perfiles visuales y ajustes de pantalla**, con textos en español e inglés.
 
 ### En desarrollo
@@ -70,6 +73,7 @@ Organización por _features_ (`lib/features/<feature>/{controller,model,reposito
 - **Estado:** Riverpod (`AsyncNotifier` / `Notifier`).
 - **Offline-first:** la base local **Drift (SQLite)** es la fuente de verdad del juego. La UI siempre observa la base local; Firestore nunca alimenta una pantalla directamente.
 - **Sincronización:** un motor con cola y reintentos con backoff (`lib/core/sync/`) sube los cambios a Firestore cuando hay conexión.
+- **Reintentos de providers:** `appProviderRetry` (`lib/core/firebase/provider_retry.dart`) conserva el reintento con backoff de Riverpod, pero no reintenta los errores permanentes de Firebase (`permission-denied`, `unauthenticated`, `not-found`…): la pantalla muestra "Reintentar" al momento en vez de quedarse cargando ~40 s.
 - **Contexto y búsqueda, solo locales:** el lugar y las personas cercanas se guardan en `game_stats` (tabla que nunca se sincroniza) y en `places`, no en `matches`, que sí sube a la nube. La captura (`lib/features/game_context/`) corre al registrar cada resultado en `MinigameResultReporter`; si falla o no hay permiso, la partida se guarda igual, sin contexto.
 - **Bluetooth:** `flutter_blue_plus` solo escanea, así que el anuncio usa `flutter_ble_peripheral`. El código de amigo viaja dentro de un UUID de servicio de 128 bits (prefijo fijo de Memory Arcade + 6 caracteres), el único campo que Android e iOS anuncian y leen por igual. No se transmite nada más, ni nombre ni ubicación.
 
@@ -83,17 +87,17 @@ Detalles completos en [docs/OFFLINE_FIRST.md](docs/OFFLINE_FIRST.md).
 
 ## 🛠️ Stack tecnológico
 
-| Área | Paquetes |
-| --- | --- |
-| Framework | Flutter, Dart `^3.10.4` |
-| Estado | `flutter_riverpod` |
-| Persistencia local | `drift`, `sqlite3_flutter_libs`, `path_provider` |
-| Nube | `firebase_core`, `firebase_auth`, `cloud_firestore`, `google_sign_in` |
-| Conectividad | `connectivity_plus` |
-| Localización | `flutter_localization`, `intl` |
-| UI | `google_fonts` |
-| Utilidades | `uuid`, `share_plus` |
-| Contexto | `geolocator`, `flutter_blue_plus`, `flutter_ble_peripheral` |
+| Área               | Paquetes                                                              |
+| ------------------ | --------------------------------------------------------------------- |
+| Framework          | Flutter, Dart `^3.10.4`                                               |
+| Estado             | `flutter_riverpod`                                                    |
+| Persistencia local | `drift`, `sqlite3_flutter_libs`, `path_provider`                      |
+| Nube               | `firebase_core`, `firebase_auth`, `cloud_firestore`, `google_sign_in` |
+| Conectividad       | `connectivity_plus`                                                   |
+| Localización       | `flutter_localization`, `intl`                                        |
+| UI                 | `google_fonts`                                                        |
+| Utilidades         | `uuid`, `share_plus`                                                  |
+| Contexto           | `geolocator`, `flutter_blue_plus`, `flutter_ble_peripheral`           |
 
 ---
 
@@ -128,11 +132,13 @@ fvm dart run build_runner build
 
 ### 4. Configurar Firebase
 
-Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE_COMMANDS.md). Las reglas de seguridad están en `firestore.rules`; Amigos y Versus usan las colecciones `user_index`, `friendships` y `duels`, así que hay que desplegar las reglas actualizadas:
+Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE_COMMANDS.md). Las reglas de seguridad están en `firestore.rules`; Amigos, Versus y las salas usan las colecciones `user_index`, `friendships` y `duels`, así que hay que desplegar las reglas actualizadas:
 
 ```bash
-firebase deploy --only firestore:rules
+firebase deploy --only firestore:rules --project memory-compaknion
 ```
+
+> Si Amigos o Versus muestran "Reintentar" con `permission-denied`, casi siempre es que las reglas desplegadas están desactualizadas.
 
 ### 5. Permisos (contexto automático)
 
