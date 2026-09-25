@@ -113,24 +113,27 @@ class ContextSettingsSection extends ConsumerWidget {
         const SizedBox(height: AppSpacing.md),
         AppCard(
           padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              toggle(
-                value: preferences.contextLocation,
-                onChanged: (on) => _setLocation(context, ref, on),
-                icon: Icons.place_outlined,
-                titleKey: AppLocale.contextLocationTitle,
-                subtitleKey: AppLocale.contextLocationSubtitle,
-              ),
-              const Divider(height: 1),
-              toggle(
-                value: preferences.contextNearby,
-                onChanged: (on) => _setNearby(context, ref, on),
-                icon: Icons.bluetooth_searching_rounded,
-                titleKey: AppLocale.contextNearbyTitle,
-                subtitleKey: AppLocale.contextNearbySubtitle,
-              ),
-            ],
+          child: Material(
+            type: MaterialType.transparency,
+            child: Column(
+              children: [
+                toggle(
+                  value: preferences.contextLocation,
+                  onChanged: (on) => _setLocation(context, ref, on),
+                  icon: Icons.place_outlined,
+                  titleKey: AppLocale.contextLocationTitle,
+                  subtitleKey: AppLocale.contextLocationSubtitle,
+                ),
+                const Divider(height: 1),
+                toggle(
+                  value: preferences.contextNearby,
+                  onChanged: (on) => _setNearby(context, ref, on),
+                  icon: Icons.bluetooth_searching_rounded,
+                  titleKey: AppLocale.contextNearbyTitle,
+                  subtitleKey: AppLocale.contextNearbySubtitle,
+                ),
+              ],
+            ),
           ),
         ),
         if (preferences.contextLocation || places.isNotEmpty) ...[
@@ -150,21 +153,30 @@ class ContextSettingsSection extends ConsumerWidget {
                       style: supporting,
                     ),
                   )
-                : Column(
-                    children: [
-                      for (final place in places)
-                        Builder(
-                          builder: (context) {
-                            final label = placeLabel(context, places, place.id);
-                            return ListTile(
-                              leading: const Icon(Icons.place_rounded),
-                              title: Text(label),
-                              trailing: const Icon(Icons.edit_outlined),
-                              onTap: () => _rename(context, ref, place),
-                            );
-                          },
-                        ),
-                    ],
+                // The card paints its own background; the tiles need a
+                // Material above them for their ink splashes to show.
+                : Material(
+                    type: MaterialType.transparency,
+                    child: Column(
+                      children: [
+                        for (final place in places)
+                          Builder(
+                            builder: (context) {
+                              final label = placeLabel(
+                                context,
+                                places,
+                                place.id,
+                              );
+                              return ListTile(
+                                leading: const Icon(Icons.place_rounded),
+                                title: Text(label),
+                                trailing: const Icon(Icons.edit_outlined),
+                                onTap: () => _rename(context, ref, place),
+                              );
+                            },
+                          ),
+                      ],
+                    ),
                   ),
           ),
         ],
