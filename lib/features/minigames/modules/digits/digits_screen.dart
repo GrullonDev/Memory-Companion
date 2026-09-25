@@ -7,6 +7,8 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
+import 'package:memory_companion/core/widgets/pinned_footer_layout.dart';
+import 'package:memory_companion/core/widgets/success_pulse.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/digits/controller/digits_controller.dart';
 import 'package:memory_companion/features/minigames/modules/digits/digits_game_module.dart';
@@ -28,18 +30,24 @@ class DigitsScreen extends ConsumerWidget {
       DigitsPhase.showing => _Showing(state: state),
       DigitsPhase.input => _Input(state: state, controller: controller),
       DigitsPhase.feedback => _Feedback(state: state),
-      DigitsPhase.finished => MinigameResultView(
-        game: const DigitsGameModule(),
-        won: state.won,
-        headline: '${state.bestSpan}',
-        caption: AppLocale.digitsBestSpanLabel.getString(context),
-        message: fill(
-          (state.won ? AppLocale.digitsResultWon : AppLocale.digitsResultLost)
-              .getString(context),
-          state.mode.targetSpan,
-        ),
-        primaryLabel: AppLocale.playAgain.getString(context),
-        onPrimary: () => controller.start(state.mode),
+      DigitsPhase.finished => PinnedFooterLayout(
+        children: [
+          MinigameResultView(
+            game: const DigitsGameModule(),
+            won: state.won,
+            headline: '${state.bestSpan}',
+            caption: AppLocale.digitsBestSpanLabel.getString(context),
+            message: fill(
+              (state.won
+                      ? AppLocale.digitsResultWon
+                      : AppLocale.digitsResultLost)
+                  .getString(context),
+              state.mode.targetSpan,
+            ),
+            primaryLabel: AppLocale.playAgain.getString(context),
+            onPrimary: () => controller.start(state.mode),
+          ),
+        ],
       ),
     };
 
@@ -49,18 +57,8 @@ class DigitsScreen extends ConsumerWidget {
         backgroundColor: AppColors.background,
         title: Text(AppLocale.minigameDigitsTitle.getString(context)),
       ),
-      body: SafeArea(
-        top: false,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.screenMargin),
-              children: [body],
-            ),
-          ),
-        ),
-      ),
+      // Each phase lays itself out: content scrolls, controls stay pinned.
+      body: SafeArea(top: false, child: body),
     );
   }
 }
@@ -73,8 +71,25 @@ class _Intro extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PinnedFooterLayout(
+      footer: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AdaptiveButton(
+            label: AppLocale.digitsModeForward.getString(context),
+            icon: Icons.arrow_forward_rounded,
+            onPressed: () => onStart(DigitsMode.forward),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AdaptiveButton(
+            label: AppLocale.digitsModeReverse.getString(context),
+            icon: Icons.arrow_back_rounded,
+            variant: AdaptiveButtonVariant.secondary,
+            onPressed: () => onStart(DigitsMode.reverse),
+          ),
+        ],
+      ),
       children: [
         const Icon(Icons.pin_rounded, color: AppColors.skyStrong, size: 72),
         const SizedBox(height: AppSpacing.lg),
@@ -90,19 +105,6 @@ class _Intro extends StatelessWidget {
           style: textTheme.bodyMedium?.copyWith(
             color: AppColors.onSurfaceVariant,
           ),
-        ),
-        const SizedBox(height: AppSpacing.xxl),
-        AdaptiveButton(
-          label: AppLocale.digitsModeForward.getString(context),
-          icon: Icons.arrow_forward_rounded,
-          onPressed: () => onStart(DigitsMode.forward),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        AdaptiveButton(
-          label: AppLocale.digitsModeReverse.getString(context),
-          icon: Icons.arrow_back_rounded,
-          variant: AdaptiveButtonVariant.secondary,
-          onPressed: () => onStart(DigitsMode.reverse),
         ),
       ],
     );
@@ -172,7 +174,7 @@ class _Showing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return PinnedFooterLayout(
       children: [
         _Header(
           label: AppLocale.digitsMemorizeLabel.getString(context),
@@ -198,24 +200,23 @@ class _Input extends StatelessWidget {
     // Typed digits, then a dot per digit still missing.
     final slots = state.input.padRight(state.span, '·');
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PinnedFooterLayout(
+      // The keypad never scrolls away from under the thumb.
+      footer: _Keypad(
+        onDigit: controller.typeDigit,
+        onDelete: controller.deleteDigit,
+        onSubmit: state.canSubmit ? controller.submit : null,
+      ),
       children: [
         _Header(label: prompt.getString(context), span: state.span),
         _NumberCard(text: slots),
-        const SizedBox(height: AppSpacing.xl),
-        _Keypad(
-          onDigit: controller.typeDigit,
-          onDelete: controller.deleteDigit,
-          onSubmit: state.canSubmit ? controller.submit : null,
-        ),
       ],
     );
   }
 }
 
-/// Phone-style keypad. Check sits in the bottom row, beside 0, so it is
-/// never scrolled out of reach below the keys on a short screen.
+/// Phone-style keypad, pinned to the bottom of the screen. Check sits in the
+/// bottom row, beside 0, where the thumb already is.
 class _Keypad extends StatelessWidget {
   const _Keypad({
     required this.onDigit,
@@ -298,12 +299,22 @@ class _Feedback extends StatelessWidget {
     final correct = state.lastCorrect;
     final color = correct ? AppColors.mintStrong : AppColors.error;
 
-    return Column(
+    return PinnedFooterLayout(
       children: [
-        Icon(
-          correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
-          color: color,
-          size: 72,
+        // A right answer pops; a wrong one just shows what it should have
+        // been.
+        Center(
+          child: SuccessPulse(
+            trigger: correct ? state.trials : null,
+            playOnMount: true,
+            shape: BoxShape.circle,
+            haptic: true,
+            child: Icon(
+              correct ? Icons.check_circle_rounded : Icons.cancel_rounded,
+              color: color,
+              size: 72,
+            ),
+          ),
         ),
         const SizedBox(height: AppSpacing.md),
         Text(
