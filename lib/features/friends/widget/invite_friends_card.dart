@@ -4,17 +4,18 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 
+/// The player's own friend code, with ways to share it.
 class InviteFriendsCard extends StatelessWidget {
   const InviteFriendsCard({
     super.key,
+    required this.friendCode,
     this.onShare,
     this.onCopyCode,
-    this.onInvite,
   });
 
+  final String friendCode;
   final VoidCallback? onShare;
   final VoidCallback? onCopyCode;
-  final VoidCallback? onInvite;
 
   @override
   Widget build(BuildContext context) {
@@ -45,34 +46,46 @@ class InviteFriendsCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          AspectRatio(
-            aspectRatio: 1,
-            child: CustomPaint(
-              painter: const _DashedBoxPainter(),
-              child: Stack(
+          CustomPaint(
+            painter: const _DashedBoxPainter(),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(12, 20, 12, 20),
+              child: Row(
                 children: [
-                  const Center(
-                    child: Icon(
-                      Icons.qr_code_2_rounded,
-                      size: 120,
-                      color: AppColors.secondary,
+                  _CornerButton(
+                    icon: Icons.share_rounded,
+                    tooltip: AppLocale.inviteLinkLabel.getString(context),
+                    onTap: onShare,
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          AppLocale.yourFriendCodeLabel.getString(context),
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.labelLarge
+                              ?.copyWith(color: AppColors.onSurfaceVariant),
+                        ),
+                        const SizedBox(height: 6),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: SelectableText(
+                            friendCode,
+                            style: Theme.of(context).textTheme.headlineMedium
+                                ?.copyWith(
+                                  color: AppColors.secondary,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 6,
+                                ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
-                    child: _CornerButton(
-                      icon: Icons.share_rounded,
-                      onTap: onShare,
-                    ),
-                  ),
-                  Positioned(
-                    top: 10,
-                    right: 10,
-                    child: _CornerButton(
-                      icon: Icons.copy_rounded,
-                      onTap: onCopyCode,
-                    ),
+                  _CornerButton(
+                    icon: Icons.copy_rounded,
+                    tooltip: AppLocale.codeCopiedMessage.getString(context),
+                    onTap: onCopyCode,
                   ),
                 ],
               ),
@@ -93,7 +106,7 @@ class InviteFriendsCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                onTap: onInvite,
+                onTap: onShare,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
@@ -106,7 +119,7 @@ class InviteFriendsCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
-                        Icons.play_arrow_rounded,
+                        Icons.share_rounded,
                         color: AppColors.onPrimaryFixed,
                       ),
                       const SizedBox(width: 8),
@@ -135,31 +148,34 @@ class InviteFriendsCard extends StatelessWidget {
 }
 
 class _CornerButton extends StatelessWidget {
-  const _CornerButton({required this.icon, this.onTap});
+  const _CornerButton({required this.icon, required this.tooltip, this.onTap});
 
   final IconData icon;
+  final String tooltip;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surfaceContainerLowest,
-      shape: const CircleBorder(),
-      elevation: 2,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Icon(icon, size: 16, color: AppColors.onSurfaceVariant),
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: AppColors.surfaceContainerLowest,
+        shape: const CircleBorder(),
+        elevation: 2,
+        child: InkWell(
+          customBorder: const CircleBorder(),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Icon(icon, size: 20, color: AppColors.onSurfaceVariant),
+          ),
         ),
       ),
     );
   }
 }
 
-/// Dashed rounded-rectangle border standing in for a photographed lobby
-/// scene behind the QR code — no such artwork asset exists in the project.
+/// Dashed rounded-rectangle border framing the friend code.
 class _DashedBoxPainter extends CustomPainter {
   const _DashedBoxPainter();
 

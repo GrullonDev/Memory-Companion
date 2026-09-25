@@ -19,7 +19,7 @@ import 'package:memory_companion/features/shop/model/plan.dart';
 ///
 /// Also owns the lives gate: entering the board — and retrying a match —
 /// spends one life via [LivesController]; running out shows a native
-/// modal nudging the player toward the Shop/Pro plan instead of the game.
+/// modal. Its "go to shop" action is hidden while plans are in development.
 ///
 /// The game mode comes from the route: push [RoutePaths.boardSolo] with a
 /// `GameCategory.id` as `arguments` (e.g. `GameCategories.numeric.id`).
@@ -46,14 +46,17 @@ class _BoardPageState extends ConsumerState<BoardPage> {
     );
   }
 
-  void _enterMatch() {
-    final hasLife = ref.read(livesControllerProvider.notifier).consumeLife();
-    if (!hasLife) _showNoLivesDialog(canStayOnBoard: false);
+  Future<void> _enterMatch() async {
+    final hasLife =
+        await ref.read(livesControllerProvider.notifier).consumeLife();
+    if (!hasLife && mounted) _showNoLivesDialog(canStayOnBoard: false);
   }
 
   /// Starts another round — a retry or the next level — if a life is left.
   Future<void> _attemptNewRound(void Function(BoardController) start) async {
-    final hasLife = ref.read(livesControllerProvider.notifier).consumeLife();
+    final hasLife =
+        await ref.read(livesControllerProvider.notifier).consumeLife();
+    if (!mounted) return;
     if (hasLife) {
       start(ref.read(boardControllerProvider(_setup).notifier));
     } else {
@@ -89,14 +92,15 @@ class _BoardPageState extends ConsumerState<BoardPage> {
             },
             child: Text(AppLocale.notNowLabel.getString(dialogContext)),
           ),
-          FilledButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-              if (!canStayOnBoard) Navigator.of(context).pop();
-              Navigator.of(context).pushNamed(RoutePaths.shop);
-            },
-            child: Text(AppLocale.goToShopLabel.getString(dialogContext)),
-          ),
+          // Hidden while the plans shop is in development.
+          // FilledButton(
+          //   onPressed: () {
+          //     Navigator.of(dialogContext).pop();
+          //     if (!canStayOnBoard) Navigator.of(context).pop();
+          //     Navigator.of(context).pushNamed(RoutePaths.shop);
+          //   },
+          //   child: Text(AppLocale.goToShopLabel.getString(dialogContext)),
+          // ),
         ],
       ),
     );
@@ -104,16 +108,15 @@ class _BoardPageState extends ConsumerState<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Coins are credited by [BoardController] when it records the match,
+    // so the page must not add any of its own.
     final provider = boardControllerProvider(_setup);
-    ref.listen(provider, (previous, next) {
-      if (next.isCompleted && previous?.isCompleted != true) {
-        ref.read(walletControllerProvider.notifier).add(_victoryCoinsReward);
-      }
-    });
-
     final state = ref.watch(provider);
     final controller = ref.read(provider.notifier);
-    final lives = ref.watch(livesControllerProvider);
+    // Las vidas se cargan de la base local, así que llegan como AsyncValue.
+    // Mientras resuelven se muestra el máximo: es un instante y no bloquea el
+    // tablero, que ya está jugable.
+    final lives = ref.watch(livesControllerProvider).value;
     final isLivesUnlimited =
         ref.watch(shopControllerProvider).value?.currentPlanId == PlanId.pro;
 

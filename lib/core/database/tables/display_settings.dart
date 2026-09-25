@@ -23,6 +23,16 @@ class DisplaySettings extends Table {
   /// del perfil cada vez que se elige uno, y después el jugador manda.
   BoolColumn get timedMatches => boolean().withDefault(const Constant(true))();
 
+  /// Contexto automático: guardar en qué lugar se jugó cada partida. Nace
+  /// apagado y solo se enciende tras conceder el permiso de ubicación.
+  BoolColumn get contextLocation =>
+      boolean().withDefault(const Constant(false))();
+
+  /// Contexto automático: anunciarse y buscar jugadores cercanos por
+  /// Bluetooth. Nace apagado, igual que la ubicación.
+  BoolColumn get contextNearby =>
+      boolean().withDefault(const Constant(false))();
+
   IntColumn get updatedAt => integer()();
 
   @override

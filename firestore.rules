@@ -127,14 +127,100 @@ service cloud.firestore {
     // ---------------------------------------------------------------
     // Perfil público: lo que amigos y rankings necesitan, y nada más.
     // Sustituye al `allow read: if true` sobre el documento privado.
+    //
+    // `friendCode` se deriva del uid en el cliente. LÍMITE CONOCIDO: las
+    // reglas no pueden recalcular ese hash, así que un cliente modificado
+    // podría publicar el código de otro. Solo afecta a quién recibe una
+    // solicitud, que el destinatario igualmente tiene que aceptar.
     // ---------------------------------------------------------------
     match /user_index/{uid} {
       allow read: if signedIn();
       allow write: if isOwner(uid)
                    && incoming().keys().hasOnly(
                         ['displayName', 'avatarSeed', 'level', 'totalXp',
-                         'updatedAt']
+                         'friendCode', 'lastSeenAt', 'playing', 'updatedAt']
                       );
+    }
+
+    // ---------------------------------------------------------------
+    // Amistades. Un documento por pareja, con id `uidA_uidB` (ordenados),
+    // para que dos personas nunca tengan dos amistades.
+    // ---------------------------------------------------------------
+    function isMember() {
+      return signedIn() && request.auth.uid in resource.data.members;
+    }
+
+    match /friendships/{pairId} {
+      // `resource == null`: la transacción que envía una solicitud lee
+      // primero el documento, que todavía no existe.
+      allow read: if signedIn()
+                  && (resource == null || request.auth.uid in resource.data.members);
+
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['members', 'requestedBy', 'status', 'createdAt',
+                          'updatedAt'])
+                    && incoming().members.size() == 2
+                    && incoming().members[0] < incoming().members[1]
+                    && pairId == incoming().members[0] + '_' + incoming().members[1]
+                    && incoming().requestedBy == request.auth.uid
+                    && request.auth.uid in incoming().members
+                    && incoming().status == 'pending';
+
+      // Solo quien recibió la solicitud la acepta, y aceptar es lo único
+      // que se puede cambiar.
+      allow update: if isMember()
+                    && request.auth.uid != current().requestedBy
+                    && current().status == 'pending'
+                    && incoming().status == 'accepted'
+                    && incoming().diff(current()).affectedKeys()
+                         .hasOnly(['status', 'updatedAt']);
+
+      // Rechazar, cancelar o dejar de ser amigos.
+      allow delete: if isMember();
+    }
+
+    // ---------------------------------------------------------------
+    // Duelos asíncronos: los dos juegan el mismo tablero (misma semilla)
+    // cuando pueden, y cada uno escribe solo su propio resultado.
+    // ---------------------------------------------------------------
+    match /duels/{duelId} {
+      allow read: if isMember();
+
+      // Solo entre amigos: la amistad aceptada tiene que existir.
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['challengerUid', 'opponentUid', 'members',
+                          'friendshipId', 'seed', 'categoryId', 'languageCode',
+                          'status', 'results', 'createdAt', 'updatedAt'])
+                    && incoming().challengerUid == request.auth.uid
+                    && incoming().members
+                         == [incoming().challengerUid, incoming().opponentUid]
+                    && incoming().status == 'pending'
+                    && incoming().results.size() == 0
+                    && get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.status == 'accepted'
+                    && incoming().opponentUid in get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.members
+                    && request.auth.uid in get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.members;
+
+      // Cada jugador añade su resultado una sola vez; nunca toca el del
+      // otro. El rival puede además rechazar el reto antes de jugarlo.
+      allow update: if isMember()
+                    && current().status == 'pending'
+                    && (
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['results', 'updatedAt'])
+                       && !(request.auth.uid in current().results)
+                       && incoming().results.diff(current().results)
+                            .affectedKeys().hasOnly([request.auth.uid]))
+                      ||
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['status', 'updatedAt'])
+                       && request.auth.uid == current().opponentUid
+                       && !(request.auth.uid in current().results)
+                       && incoming().status == 'declined')
+                    );
+
+      allow delete: if false;
     }
 
     // Contenido de los retos diarios: lectura para todos, escritura de nadie.

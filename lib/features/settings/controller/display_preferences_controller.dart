@@ -31,6 +31,18 @@ class DisplayPreferencesController extends StreamNotifier<DisplayPreferences> {
   Future<void> setTimedMatches(bool enabled) {
     return ref.read(displaySettingsRepositoryProvider).setTimedMatches(enabled);
   }
+
+  Future<void> setContextLocation(bool enabled) {
+    return ref
+        .read(displaySettingsRepositoryProvider)
+        .setContextLocation(enabled);
+  }
+
+  Future<void> setContextNearby(bool enabled) {
+    return ref
+        .read(displaySettingsRepositoryProvider)
+        .setContextNearby(enabled);
+  }
 }
 
 final displayPreferencesControllerProvider =

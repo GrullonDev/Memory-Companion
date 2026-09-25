@@ -1,31 +1,41 @@
 import 'package:flutter/widgets.dart';
 
-/// One side of a [VersusMatchup] card.
+import 'package:memory_companion/core/localization/app_locale.dart';
+
+/// One side of the Versus screen's face-off.
 class VersusPlayer {
   const VersusPlayer({
     required this.name,
-    required this.rankLabel,
     required this.level,
-    required this.powerValue,
-    required this.powerProgress,
+    required this.totalXp,
+    required this.levelProgress,
     required this.formWins,
     required this.accentColor,
     this.reversed = false,
   });
 
   final String name;
-  final String rankLabel;
   final int level;
-  final String powerValue;
-  final double powerProgress;
+
+  /// Lifetime XP: the card's "power".
+  final int totalXp;
+
+  /// Progress through the current level, 0 to 1.
+  final double levelProgress;
+
+  /// Recent duel results, oldest first; true is a win.
   final List<bool> formWins;
   final Color accentColor;
   final bool reversed;
-}
 
-class VersusMatchup {
-  const VersusMatchup({required this.player, required this.rival});
+  /// The rank title for [level].
+  String get rankKey => rankKeyFor(level);
 
-  final VersusPlayer player;
-  final VersusPlayer rival;
+  static String rankKeyFor(int level) {
+    if (level >= 35) return AppLocale.rankGrandmaster;
+    if (level >= 20) return AppLocale.rankMaster;
+    if (level >= 10) return AppLocale.rankExpert;
+    if (level >= 5) return AppLocale.rankApprentice;
+    return AppLocale.rankRookie;
+  }
 }

@@ -9,9 +9,11 @@ import 'package:memory_companion/core/theme/profile_tokens.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
+import 'package:memory_companion/features/settings/widget/context_settings_section.dart';
 import 'package:memory_companion/features/settings/widget/visual_profile_option.dart';
 
-/// Device settings: how the game looks and whether it runs on a clock.
+/// Device settings: how the game looks, whether it runs on a clock, and the
+/// opt-in automatic context.
 ///
 /// Every change is written to the local database and takes effect at once
 /// — the whole app re-themes under the player's finger, which is the best
@@ -96,6 +98,8 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: AppSpacing.sectionGap - AppSpacing.md),
+            const ContextSettingsSection(),
           ],
         ),
       ),

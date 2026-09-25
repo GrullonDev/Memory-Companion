@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/features/level_map/controller/level_controller.dart';
@@ -127,8 +126,8 @@ class _LevelCard extends ConsumerWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    AppColors.outlineVariant.withOpacity(0.3),
-                    AppColors.outlineVariant.withOpacity(0.1),
+                    AppColors.outlineVariant.withValues(alpha: 0.3),
+                    AppColors.outlineVariant.withValues(alpha: 0.1),
                   ],
                 )
               : isCompleted
@@ -158,7 +157,7 @@ class _LevelCard extends ConsumerWidget {
               color: isLocked
                   ? Colors.transparent
                   : (isCompleted ? AppColors.primary : AppColors.secondary)
-                      .withOpacity(0.3),
+                      .withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -193,7 +192,7 @@ class _LevelCard extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 12,
                             color: isLocked
-                                ? AppColors.outlineVariant.withOpacity(0.5)
+                                ? AppColors.outlineVariant.withValues(alpha: 0.5)
                                 : null,
                           ),
                         ),
@@ -250,7 +249,7 @@ class _LevelCard extends ConsumerWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.background.withOpacity(0.9),
+                    color: AppColors.background.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: Text(

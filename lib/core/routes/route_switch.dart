@@ -13,7 +13,10 @@ import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/profile/profile_screen.dart';
 import 'package:memory_companion/features/settings/settings_screen.dart';
 import 'package:memory_companion/features/shop/shop_screen.dart';
+import 'package:memory_companion/features/history_search/history_search_screen.dart';
 import 'package:memory_companion/features/statistics/statistics_screen.dart';
+import 'package:memory_companion/features/versus/duel_page.dart';
+import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/versus_screen.dart';
 
 class RouteSwitch {
@@ -33,6 +36,15 @@ class RouteSwitch {
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       case RoutePaths.versus:
         return MaterialPageRoute(builder: (_) => const VersusScreen());
+      case RoutePaths.duel:
+        final duel = settings.arguments;
+        if (duel is Duel) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => DuelPage(duel: duel),
+          );
+        }
+        return MaterialPageRoute(builder: (_) => const VersusScreen());
       case RoutePaths.friends:
         return MaterialPageRoute(builder: (_) => const FriendsScreen());
       case RoutePaths.shop:
@@ -49,6 +61,8 @@ class RouteSwitch {
         return MaterialPageRoute(builder: (_) => const ProfileScreen());
       case RoutePaths.statistics:
         return MaterialPageRoute(builder: (_) => const StatisticsScreen());
+      case RoutePaths.historySearch:
+        return MaterialPageRoute(builder: (_) => const HistorySearchScreen());
       case RoutePaths.settings:
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:

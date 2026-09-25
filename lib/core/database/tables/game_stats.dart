@@ -50,4 +50,13 @@ class GameStats extends Table {
 
   BoolColumn get won => boolean()();
   IntColumn get score => integer()();
+
+  /// `Places.id` donde se jugó, si el jugador activó la ubicación. Sin clave
+  /// foránea, como el resto de la tabla: borrar un lugar no debe borrar
+  /// partidas.
+  IntColumn get placeId => integer().nullable()();
+
+  /// Jugadores detectados por Bluetooth al terminar, como lista JSON de
+  /// `{code, name}`. Null si el jugador no activó "personas cercanas".
+  TextColumn get nearby => text().nullable()();
 }

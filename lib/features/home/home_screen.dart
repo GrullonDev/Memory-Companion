@@ -8,6 +8,9 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/section_header.dart';
+import 'package:memory_companion/features/account/controller/account_link_controller.dart';
+import 'package:memory_companion/features/account/widget/link_conflict_dialog.dart';
+import 'package:memory_companion/features/account/widget/save_progress_card.dart';
 import 'package:memory_companion/features/daily_challenge/controller/daily_challenge_controller.dart';
 import 'package:memory_companion/features/daily_challenge/model/daily_challenge.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
@@ -96,8 +99,9 @@ class HomeScreen extends ConsumerWidget {
                   coins: wallet.value ?? 0,
                   onAvatarTap: () =>
                       Navigator.of(context).pushNamed(RoutePaths.profile),
-                  onCoinsTap: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.shop),
+                  // Hidden while the plans shop is in development.
+                  // onCoinsTap: () =>
+                  //     Navigator.of(context).pushNamed(RoutePaths.shop),
                   onSettingsTap: () =>
                       Navigator.of(context).pushNamed(RoutePaths.settings),
                 ),

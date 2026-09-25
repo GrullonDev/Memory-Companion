@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/core/database/app_database.dart';
+import 'package:memory_companion/core/sync/sync_queue.dart';
 import 'package:memory_companion/features/daily_challenge/model/daily_result.dart';
 import 'package:memory_companion/features/daily_challenge/repository/daily_challenge_repository.dart';
 import 'package:memory_companion/features/player/repository/player_repository.dart';
@@ -16,6 +17,7 @@ void main() {
     repository = DailyChallengeRepository(database: db);
     playerId = (await PlayerRepository(
       database: db,
+      syncQueue: SyncQueue(database: db),
     ).ensureLocalProfile()).localId;
   });
 

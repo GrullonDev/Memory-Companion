@@ -8,6 +8,7 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/routes/route_switch.dart';
 import 'package:memory_companion/core/theme/app_theme.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 
 const List<String> _supportedLanguageCodes = ['es', 'en'];
@@ -48,6 +49,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       displayPreferencesProvider.select((p) => p.visualProfile),
     );
     final tokens = ProfileTokens.forProfile(profile);
+    // Advertises the player over Bluetooth while "nearby players" is on.
+    ref.watch(nearbyBeaconProvider);
 
     return MaterialApp(
       title: 'Memory Arcade',

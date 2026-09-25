@@ -233,6 +233,7 @@ mixin AppLocale {
   static const String statsPrivacyNote = 'statsPrivacyNote';
   static const String statsWonLabel = 'statsWonLabel';
   static const String statsLostLabel = 'statsLostLabel';
+  static const String statsNotCompletedLabel = 'statsNotCompletedLabel';
   static const String statsErrorsCount = 'statsErrorsCount';
   static const String statsOpenLabel = 'statsOpenLabel';
 
@@ -242,6 +243,56 @@ mixin AppLocale {
   static const String seeAllLabel = 'seeAllLabel';
   static const String minigameMemoryTitle = 'minigameMemoryTitle';
   static const String minigameMemoryDescription = 'minigameMemoryDescription';
+  static const String minigameDigitsTitle = 'minigameDigitsTitle';
+  static const String minigameDigitsDescription = 'minigameDigitsDescription';
+  static const String minigameWordsTitle = 'minigameWordsTitle';
+  static const String minigameWordsDescription = 'minigameWordsDescription';
+  static const String minigameStartLabel = 'minigameStartLabel';
+  static const String minigameResultTitle = 'minigameResultTitle';
+  static const String minigameCorrectLabel = 'minigameCorrectLabel';
+
+  static const String digitsIntro = 'digitsIntro';
+  static const String digitsModeForward = 'digitsModeForward';
+  static const String digitsModeReverse = 'digitsModeReverse';
+  static const String digitsModeReverseHint = 'digitsModeReverseHint';
+  static const String digitsMemorizeLabel = 'digitsMemorizeLabel';
+  static const String digitsTypeForward = 'digitsTypeForward';
+  static const String digitsTypeReverse = 'digitsTypeReverse';
+  static const String digitsSpanLabel = 'digitsSpanLabel';
+  static const String digitsAnswerWas = 'digitsAnswerWas';
+  static const String digitsCheckLabel = 'digitsCheckLabel';
+  static const String digitsDeleteLabel = 'digitsDeleteLabel';
+  static const String digitsBestSpanLabel = 'digitsBestSpanLabel';
+  static const String digitsResultWon = 'digitsResultWon';
+  static const String digitsResultLost = 'digitsResultLost';
+
+  static const String wordsIntro = 'wordsIntro';
+  static const String wordsStudyTitle = 'wordsStudyTitle';
+  static const String wordsReadyLabel = 'wordsReadyLabel';
+  static const String wordsQuestion = 'wordsQuestion';
+  static const String wordsYesLabel = 'wordsYesLabel';
+  static const String wordsNoLabel = 'wordsNoLabel';
+  static const String wordsLevelLabel = 'wordsLevelLabel';
+  static const String wordsProgressLabel = 'wordsProgressLabel';
+  static const String wordsScoreLabel = 'wordsScoreLabel';
+  static const String wordsResultWon = 'wordsResultWon';
+  static const String wordsResultLost = 'wordsResultLost';
+
+  static const String minigameCrosswordTitle = 'minigameCrosswordTitle';
+  static const String minigameCrosswordDescription = 'minigameCrosswordDescription';
+  static const String crosswordLevelLabel = 'crosswordLevelLabel';
+  static const String crosswordProgressLabel = 'crosswordProgressLabel';
+  static const String crosswordInstructions = 'crosswordInstructions';
+  static const String crosswordFoundFeedback = 'crosswordFoundFeedback';
+  static const String crosswordRepeatedFeedback = 'crosswordRepeatedFeedback';
+  static const String crosswordInvalidFeedback = 'crosswordInvalidFeedback';
+  static const String crosswordShuffleLabel = 'crosswordShuffleLabel';
+  static const String crosswordHintLabel = 'crosswordHintLabel';
+  static const String crosswordClearLabel = 'crosswordClearLabel';
+  static const String crosswordSubmitLabel = 'crosswordSubmitLabel';
+  static const String crosswordLevelCleared = 'crosswordLevelCleared';
+  static const String crosswordCompleteMessage = 'crosswordCompleteMessage';
+  static const String crosswordCompleteNoHints = 'crosswordCompleteNoHints';
 
   static const String timeUpTitle = 'timeUpTitle';
   static const String viewStatsLabel = 'viewStatsLabel';
@@ -281,6 +332,116 @@ mixin AppLocale {
   static const String signOutLabel = 'signOutLabel';
   static const String levelShortLabel = 'levelShortLabel';
   static const String coinsShortLabel = 'coinsShortLabel';
+  static const String friendsModeSubtitle = 'friendsModeSubtitle';
+  static const String yourFriendCodeLabel = 'yourFriendCodeLabel';
+  static const String friendInviteShareText = 'friendInviteShareText';
+  static const String addFriendLabel = 'addFriendLabel';
+  static const String friendRequestsTitle = 'friendRequestsTitle';
+  static const String sentRequestsTitle = 'sentRequestsTitle';
+  static const String pendingLabel = 'pendingLabel';
+  static const String noFriendsYet = 'noFriendsYet';
+  static const String acceptLabel = 'acceptLabel';
+  static const String declineLabel = 'declineLabel';
+  static const String cancelRequestLabel = 'cancelRequestLabel';
+  static const String removeFriendLabel = 'removeFriendLabel';
+  static const String removeFriendConfirm = 'removeFriendConfirm';
+  static const String challengeLabel = 'challengeLabel';
+  static const String unknownPlayerName = 'unknownPlayerName';
+  static const String friendRequestSent = 'friendRequestSent';
+  static const String friendRequestAccepted = 'friendRequestAccepted';
+  static const String friendCodeInvalid = 'friendCodeInvalid';
+  static const String friendNotFound = 'friendNotFound';
+  static const String friendSelfCode = 'friendSelfCode';
+  static const String alreadyFriendsMessage = 'alreadyFriendsMessage';
+  static const String alreadyPendingMessage = 'alreadyPendingMessage';
+  static const String socialActionFailed = 'socialActionFailed';
+  static const String socialSignInTitle = 'socialSignInTitle';
+  static const String socialSignInMessage = 'socialSignInMessage';
+  static const String rankRookie = 'rankRookie';
+  static const String rankApprentice = 'rankApprentice';
+  static const String rankExpert = 'rankExpert';
+  static const String rankMaster = 'rankMaster';
+  static const String rankGrandmaster = 'rankGrandmaster';
+  static const String versusNoRivalTitle = 'versusNoRivalTitle';
+  static const String versusNoRivalMessage = 'versusNoRivalMessage';
+  static const String goToFriendsLabel = 'goToFriendsLabel';
+  static const String chooseRivalLabel = 'chooseRivalLabel';
+  static const String versusHowItWorks = 'versusHowItWorks';
+  static const String duelsToPlayTitle = 'duelsToPlayTitle';
+  static const String duelsWaitingTitle = 'duelsWaitingTitle';
+  static const String duelsFinishedTitle = 'duelsFinishedTitle';
+  static const String duelChallengeFrom = 'duelChallengeFrom';
+  static const String duelOwnChallenge = 'duelOwnChallenge';
+  static const String duelWaitingFor = 'duelWaitingFor';
+  static const String playLabel = 'playLabel';
+  static const String duelWonLabel = 'duelWonLabel';
+  static const String duelLostLabel = 'duelLostLabel';
+  static const String duelDrawLabel = 'duelDrawLabel';
+  static const String duelDeclinedLabel = 'duelDeclinedLabel';
+  static const String duelVsLabel = 'duelVsLabel';
+  static const String duelCreateFailed = 'duelCreateFailed';
+  static const String duelYouLabel = 'duelYouLabel';
+  static const String duelResultSaved = 'duelResultSaved';
+  static const String duelSubmitFailed = 'duelSubmitFailed';
+  static const String duelPointsLabel = 'duelPointsLabel';
+
+  static const String searchTitle = 'searchTitle';
+  static const String searchHint = 'searchHint';
+  static const String searchEntry = 'searchEntry';
+  static const String searchPrivacyNote = 'searchPrivacyNote';
+  static const String searchExampleBestFriday = 'searchExampleBestFriday';
+  static const String searchExampleImproved = 'searchExampleImproved';
+  static const String searchExampleWhoPark = 'searchExampleWhoPark';
+  static const String searchExampleWhere = 'searchExampleWhere';
+  static const String searchExampleWhen = 'searchExampleWhen';
+  static const String searchBestGameTitle = 'searchBestGameTitle';
+  static const String searchWorstGameTitle = 'searchWorstGameTitle';
+  static const String searchImprovedTitle = 'searchImprovedTitle';
+  static const String searchNotImprovedTitle = 'searchNotImprovedTitle';
+  static const String searchImprovedDetail = 'searchImprovedDetail';
+  static const String searchPeopleTitle = 'searchPeopleTitle';
+  static const String searchNobodyNearby = 'searchNobodyNearby';
+  static const String searchGamesCount = 'searchGamesCount';
+  static const String searchUnknownPlayer = 'searchUnknownPlayer';
+  static const String searchPlaceTitle = 'searchPlaceTitle';
+  static const String searchTimeTitle = 'searchTimeTitle';
+  static const String searchAccuracyGames = 'searchAccuracyGames';
+  static const String searchCountTitle = 'searchCountTitle';
+  static const String searchGamesTitle = 'searchGamesTitle';
+  static const String searchNoGames = 'searchNoGames';
+  static const String searchNoNearby = 'searchNoNearby';
+  static const String searchNoPlaces = 'searchNoPlaces';
+  static const String searchNoComparison = 'searchNoComparison';
+  static const String searchUnmatchedPlace = 'searchUnmatchedPlace';
+  static const String searchFailed = 'searchFailed';
+  static const String searchUnderstood = 'searchUnderstood';
+  static const String searchEveryWeekday = 'searchEveryWeekday';
+  static const String slotMorning = 'slotMorning';
+  static const String slotAfternoon = 'slotAfternoon';
+  static const String slotEvening = 'slotEvening';
+  static const String slotNight = 'slotNight';
+  static const String placeUnnamed = 'placeUnnamed';
+  static const String contextSectionTitle = 'contextSectionTitle';
+  static const String contextSectionSubtitle = 'contextSectionSubtitle';
+  static const String contextLocationTitle = 'contextLocationTitle';
+  static const String contextLocationSubtitle = 'contextLocationSubtitle';
+  static const String contextNearbyTitle = 'contextNearbyTitle';
+  static const String contextNearbySubtitle = 'contextNearbySubtitle';
+  static const String contextPermissionDenied = 'contextPermissionDenied';
+  static const String placesTitle = 'placesTitle';
+  static const String placesEmpty = 'placesEmpty';
+  static const String placeRenameTitle = 'placeRenameTitle';
+  static const String placeRenameHint = 'placeRenameHint';
+  static const String saveLabel = 'saveLabel';
+  static const String cancelLabel = 'cancelLabel';
+  static const String nearbyTitle = 'nearbyTitle';
+  static const String nearbySubtitle = 'nearbySubtitle';
+  static const String nearbySearchLabel = 'nearbySearchLabel';
+  static const String nearbySearching = 'nearbySearching';
+  static const String nearbyNoneFound = 'nearbyNoneFound';
+  static const String nearbyPermissionDenied = 'nearbyPermissionDenied';
+  static const String nearbyUnavailable = 'nearbyUnavailable';
+  static const String nearbyPendingLabel = 'nearbyPendingLabel';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -330,10 +491,10 @@ mixin AppLocale {
     performanceSubtitle: 'Precisión de memoria semanal',
     inviteFriendsTitle: 'Invita a tus amigos',
     inviteFriendsSubtitle:
-        'Escanea para unirte a mi sala, o envía un enlace rápido.',
-    inviteLinkLabel: 'Enlace de invitación',
+        'Comparte tu código para que tus amigos te agreguen.',
+    inviteLinkLabel: 'Compartir mi código',
     socialNetworkTitle: 'Red Social',
-    findByUsernameHint: 'Buscar por usuario',
+    findByUsernameHint: 'Código de amigo',
     statusOnline: 'En línea',
     statusInGame: 'En partida',
     statusOffline: 'Desconectado',
@@ -383,7 +544,7 @@ mixin AppLocale {
     upgradeSuccessMessage: '¡Ahora eres Memory Pro!',
     avatarUpdatedMessage: 'Avatar actualizado',
     chooseAvatarTitle: 'Elige tu avatar',
-    searchingOpponentLabel: 'Buscando rival...',
+    searchingOpponentLabel: 'Preparando el duelo...',
     forgotPasswordSentMessage:
         'Te enviamos un enlace para recuperar tu contraseña',
     offlineBannerMessage:
@@ -392,7 +553,7 @@ mixin AppLocale {
     livesLabel: 'Vidas',
     noLivesTitle: '¡Sin vidas!',
     noLivesMessage:
-        'Consigue vidas infinitas con Memory Pro, o espera a que se recarguen.',
+        'Espera a que se recarguen tus vidas para seguir jugando.',
     nextLifeInLabel: 'Próxima vida en',
     goToShopLabel: 'Ir a la Tienda',
     notNowLabel: 'Ahora no',
@@ -514,6 +675,7 @@ mixin AppLocale {
     statsPrivacyNote: 'Tus estadísticas se guardan solo en este dispositivo. Son una guía de práctica, no una evaluación médica.',
     statsWonLabel: 'Completada',
     statsLostLabel: 'Tiempo agotado',
+    statsNotCompletedLabel: 'Sin superar',
     statsErrorsCount: '{n} errores',
     statsOpenLabel: 'Ver mis estadísticas',
     minigameHubTitle: 'Juegos mentales',
@@ -522,6 +684,53 @@ mixin AppLocale {
     seeAllLabel: 'Ver todos',
     minigameMemoryTitle: 'Memoria',
     minigameMemoryDescription: 'Encuentra las parejas escondidas.',
+    minigameDigitsTitle: 'Dígitos',
+    minigameDigitsDescription: 'Recuerda números cada vez más largos.',
+    minigameWordsTitle: 'Palabras',
+    minigameWordsDescription: '¿Estaba en la lista? Entrena el reconocimiento.',
+    minigameStartLabel: 'Empezar',
+    minigameResultTitle: '¡Buen entrenamiento!',
+    minigameCorrectLabel: '¡Correcto!',
+    digitsIntro: 'Verás un número unos segundos. Memorízalo y escríbelo cuando desaparezca. Cada acierto suma un dígito; dos fallos seguidos terminan la partida.',
+    digitsModeForward: 'En orden',
+    digitsModeReverse: 'Al revés',
+    digitsModeReverseHint: 'Al revés: escribe los dígitos del último al primero.',
+    digitsMemorizeLabel: 'Memoriza',
+    digitsTypeForward: 'Escribe el número',
+    digitsTypeReverse: 'Escríbelo al revés',
+    digitsSpanLabel: '{n} dígitos',
+    digitsAnswerWas: 'Era {n}',
+    digitsCheckLabel: 'Comprobar',
+    digitsDeleteLabel: 'Borrar',
+    digitsBestSpanLabel: 'Tu mejor marca',
+    digitsResultWon: '¡Superaste la meta de {n} dígitos!',
+    digitsResultLost: 'La meta son {n} dígitos. ¡Sigue practicando!',
+    wordsIntro: 'Memoriza una lista de palabras. Después verás palabras una a una: dinos si estaban en la lista.',
+    wordsStudyTitle: 'Memoriza estas palabras',
+    wordsReadyLabel: 'Ya las memoricé',
+    wordsQuestion: '¿Estaba en la lista?',
+    wordsYesLabel: 'Sí, estaba',
+    wordsNoLabel: 'No estaba',
+    wordsLevelLabel: '{n} palabras',
+    wordsProgressLabel: '{n} de {total}',
+    wordsScoreLabel: '{n} de {total} aciertos',
+    wordsResultWon: '¡Excelente! Siguiente nivel: {n} palabras.',
+    wordsResultLost: 'Acierta el 80 % para subir de nivel.',
+    minigameCrosswordTitle: 'Crucigrama',
+    minigameCrosswordDescription: 'Forma palabras con pocas letras.',
+    crosswordLevelLabel: 'Nivel {n}',
+    crosswordProgressLabel: '{n} de {total} palabras',
+    crosswordInstructions: 'Desliza el dedo sobre las letras, o tócalas una a una, para formar palabras.',
+    crosswordFoundFeedback: '¡{n}!',
+    crosswordRepeatedFeedback: '{n} ya está en el crucigrama',
+    crosswordInvalidFeedback: '{n} no está en este crucigrama',
+    crosswordShuffleLabel: 'Mezclar letras',
+    crosswordHintLabel: 'Pista: revelar una letra',
+    crosswordClearLabel: 'Borrar',
+    crosswordSubmitLabel: 'Enviar',
+    crosswordLevelCleared: 'Nivel superado',
+    crosswordCompleteMessage: '¡Crucigrama completo! Usaste {n} pistas.',
+    crosswordCompleteNoHints: '¡Crucigrama completo y sin pistas!',
     timeUpTitle: '¡SE ACABÓ EL TIEMPO!',
     viewStatsLabel: 'Ver estadísticas',
     starsEarnedSemantics: '{n} de 3 estrellas',
@@ -535,6 +744,115 @@ mixin AppLocale {
     levelNodeCompleted: 'completado',
     levelNodeCurrent: 'nivel actual, toca para jugar',
     levelNodeLocked: 'bloqueado',
+    friendsModeSubtitle: 'Agrega y reta a tus amigos',
+    yourFriendCodeLabel: 'Tu código de amigo',
+    friendInviteShareText: '¡Juega conmigo en Memory Arcade! Agrégame con mi código de amigo: {code}',
+    addFriendLabel: 'Agregar',
+    friendRequestsTitle: 'Solicitudes',
+    sentRequestsTitle: 'Enviadas',
+    pendingLabel: 'Pendiente',
+    noFriendsYet: 'Aún no tienes amigos. Comparte tu código o escribe el de alguien.',
+    acceptLabel: 'Aceptar',
+    declineLabel: 'Rechazar',
+    cancelRequestLabel: 'Cancelar solicitud',
+    removeFriendLabel: 'Eliminar amigo',
+    removeFriendConfirm: '¿Eliminar a {name} de tus amigos?',
+    challengeLabel: 'Retar',
+    unknownPlayerName: 'Jugador',
+    friendRequestSent: 'Solicitud enviada',
+    friendRequestAccepted: '¡Ahora son amigos!',
+    friendCodeInvalid: 'Los códigos tienen 6 letras y números',
+    friendNotFound: 'No hay nadie con ese código',
+    friendSelfCode: 'Ese es tu propio código',
+    alreadyFriendsMessage: 'Ya son amigos',
+    alreadyPendingMessage: 'Ya le enviaste una solicitud',
+    socialActionFailed: 'No se pudo completar. Revisa tu conexión.',
+    socialSignInTitle: 'Juega con amigos',
+    socialSignInMessage: 'Crea una cuenta para agregar amigos y retarlos a duelos.',
+    rankRookie: 'Novato',
+    rankApprentice: 'Aprendiz',
+    rankExpert: 'Experto',
+    rankMaster: 'Maestro',
+    rankGrandmaster: 'Gran maestro',
+    versusNoRivalTitle: 'Aún no tienes rival',
+    versusNoRivalMessage: 'Agrega amigos para retarlos a un duelo.',
+    goToFriendsLabel: 'Ir a Amigos',
+    chooseRivalLabel: 'Elige a tu rival',
+    versusHowItWorks: 'Los dos juegan el mismo tablero, cada uno cuando pueda. Gana la mejor puntuación.',
+    duelsToPlayTitle: 'Tu turno',
+    duelsWaitingTitle: 'Esperando al rival',
+    duelsFinishedTitle: 'Resultados',
+    duelChallengeFrom: '{name} te retó',
+    duelOwnChallenge: 'Tu reto a {name}',
+    duelWaitingFor: '{name} aún no juega',
+    playLabel: 'Jugar',
+    duelWonLabel: 'Ganaste',
+    duelLostLabel: 'Perdiste',
+    duelDrawLabel: 'Empate',
+    duelDeclinedLabel: 'Rechazado',
+    duelVsLabel: 'contra {name}',
+    duelCreateFailed: 'No se pudo crear el duelo. Revisa tu conexión.',
+    duelYouLabel: 'Tú',
+    duelResultSaved: 'Tu resultado quedó guardado. Vuelve a Versus para ver quién ganó cuando {name} juegue.',
+    duelSubmitFailed: 'No se pudo enviar tu resultado. Revisa tu conexión.',
+    duelPointsLabel: '{n} pts',
+    searchTitle: 'Pregúntale a tu historial',
+    searchHint: 'Ej.: ¿Cuál fue mi mejor partida del viernes?',
+    searchEntry: 'Pregúntale a tu historial…',
+    searchPrivacyNote: 'La búsqueda se hace en este dispositivo: tus preguntas y tu historial no salen de él.',
+    searchExampleBestFriday: '¿Cuál fue mi mejor partida del viernes?',
+    searchExampleImproved: '¿En qué categoría mejoré más este mes?',
+    searchExampleWhoPark: '¿Contra quién jugué la semana pasada en el parque?',
+    searchExampleWhere: '¿Dónde me concentro mejor?',
+    searchExampleWhen: '¿A qué hora rindo mejor?',
+    searchBestGameTitle: 'Tu mejor partida',
+    searchWorstGameTitle: 'Tu partida más floja',
+    searchImprovedTitle: 'Mejoraste más en {category}',
+    searchNotImprovedTitle: 'Ninguna categoría mejoró; la que mejor se mantuvo fue {category}',
+    searchImprovedDetail: 'Precisión: {before} antes → {after} ahora',
+    searchPeopleTitle: 'Jugaste cerca de:',
+    searchNobodyNearby: 'No había nadie cerca en esas partidas.',
+    searchGamesCount: '{n} partidas',
+    searchUnknownPlayer: 'Jugador {code}',
+    searchPlaceTitle: 'Te concentras mejor en {place}',
+    searchTimeTitle: 'Rindes mejor {slot}',
+    searchAccuracyGames: '{accuracy} de precisión · {n} partidas',
+    searchCountTitle: '{n} partidas, {wins} ganadas',
+    searchGamesTitle: 'Las partidas que más se parecen',
+    searchNoGames: 'No encontré partidas con esos filtros.',
+    searchNoNearby: 'Aún no hay registro de personas cercanas. Actívalo en Ajustes › Contexto automático.',
+    searchNoPlaces: 'Aún no hay lugares registrados. Activa la ubicación en Ajustes › Contexto automático.',
+    searchNoComparison: 'Aún no hay partidas suficientes para comparar.',
+    searchUnmatchedPlace: 'No tienes ningún lugar llamado "{place}". Ponles nombre a tus lugares en Ajustes.',
+    searchFailed: 'No se pudo buscar. Inténtalo de nuevo.',
+    searchUnderstood: 'Entendí: {filters}',
+    searchEveryWeekday: 'todos los {day}',
+    slotMorning: 'por la mañana',
+    slotAfternoon: 'por la tarde',
+    slotEvening: 'por la noche',
+    slotNight: 'de madrugada',
+    placeUnnamed: 'Lugar {n}',
+    contextSectionTitle: 'Contexto automático',
+    contextSectionSubtitle: 'Opcional y apagado por defecto. Lo que se guarda no sale de este dispositivo.',
+    contextLocationTitle: 'Guardar dónde juegas',
+    contextLocationSubtitle: 'Agrupa tus partidas por lugar para ver dónde te concentras mejor.',
+    contextNearbyTitle: 'Personas cercanas',
+    contextNearbySubtitle: 'Por Bluetooth: te anuncias con tu código de amigo y registras quién jugaba cerca. Requiere cuenta.',
+    contextPermissionDenied: 'Sin el permiso no se puede activar. Puedes concederlo en los ajustes del sistema.',
+    placesTitle: 'Tus lugares',
+    placesEmpty: 'Aún no hay lugares. Aparecerán al jugar con la ubicación activada.',
+    placeRenameTitle: 'Nombre del lugar',
+    placeRenameHint: 'Casa, Parque, Trabajo…',
+    saveLabel: 'Guardar',
+    cancelLabel: 'Cancelar',
+    nearbyTitle: 'Cerca de ti',
+    nearbySubtitle: 'Encuentra jugadores con Memory Arcade abierto a tu alrededor. Los dos tienen que estar buscando a la vez.',
+    nearbySearchLabel: 'Buscar cerca',
+    nearbySearching: 'Buscando…',
+    nearbyNoneFound: 'No se encontró a nadie cerca.',
+    nearbyPermissionDenied: 'Hace falta el permiso de Bluetooth para buscar.',
+    nearbyUnavailable: 'Enciende el Bluetooth para buscar.',
+    nearbyPendingLabel: 'Pendiente',
   };
 
   static const Map<String, dynamic> en = {
@@ -585,10 +903,10 @@ mixin AppLocale {
     performanceSubtitle: 'Weekly memory accuracy',
     inviteFriendsTitle: 'Invite Friends',
     inviteFriendsSubtitle:
-        'Scan to join my lobby, or send a quick invite link!',
-    inviteLinkLabel: 'Invite Link',
+        'Share your code so friends can add you.',
+    inviteLinkLabel: 'Share my code',
     socialNetworkTitle: 'Social Network',
-    findByUsernameHint: 'Find by Username',
+    findByUsernameHint: 'Friend code',
     statusOnline: 'Online',
     statusInGame: 'In Game',
     statusOffline: 'Offline',
@@ -639,7 +957,7 @@ mixin AppLocale {
     upgradeSuccessMessage: "You're now Memory Pro!",
     avatarUpdatedMessage: 'Avatar updated',
     chooseAvatarTitle: 'Choose your avatar',
-    searchingOpponentLabel: 'Searching for opponent...',
+    searchingOpponentLabel: 'Setting up the duel...',
     forgotPasswordSentMessage: "We've sent you a password reset link",
     offlineBannerMessage:
         "You're offline. Your scores will sync once you reconnect.",
@@ -647,7 +965,7 @@ mixin AppLocale {
     livesLabel: 'Lives',
     noLivesTitle: 'Out of lives!',
     noLivesMessage:
-        'Get unlimited lives with Memory Pro, or wait for them to recharge.',
+        'Wait for your lives to recharge to keep playing.',
     nextLifeInLabel: 'Next life in',
     goToShopLabel: 'Go to Shop',
     notNowLabel: 'Not now',
@@ -769,6 +1087,7 @@ mixin AppLocale {
     statsPrivacyNote: 'Your statistics stay on this device. They are a practice guide, not a medical assessment.',
     statsWonLabel: 'Completed',
     statsLostLabel: 'Out of time',
+    statsNotCompletedLabel: 'Not passed',
     statsErrorsCount: '{n} errors',
     statsOpenLabel: 'View my statistics',
     minigameHubTitle: 'Brain games',
@@ -777,6 +1096,53 @@ mixin AppLocale {
     seeAllLabel: 'See all',
     minigameMemoryTitle: 'Memory',
     minigameMemoryDescription: 'Find the hidden pairs.',
+    minigameDigitsTitle: 'Digits',
+    minigameDigitsDescription: 'Recall ever longer numbers.',
+    minigameWordsTitle: 'Words',
+    minigameWordsDescription: 'Was it on the list? Train recognition.',
+    minigameStartLabel: 'Start',
+    minigameResultTitle: 'Nice workout!',
+    minigameCorrectLabel: 'Correct!',
+    digitsIntro: 'A number appears for a few seconds. Memorize it and type it once it disappears. Each correct answer adds a digit; two misses in a row end the game.',
+    digitsModeForward: 'In order',
+    digitsModeReverse: 'Backwards',
+    digitsModeReverseHint: 'Backwards: type the digits from last to first.',
+    digitsMemorizeLabel: 'Memorize',
+    digitsTypeForward: 'Type the number',
+    digitsTypeReverse: 'Type it backwards',
+    digitsSpanLabel: '{n} digits',
+    digitsAnswerWas: 'It was {n}',
+    digitsCheckLabel: 'Check',
+    digitsDeleteLabel: 'Delete',
+    digitsBestSpanLabel: 'Your best',
+    digitsResultWon: 'You beat the {n}-digit goal!',
+    digitsResultLost: 'The goal is {n} digits. Keep practicing!',
+    wordsIntro: 'Memorize a list of words. Then words appear one at a time: tell us whether each was on the list.',
+    wordsStudyTitle: 'Memorize these words',
+    wordsReadyLabel: "I've got them",
+    wordsQuestion: 'Was it on the list?',
+    wordsYesLabel: 'Yes, it was',
+    wordsNoLabel: "No, it wasn't",
+    wordsLevelLabel: '{n} words',
+    wordsProgressLabel: '{n} of {total}',
+    wordsScoreLabel: '{n} of {total} right',
+    wordsResultWon: 'Excellent! Next level: {n} words.',
+    wordsResultLost: 'Get 80% right to level up.',
+    minigameCrosswordTitle: 'Crossword',
+    minigameCrosswordDescription: 'Make words from a few letters.',
+    crosswordLevelLabel: 'Level {n}',
+    crosswordProgressLabel: '{n} of {total} words',
+    crosswordInstructions: 'Swipe across the letters, or tap them one by one, to make words.',
+    crosswordFoundFeedback: '{n}!',
+    crosswordRepeatedFeedback: '{n} is already on the grid',
+    crosswordInvalidFeedback: '{n} is not in this puzzle',
+    crosswordShuffleLabel: 'Shuffle letters',
+    crosswordHintLabel: 'Hint: reveal a letter',
+    crosswordClearLabel: 'Clear',
+    crosswordSubmitLabel: 'Enter',
+    crosswordLevelCleared: 'Level cleared',
+    crosswordCompleteMessage: 'Puzzle solved! You used {n} hints.',
+    crosswordCompleteNoHints: 'Puzzle solved without hints!',
     timeUpTitle: "TIME'S UP!",
     viewStatsLabel: 'View stats',
     starsEarnedSemantics: '{n} of 3 stars',
@@ -790,5 +1156,114 @@ mixin AppLocale {
     levelNodeCompleted: 'completed',
     levelNodeCurrent: 'current level, tap to play',
     levelNodeLocked: 'locked',
+    friendsModeSubtitle: 'Add and challenge friends',
+    yourFriendCodeLabel: 'Your friend code',
+    friendInviteShareText: 'Play with me on Memory Arcade! Add me with my friend code: {code}',
+    addFriendLabel: 'Add',
+    friendRequestsTitle: 'Requests',
+    sentRequestsTitle: 'Sent',
+    pendingLabel: 'Pending',
+    noFriendsYet: "No friends yet. Share your code or enter someone else's.",
+    acceptLabel: 'Accept',
+    declineLabel: 'Decline',
+    cancelRequestLabel: 'Cancel request',
+    removeFriendLabel: 'Remove friend',
+    removeFriendConfirm: 'Remove {name} from your friends?',
+    challengeLabel: 'Challenge',
+    unknownPlayerName: 'Player',
+    friendRequestSent: 'Friend request sent',
+    friendRequestAccepted: "You're now friends!",
+    friendCodeInvalid: 'Codes are 6 letters and numbers',
+    friendNotFound: 'Nobody has that code',
+    friendSelfCode: "That's your own code",
+    alreadyFriendsMessage: "You're already friends",
+    alreadyPendingMessage: 'You already sent a request',
+    socialActionFailed: "Couldn't complete that. Check your connection.",
+    socialSignInTitle: 'Play with friends',
+    socialSignInMessage: 'Create an account to add friends and challenge them to duels.',
+    rankRookie: 'Rookie',
+    rankApprentice: 'Apprentice',
+    rankExpert: 'Expert',
+    rankMaster: 'Master',
+    rankGrandmaster: 'Grandmaster',
+    versusNoRivalTitle: 'No rival yet',
+    versusNoRivalMessage: 'Add friends to challenge them to a duel.',
+    goToFriendsLabel: 'Go to Friends',
+    chooseRivalLabel: 'Choose your rival',
+    versusHowItWorks: 'You both play the same board, whenever you can. Best score wins.',
+    duelsToPlayTitle: 'Your turn',
+    duelsWaitingTitle: 'Waiting for rival',
+    duelsFinishedTitle: 'Results',
+    duelChallengeFrom: '{name} challenged you',
+    duelOwnChallenge: 'Your challenge to {name}',
+    duelWaitingFor: "{name} hasn't played yet",
+    playLabel: 'Play',
+    duelWonLabel: 'You won',
+    duelLostLabel: 'You lost',
+    duelDrawLabel: 'Draw',
+    duelDeclinedLabel: 'Declined',
+    duelVsLabel: 'vs {name}',
+    duelCreateFailed: "Couldn't create the duel. Check your connection.",
+    duelYouLabel: 'You',
+    duelResultSaved: 'Your result is saved. Check Versus to see who won once {name} plays.',
+    duelSubmitFailed: "Couldn't send your result. Check your connection.",
+    duelPointsLabel: '{n} pts',
+    searchTitle: 'Ask your history',
+    searchHint: 'E.g.: What was my best game on Friday?',
+    searchEntry: 'Ask your history…',
+    searchPrivacyNote: 'Search runs on this device: your questions and your history never leave it.',
+    searchExampleBestFriday: 'What was my best game on Friday?',
+    searchExampleImproved: 'Which category did I improve most this month?',
+    searchExampleWhoPark: 'Who did I play with last week at the park?',
+    searchExampleWhere: 'Where do I focus best?',
+    searchExampleWhen: 'What time of day do I play best?',
+    searchBestGameTitle: 'Your best game',
+    searchWorstGameTitle: 'Your weakest game',
+    searchImprovedTitle: 'You improved most in {category}',
+    searchNotImprovedTitle: 'No category improved; {category} held up best',
+    searchImprovedDetail: 'Accuracy: {before} before → {after} now',
+    searchPeopleTitle: 'You played near:',
+    searchNobodyNearby: 'Nobody was nearby in those games.',
+    searchGamesCount: '{n} games',
+    searchUnknownPlayer: 'Player {code}',
+    searchPlaceTitle: 'You focus best at {place}',
+    searchTimeTitle: 'You play best {slot}',
+    searchAccuracyGames: '{accuracy} accuracy · {n} games',
+    searchCountTitle: '{n} games, {wins} won',
+    searchGamesTitle: 'The closest matching games',
+    searchNoGames: 'No games match those filters.',
+    searchNoNearby: 'No nearby players recorded yet. Turn it on in Settings › Automatic context.',
+    searchNoPlaces: 'No places recorded yet. Turn on location in Settings › Automatic context.',
+    searchNoComparison: 'Not enough games to compare yet.',
+    searchUnmatchedPlace: 'You have no place called "{place}". Name your places in Settings.',
+    searchFailed: 'Search failed. Try again.',
+    searchUnderstood: 'Understood: {filters}',
+    searchEveryWeekday: 'every {day}',
+    slotMorning: 'in the morning',
+    slotAfternoon: 'in the afternoon',
+    slotEvening: 'in the evening',
+    slotNight: 'late at night',
+    placeUnnamed: 'Place {n}',
+    contextSectionTitle: 'Automatic context',
+    contextSectionSubtitle: 'Optional and off by default. What is stored never leaves this device.',
+    contextLocationTitle: 'Remember where you play',
+    contextLocationSubtitle: 'Groups your games by place to show where you focus best.',
+    contextNearbyTitle: 'Nearby players',
+    contextNearbySubtitle: 'Over Bluetooth: you broadcast your friend code and record who was playing nearby. Needs an account.',
+    contextPermissionDenied: 'It cannot be turned on without the permission. You can grant it in the system settings.',
+    placesTitle: 'Your places',
+    placesEmpty: 'No places yet. They appear as you play with location on.',
+    placeRenameTitle: 'Place name',
+    placeRenameHint: 'Home, Park, Work…',
+    saveLabel: 'Save',
+    cancelLabel: 'Cancel',
+    nearbyTitle: 'Near you',
+    nearbySubtitle: 'Find players around you with Memory Arcade open. Both of you need to be searching at the same time.',
+    nearbySearchLabel: 'Search nearby',
+    nearbySearching: 'Searching…',
+    nearbyNoneFound: 'Nobody found nearby.',
+    nearbyPermissionDenied: 'Bluetooth permission is needed to search.',
+    nearbyUnavailable: 'Turn on Bluetooth to search.',
+    nearbyPendingLabel: 'Pending',
   };
 }

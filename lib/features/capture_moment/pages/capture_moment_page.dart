@@ -56,7 +56,7 @@ class _CaptureMomentPageState extends State<CaptureMomentPage> {
                     BoxShadow(
                       color: const Color(
                         0xFF3F51B5,
-                      ).withOpacity(_isListening ? 0.6 : 0.3),
+                      ).withValues(alpha: _isListening ? 0.6 : 0.3),
                       blurRadius: _isListening ? 40 : 20,
                       spreadRadius: _isListening ? 10 : 5,
                     ),

@@ -7,13 +7,12 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/features/home/widget/game_mode_card.dart';
 
-/// The two supporting modes, side by side.
+/// The two supporting modes, side by side: Versus and Friends.
 ///
 /// The old 2x2 grid gave Play Solo, Multiplayer, Daily Challenge and Shop
-/// exactly equal weight, while two of those four tiles simply duplicated
-/// tabs that already exist in the bottom navigation. Solo and the daily
-/// challenge are now promoted above; these two stay as tiles, smaller, in
-/// their own colours.
+/// exactly equal weight. Solo and the daily challenge are now promoted
+/// above; these two stay as tiles, smaller, in their own colours. The Shop
+/// tile is hidden while plans are in development.
 ///
 /// Layout adapts rather than assuming a width: side by side when there is
 /// room, stacked when the screen is narrow or the player has enlarged the
@@ -42,15 +41,25 @@ class SecondaryModeRow extends StatelessWidget {
             onTap: () => Navigator.of(context).pushNamed(RoutePaths.versus),
           ),
           GameModeCard(
-            icon: Icons.storefront_rounded,
-            label: AppLocale.modeShop.getString(context),
-            description: AppLocale.shopSubtitle.getString(context),
+            icon: Icons.person_add_alt_1_rounded,
+            label: AppLocale.navFriends.getString(context),
+            description: AppLocale.friendsModeSubtitle.getString(context),
             background: AppColors.violet,
             foreground: AppColors.onViolet,
             shadowColor: AppColors.violetDeep,
-            badge: AppLocale.badgePro.getString(context),
-            onTap: () => Navigator.of(context).pushNamed(RoutePaths.shop),
+            onTap: () => Navigator.of(context).pushNamed(RoutePaths.friends),
           ),
+          // Hidden while the plans shop is in development.
+          // GameModeCard(
+          //   icon: Icons.storefront_rounded,
+          //   label: AppLocale.modeShop.getString(context),
+          //   description: AppLocale.shopSubtitle.getString(context),
+          //   background: AppColors.violet,
+          //   foreground: AppColors.onViolet,
+          //   shadowColor: AppColors.violetDeep,
+          //   badge: AppLocale.badgePro.getString(context),
+          //   onTap: () => Navigator.of(context).pushNamed(RoutePaths.shop),
+          // ),
         ];
 
         // Below this width, or once text is meaningfully enlarged, two
