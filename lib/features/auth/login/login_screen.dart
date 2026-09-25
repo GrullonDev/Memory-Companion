@@ -36,18 +36,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     final password = _passwordController.text;
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocale.fieldsRequiredMessage.getString(context))),
+        SnackBar(
+          content: Text(AppLocale.fieldsRequiredMessage.getString(context)),
+        ),
       );
       return;
     }
-    ref.read(authControllerProvider.notifier).signIn(
-      email: email,
-      password: password,
-    );
+    ref
+        .read(authControllerProvider.notifier)
+        .signIn(email: email, password: password);
   }
 
   Future<void> _showForgotPasswordDialog(BuildContext context) async {
-    final controller = TextEditingController(text: _emailController.text.trim());
+    final controller = TextEditingController(
+      text: _emailController.text.trim(),
+    );
     await showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -107,7 +110,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     ref.listen(authStateChangesProvider, (previous, next) {
       final user = next.value;
       if (user != null) {
-        Navigator.of(context).pushReplacementNamed(RoutePaths.home);
+        // Clears the phone dialog too, if the sign-in came from it.
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(routeAfterSignIn(user), (_) => false);
       }
     });
 
@@ -226,7 +232,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               SocialLoginRow(
                 onGoogleTap: isLoading
                     ? null
-                    : () => ref.read(authControllerProvider.notifier).signInWithGoogle(),
+                    : () => ref
+                          .read(authControllerProvider.notifier)
+                          .signInWithGoogle(),
                 onPhoneTap: isLoading
                     ? null
                     : () => showPhoneSignInDialog(context),

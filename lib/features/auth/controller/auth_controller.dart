@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:memory_companion/core/firebase/firebase_initialization.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
 
 final firebaseAuthProvider = Provider<FirebaseAuth>(
@@ -18,6 +19,22 @@ final authStateChangesProvider = StreamProvider<User?>((ref) async* {
   await ref.watch(firebaseInitializationProvider.future);
   yield* ref.watch(firebaseAuthProvider).authStateChanges();
 });
+
+/// Whether [user] still has to choose the name others will see.
+///
+/// Only phone sign-in arrives without one: email registration asks for it
+/// on the form and Google brings the account's. Checking the provider also
+/// keeps email registration out, whose name is set just *after* the
+/// account exists, so the first auth event still has none.
+bool needsProfileCompletion(User user) =>
+    (user.displayName ?? '').trim().isEmpty &&
+    user.providerData.any(
+      (info) => info.providerId == PhoneAuthProvider.PROVIDER_ID,
+    );
+
+/// Where a player lands once signed in.
+String routeAfterSignIn(User user) =>
+    needsProfileCompletion(user) ? RoutePaths.completeProfile : RoutePaths.home;
 
 /// Wraps [FirebaseAuth]'s email/password flows. State is [AsyncLoading]
 /// while a request is in flight and [AsyncError] on failure, so the login
@@ -67,10 +84,12 @@ class AuthController extends AsyncNotifier<void> {
       }
 
       // Create user in Firestore
-      await ref.read(userControllerProvider.notifier).createNewUser(
-        email: email.trim(),
-        displayName: trimmedName.isNotEmpty ? trimmedName : null,
-      );
+      await ref
+          .read(userControllerProvider.notifier)
+          .createNewUser(
+            email: email.trim(),
+            displayName: trimmedName.isNotEmpty ? trimmedName : null,
+          );
     });
   }
 
@@ -94,11 +113,13 @@ class AuthController extends AsyncNotifier<void> {
 
       // Create user in Firestore if it's a new user
       if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-        await ref.read(userControllerProvider.notifier).createNewUser(
-          email: userCredential.user?.email ?? '',
-          displayName: userCredential.user?.displayName,
-          photoUrl: userCredential.user?.photoURL,
-        );
+        await ref
+            .read(userControllerProvider.notifier)
+            .createNewUser(
+              email: userCredential.user?.email ?? '',
+              displayName: userCredential.user?.displayName,
+              photoUrl: userCredential.user?.photoURL,
+            );
       }
     });
     return true;
