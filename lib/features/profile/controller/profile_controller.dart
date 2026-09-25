@@ -7,6 +7,7 @@ import 'package:memory_companion/features/profile/model/achievement.dart';
 import 'package:memory_companion/features/profile/model/profile_data.dart';
 import 'package:memory_companion/features/player/model/player_level.dart';
 import 'package:memory_companion/features/profile/model/profile_match.dart';
+import 'package:memory_companion/core/localization/app_locale.dart';
 
 class ProfileController extends AsyncNotifier<ProfileData> {
   @override
@@ -41,7 +42,7 @@ class ProfileController extends AsyncNotifier<ProfileData> {
         title: '${match.gameMode.toUpperCase()} - ${match.score}',
         score: match.score.toString(),
         moves: match.moves,
-        timeAgo: _getTimeAgoString(match.playedAt),
+        playedAt: match.playedAt,
         result: match.won ? MatchResult.win : MatchResult.loss,
       );
     }).toList();
@@ -78,28 +79,6 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     return '$value';
   }
 
-  /// Convert datetime to "time ago" format
-  String _getTimeAgoString(DateTime dateTime) {
-    final now = DateTime.now();
-    final difference = now.difference(dateTime);
-
-    if (difference.inSeconds < 60) {
-      return 'Hace unos segundos';
-    } else if (difference.inMinutes < 60) {
-      return 'Hace ${difference.inMinutes}m';
-    } else if (difference.inHours < 24) {
-      return 'Hace ${difference.inHours}h';
-    } else if (difference.inDays < 7) {
-      return 'Hace ${difference.inDays}d';
-    } else if (difference.inDays < 30) {
-      final weeks = (difference.inDays / 7).floor();
-      return 'Hace ${weeks}w';
-    } else {
-      final months = (difference.inDays / 30).floor();
-      return 'Hace ${months}m';
-    }
-  }
-
   /// Get achievements based on stats
   List<Achievement> _getUnlockedAchievements(
     dynamic appUser, // Use dynamic to avoid circular dependency
@@ -107,32 +86,32 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     final achievements = [
       Achievement(
         icon: Icons.emoji_events_rounded,
-        title: 'Racha x10',
+        titleKey: AppLocale.achievementStreak10,
         unlocked: appUser.bestStreak >= 10,
       ),
       Achievement(
         icon: Icons.flash_on_rounded,
-        title: 'Velocista',
+        titleKey: AppLocale.achievementSprinter,
         unlocked: appUser.gamesWon >= 5,
       ),
       Achievement(
         icon: Icons.psychology_rounded,
-        title: 'Mente Ágil',
+        titleKey: AppLocale.achievementQuickMind,
         unlocked: appUser.level >= 5,
       ),
       Achievement(
         icon: Icons.military_tech_rounded,
-        title: 'Maestro',
+        titleKey: AppLocale.achievementMaster,
         unlocked: appUser.level >= 20,
       ),
       Achievement(
         icon: Icons.diamond_rounded,
-        title: 'Coleccionista',
+        titleKey: AppLocale.achievementCollector,
         unlocked: appUser.totalCoins >= 10000,
       ),
       Achievement(
         icon: Icons.groups_rounded,
-        title: 'Social',
+        titleKey: AppLocale.achievementSocial,
         unlocked: false, // Will be tied to multiplayer features
       ),
     ];

@@ -4,6 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/profile/model/profile_match.dart';
+import 'package:memory_companion/core/localization/time_ago.dart';
 
 class MatchHistoryTile extends StatelessWidget {
   const MatchHistoryTile({super.key, required this.match});
@@ -70,7 +71,7 @@ class MatchHistoryTile extends StatelessWidget {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 72),
             child: Text(
-              match.timeAgo,
+              timeAgoLabel(context, match.playedAt),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.end,

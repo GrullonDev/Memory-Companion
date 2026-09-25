@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/profile/model/achievement.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 
 class AchievementsGrid extends StatelessWidget {
   const AchievementsGrid({super.key, required this.achievements});
@@ -44,7 +45,7 @@ class AchievementsGrid extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                achievement.title,
+                achievement.titleKey.getString(context),
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

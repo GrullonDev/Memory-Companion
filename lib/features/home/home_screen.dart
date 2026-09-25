@@ -25,6 +25,7 @@ import 'package:memory_companion/features/home/widget/secondary_mode_row.dart';
 import 'package:memory_companion/features/minigames/hub/widget/minigame_grid.dart';
 import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
+import 'package:memory_companion/core/localization/time_ago.dart';
 
 /// The Home, rebuilt around a single clear hierarchy.
 ///
@@ -168,7 +169,9 @@ class HomeScreen extends ConsumerWidget {
                       : RecentMatchCard(
                           title: match.titleKey.getString(context),
                           score: match.score,
-                          timeAgo: match.timeAgo,
+                          timeAgo: match.playedAt == null
+                              ? ''
+                              : timeAgoLabel(context, match.playedAt!),
                         ),
                 ),
               ],

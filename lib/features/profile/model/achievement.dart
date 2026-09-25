@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 class Achievement {
   const Achievement({
     required this.icon,
-    required this.title,
+    required this.titleKey,
     required this.unlocked,
   });
 
   final IconData icon;
-  final String title;
+
+  /// An [AppLocale] key, resolved while painting.
+  final String titleKey;
   final bool unlocked;
 }
