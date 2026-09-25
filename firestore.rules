@@ -185,7 +185,28 @@ service cloud.firestore {
     // cuando pueden, y cada uno escribe solo su propio resultado.
     // ---------------------------------------------------------------
     match /duels/{duelId} {
-      allow read: if isMember();
+      // Una sala abierta la puede leer cualquiera con sesión: es la forma de
+      // encontrarla por su código. En cuanto alguien entra deja de estar
+      // abierta y vuelve a ser privada de sus dos jugadores.
+      allow read: if isMember()
+                  || (signedIn() && resource.data.status == 'open');
+
+      // Sala: un duelo sin rival que se une por código, sin amistad previa.
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['challengerUid', 'opponentUid', 'members',
+                          'friendshipId', 'roomCode', 'names', 'seed',
+                          'categoryId', 'languageCode', 'status', 'results',
+                          'createdAt', 'updatedAt'])
+                    && incoming().challengerUid == request.auth.uid
+                    && incoming().opponentUid == ''
+                    && incoming().members == [request.auth.uid]
+                    && incoming().friendshipId == ''
+                    && incoming().roomCode is string
+                    && incoming().roomCode.size() == 6
+                    && incoming().names.keys().hasOnly([request.auth.uid])
+                    && incoming().status == 'open'
+                    && incoming().results.size() == 0;
 
       // Solo entre amigos: la amistad aceptada tiene que existir.
       allow create: if signedIn()
@@ -204,8 +225,23 @@ service cloud.firestore {
 
       // Cada jugador añade su resultado una sola vez; nunca toca el del
       // otro. El rival puede además rechazar el reto antes de jugarlo.
+      // Entrar en una sala abierta: ocupar el asiento libre, y nada más.
+      allow update: if signedIn()
+                    && current().status == 'open'
+                    && request.auth.uid != current().challengerUid
+                    && incoming().status == 'pending'
+                    && incoming().opponentUid == request.auth.uid
+                    && incoming().members
+                         == [current().challengerUid, request.auth.uid]
+                    && incoming().diff(current()).affectedKeys()
+                         .hasOnly(['opponentUid', 'members', 'status',
+                                   'names', 'updatedAt'])
+                    && incoming().names.diff(current().names)
+                         .affectedKeys().hasOnly([request.auth.uid]);
+
+      // El anfitrión de una sala puede jugarla antes de que entre nadie.
       allow update: if isMember()
-                    && current().status == 'pending'
+                    && current().status in ['pending', 'open']
                     && (
                       (incoming().diff(current()).affectedKeys()
                          .hasOnly(['results', 'updatedAt'])

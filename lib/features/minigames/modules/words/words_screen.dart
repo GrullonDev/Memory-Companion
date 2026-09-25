@@ -8,6 +8,8 @@ import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
 import 'package:memory_companion/core/widgets/app_progress_bar.dart';
+import 'package:memory_companion/core/widgets/pinned_footer_layout.dart';
+import 'package:memory_companion/core/widgets/success_pulse.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/words/controller/words_controller.dart';
 import 'package:memory_companion/features/minigames/modules/words/model/words_state.dart';
@@ -31,28 +33,32 @@ class WordsScreen extends ConsumerWidget {
       WordsPhase.intro => _Intro(onStart: controller.start),
       WordsPhase.study => _Study(state: state, onReady: controller.finishStudy),
       WordsPhase.test => _Test(state: state, controller: controller),
-      WordsPhase.finished => MinigameResultView(
-        game: const WordsGameModule(),
-        won: state.won,
-        headline: _ofTotal(
-          AppLocale.wordsScoreLabel.getString(context),
-          state.correct,
-          state.probes.length,
-        ),
-        caption: fill(
-          AppLocale.wordsLevelLabel.getString(context),
-          state.listSize,
-        ),
-        message: state.won
-            ? fill(
-                AppLocale.wordsResultWon.getString(context),
-                state.nextListSize,
-              )
-            : AppLocale.wordsResultLost.getString(context),
-        primaryLabel:
-            (state.won ? AppLocale.nextLevelLabel : AppLocale.playAgain)
-                .getString(context),
-        onPrimary: state.won ? controller.nextLevel : controller.start,
+      WordsPhase.finished => PinnedFooterLayout(
+        children: [
+          MinigameResultView(
+            game: const WordsGameModule(),
+            won: state.won,
+            headline: _ofTotal(
+              AppLocale.wordsScoreLabel.getString(context),
+              state.correct,
+              state.probes.length,
+            ),
+            caption: fill(
+              AppLocale.wordsLevelLabel.getString(context),
+              state.listSize,
+            ),
+            message: state.won
+                ? fill(
+                    AppLocale.wordsResultWon.getString(context),
+                    state.nextListSize,
+                  )
+                : AppLocale.wordsResultLost.getString(context),
+            primaryLabel:
+                (state.won ? AppLocale.nextLevelLabel : AppLocale.playAgain)
+                    .getString(context),
+            onPrimary: state.won ? controller.nextLevel : controller.start,
+          ),
+        ],
       ),
     };
 
@@ -62,18 +68,8 @@ class WordsScreen extends ConsumerWidget {
         backgroundColor: AppColors.background,
         title: Text(AppLocale.minigameWordsTitle.getString(context)),
       ),
-      body: SafeArea(
-        top: false,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 480),
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.screenMargin),
-              children: [body],
-            ),
-          ),
-        ),
-      ),
+      // Each phase lays itself out: content scrolls, controls stay pinned.
+      body: SafeArea(top: false, child: body),
     );
   }
 }
@@ -89,8 +85,12 @@ class _Intro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PinnedFooterLayout(
+      footer: AdaptiveButton(
+        label: AppLocale.minigameStartLabel.getString(context),
+        icon: Icons.play_arrow_rounded,
+        onPressed: onStart,
+      ),
       children: [
         const Icon(
           Icons.menu_book_rounded,
@@ -102,12 +102,6 @@ class _Intro extends StatelessWidget {
           AppLocale.wordsIntro.getString(context),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: AppSpacing.xxl),
-        AdaptiveButton(
-          label: AppLocale.minigameStartLabel.getString(context),
-          icon: Icons.play_arrow_rounded,
-          onPressed: onStart,
         ),
       ],
     );
@@ -123,8 +117,13 @@ class _Study extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PinnedFooterLayout(
+      // A long list scrolls; "Ready" is always one tap away.
+      footer: AdaptiveButton(
+        label: AppLocale.wordsReadyLabel.getString(context),
+        icon: Icons.check_rounded,
+        onPressed: onReady,
+      ),
       children: [
         Text(
           AppLocale.wordsStudyTitle.getString(context),
@@ -162,12 +161,6 @@ class _Study extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: AppSpacing.xxl),
-        AdaptiveButton(
-          label: AppLocale.wordsReadyLabel.getString(context),
-          icon: Icons.check_rounded,
-          onPressed: onReady,
-        ),
       ],
     );
   }
@@ -185,8 +178,26 @@ class _Test extends StatelessWidget {
     final total = state.probes.length;
     final showLast = state.answered > 0;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return PinnedFooterLayout(
+      footer: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AdaptiveButton(
+            label: AppLocale.wordsYesLabel.getString(context),
+            icon: Icons.visibility_rounded,
+            variant: AdaptiveButtonVariant.secondary,
+            onPressed: () => controller.answer(wasOnList: true),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AdaptiveButton(
+            label: AppLocale.wordsNoLabel.getString(context),
+            icon: Icons.visibility_off_rounded,
+            variant: AdaptiveButtonVariant.neutral,
+            onPressed: () => controller.answer(wasOnList: false),
+          ),
+        ],
+      ),
       children: [
         Text(
           _ofTotal(
@@ -226,30 +237,25 @@ class _Test extends StatelessWidget {
         SizedBox(
           height: AppSize.iconLg,
           child: showLast
-              ? Icon(
-                  state.lastAnswerCorrect
-                      ? Icons.check_circle_rounded
-                      : Icons.cancel_rounded,
-                  color: state.lastAnswerCorrect
-                      ? AppColors.mintStrong
-                      : AppColors.error,
-                  size: AppSize.iconLg,
+              ? Center(
+                  // A right answer pops, every time.
+                  child: SuccessPulse(
+                    trigger: state.lastAnswerCorrect ? state.answered : null,
+                    playOnMount: true,
+                    shape: BoxShape.circle,
+                    haptic: true,
+                    child: Icon(
+                      state.lastAnswerCorrect
+                          ? Icons.check_circle_rounded
+                          : Icons.cancel_rounded,
+                      color: state.lastAnswerCorrect
+                          ? AppColors.mintStrong
+                          : AppColors.error,
+                      size: AppSize.iconLg,
+                    ),
+                  ),
                 )
               : null,
-        ),
-        const SizedBox(height: AppSpacing.md),
-        AdaptiveButton(
-          label: AppLocale.wordsYesLabel.getString(context),
-          icon: Icons.visibility_rounded,
-          variant: AdaptiveButtonVariant.secondary,
-          onPressed: () => controller.answer(wasOnList: true),
-        ),
-        const SizedBox(height: AppSpacing.md),
-        AdaptiveButton(
-          label: AppLocale.wordsNoLabel.getString(context),
-          icon: Icons.visibility_off_rounded,
-          variant: AdaptiveButtonVariant.neutral,
-          onPressed: () => controller.answer(wasOnList: false),
         ),
       ],
     );

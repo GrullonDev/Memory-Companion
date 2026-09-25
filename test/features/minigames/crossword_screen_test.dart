@@ -52,10 +52,8 @@ void main() {
     );
   });
 
-  Finder letter(String value) => find.descendant(
-    of: find.byType(LetterWheel),
-    matching: find.text(value),
-  );
+  Finder letter(String value) =>
+      find.descendant(of: find.byType(LetterWheel), matching: find.text(value));
 
   testWidgets('se juega deslizando y tocando en un teléfono de 360 px', (
     tester,
@@ -118,4 +116,74 @@ void main() {
     expect(find.text('Level 2'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets(
+    'un deslizamiento vertical, paso a paso como un dedo real, deletrea '
+    'en vez de desplazar la pantalla',
+    (tester) async {
+      // Short phone: the screen scrolls, so its list competes for drags.
+      tester.view.physicalSize = const Size(1080, 1920);
+      tester.view.devicePixelRatio = 3;
+      addTearDown(tester.view.reset);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            statsRepositoryProvider.overrideWithValue(_NewPlayerStats()),
+            minigameResultReporterProvider.overrideWithValue(
+              _RecordingReporter(),
+            ),
+            minigameRandomProvider.overrideWithValue(Random(4)),
+          ],
+          child: MaterialApp(
+            locale: const Locale('en'),
+            supportedLocales: FlutterLocalization.instance.supportedLocales,
+            localizationsDelegates:
+                FlutterLocalization.instance.localizationsDelegates,
+            home: const CrosswordScreen(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Bring the whole wheel on screen first, as a player would.
+      await tester.ensureVisible(find.byType(LetterWheel));
+      await tester.pumpAndSettle();
+      final scrollable = tester.state<ScrollableState>(
+        find.byType(Scrollable).first,
+      );
+      final offsetBefore = scrollable.position.pixels;
+
+      // From the top letter straight down to one of the two below it: a
+      // mostly vertical stroke, which the list used to take as a scroll.
+      final letters = ['C', 'A', 'T']
+        ..sort(
+          (a, b) => tester
+              .getCenter(letter(a))
+              .dy
+              .compareTo(tester.getCenter(letter(b)).dy),
+        );
+      final top = letters.first;
+      final below = letters[1];
+      final from = tester.getCenter(letter(top));
+      final to = tester.getCenter(letter(below));
+
+      final gesture = await tester.startGesture(from);
+      await tester.pump();
+      const steps = 40;
+      for (var i = 1; i <= steps; i++) {
+        await gesture.moveTo(Offset.lerp(from, to, i / steps)!);
+        await tester.pump();
+      }
+
+      expect(
+        find.text('$top$below'),
+        findsOneWidget,
+        reason: 'the stroke spells, letter by letter',
+      );
+      expect(scrollable.position.pixels, offsetBefore);
+      await gesture.up();
+      await tester.pumpAndSettle();
+    },
+  );
 }

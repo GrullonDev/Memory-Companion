@@ -16,6 +16,7 @@ import 'package:memory_companion/features/friends/widget/friend_tile.dart';
 import 'package:memory_companion/features/friends/widget/social_sign_in_card.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
+import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/model/versus_player.dart';
 import 'package:memory_companion/features/versus/widget/duel_list_card.dart';
@@ -155,6 +156,10 @@ class VersusScreen extends ConsumerWidget {
                 ),
               ),
             ],
+            const SizedBox(height: 24),
+            // Outside the social section on purpose: playing the computer
+            // needs no account and no connection, so it never waits on them.
+            const _CpuDuelCard(),
             if (versus.value case final state?) ...[
               const SizedBox(height: 24),
               DuelListCard(
@@ -246,6 +251,81 @@ class _RivalPicker extends ConsumerWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+/// Plays a duel against the computer, at the chosen difficulty.
+class _CpuDuelCard extends StatefulWidget {
+  const _CpuDuelCard();
+
+  @override
+  State<_CpuDuelCard> createState() => _CpuDuelCardState();
+}
+
+class _CpuDuelCardState extends State<_CpuDuelCard> {
+  var _level = CpuLevel.normal;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return AppCard(
+      padding: const EdgeInsets.all(AppSpacing.xl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              const Icon(
+                Icons.smart_toy_rounded,
+                size: 36,
+                color: AppColors.skyStrong,
+              ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      AppLocale.cpuDuelTitle.getString(context),
+                      style: textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    Text(
+                      AppLocale.cpuDuelMessage.getString(context),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: AppColors.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: [
+              for (final level in CpuLevel.values)
+                ChoiceChip(
+                  label: Text(level.labelKey.getString(context)),
+                  selected: level == _level,
+                  onSelected: (_) => setState(() => _level = level),
+                ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          AdaptiveButton(
+            label: AppLocale.playLabel.getString(context),
+            icon: Icons.play_arrow_rounded,
+            onPressed: () => Navigator.of(
+              context,
+            ).pushNamed(RoutePaths.cpuDuel, arguments: _level),
+          ),
+        ],
+      ),
     );
   }
 }

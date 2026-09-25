@@ -21,7 +21,6 @@ class HomeController extends AsyncNotifier<RecentMatch> {
       return const RecentMatch(
         titleKey: AppLocale.modePlaySolo,
         score: '--',
-        timeAgo: '',
         isPlaceholder: true,
       );
     }
@@ -29,9 +28,7 @@ class HomeController extends AsyncNotifier<RecentMatch> {
     return RecentMatch(
       titleKey: AppLocale.modePlaySolo,
       score: _formatNumber(match.score),
-      timeAgo: _formatTimeAgo(
-        DateTime.fromMillisecondsSinceEpoch(match.playedAt),
-      ),
+      playedAt: DateTime.fromMillisecondsSinceEpoch(match.playedAt),
     );
   }
 
@@ -41,19 +38,6 @@ class HomeController extends AsyncNotifier<RecentMatch> {
       RegExp(r'\B(?=(\d{3})+(?!\d))'),
       (match) => ',',
     );
-  }
-
-  String _formatTimeAgo(DateTime playedAt) {
-    final difference = DateTime.now().difference(playedAt);
-
-    if (difference.inSeconds < 60) return 'Hace unos segundos';
-    if (difference.inMinutes < 60) return 'Hace ${difference.inMinutes} min';
-    if (difference.inHours < 24) return 'Hace ${difference.inHours} h';
-    if (difference.inDays < 7) return 'Hace ${difference.inDays} d';
-    if (difference.inDays < 30) {
-      return 'Hace ${(difference.inDays / 7).floor()} sem';
-    }
-    return 'Hace ${(difference.inDays / 30).floor()} meses';
   }
 }
 
@@ -76,7 +60,10 @@ final homeSummaryProvider = Provider<HomeSummary>((ref) {
   final ladders = ref.watch(gameLaddersProvider);
 
   if (player == null) {
-    return HomeSummary.empty(isLoading: playerAsync.isLoading, ladders: ladders);
+    return HomeSummary.empty(
+      isLoading: playerAsync.isLoading,
+      ladders: ladders,
+    );
   }
 
   return HomeSummary(

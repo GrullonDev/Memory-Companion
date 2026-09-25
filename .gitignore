@@ -58,7 +58,7 @@ app.*.map.json
 /ios/Runner.xcodeproj
 
 # Claude Code tooling
-.agents/
+# .agents/  — temporarily un-ignored for commit
 .claude/
 skills-lock.json
 

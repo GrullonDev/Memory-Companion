@@ -9,7 +9,9 @@ import 'package:memory_companion/features/game/board/difficulty/adaptive_difficu
 import 'package:memory_companion/features/game/board/difficulty/difficulty_settings.dart';
 import 'package:memory_companion/features/game/board/model/shared_board.dart';
 
-enum DuelStatus { pending, completed, declined }
+/// [open] is a room nobody has joined yet: the host can already play it,
+/// and whoever enters its code becomes the opponent.
+enum DuelStatus { open, pending, completed, declined }
 
 enum DuelOutcome { won, lost, draw }
 
@@ -64,6 +66,8 @@ class Duel {
     required this.status,
     this.results = const {},
     this.createdAt,
+    this.roomCode,
+    this.names = const {},
   });
 
   /// Only a decline is stored as a status. "Completed" is derived from both
@@ -82,6 +86,7 @@ class Duel {
               Map<String, dynamic>.from(entry.value as Map),
             ),
     };
+    final rawNames = data['names'];
     final bothPlayed =
         results.containsKey(challengerUid) && results.containsKey(opponentUid);
     return Duel(
@@ -94,11 +99,20 @@ class Duel {
       languageCode: data['languageCode'] as String? ?? 'es',
       status: bothPlayed
           ? DuelStatus.completed
-          : data['status'] == 'declined'
-          ? DuelStatus.declined
-          : DuelStatus.pending,
+          : switch (data['status']) {
+              'declined' => DuelStatus.declined,
+              'open' => DuelStatus.open,
+              _ => DuelStatus.pending,
+            },
       results: results,
       createdAt: created is Timestamp ? created.toDate() : null,
+      roomCode: data['roomCode'] as String?,
+      names: {
+        if (rawNames is Map)
+          for (final entry in rawNames.entries)
+            if (entry.value is String)
+              entry.key as String: entry.value as String,
+      },
     );
   }
 
@@ -120,6 +134,16 @@ class Duel {
   final Map<String, DuelScore> results;
   final DateTime? createdAt;
 
+  /// The code others enter to join, for a duel created as a room. Null for
+  /// a challenge between friends.
+  final String? roomCode;
+
+  /// Display names by uid, written by each player of a room: they need not
+  /// be friends, so the friend list cannot name them.
+  final Map<String, String> names;
+
+  bool get isRoom => roomCode != null;
+
   List<String> get members => [challengerUid, opponentUid];
 
   String rivalOf(String uid) =>
@@ -129,7 +153,12 @@ class Duel {
 
   /// Whether [uid] still has to play this duel.
   bool awaitsTurnOf(String uid) =>
-      status == DuelStatus.pending && !results.containsKey(uid);
+      (status == DuelStatus.pending || status == DuelStatus.open) &&
+      !results.containsKey(uid);
+
+  /// Neither completed nor declined: someone still has to play.
+  bool get isActive =>
+      status == DuelStatus.pending || status == DuelStatus.open;
 
   /// A challenge [uid] received and has not answered yet.
   bool isInvitationFor(String uid) => uid == opponentUid && awaitsTurnOf(uid);

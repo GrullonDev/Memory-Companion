@@ -111,6 +111,10 @@ class LivesController extends AsyncNotifier<LivesState> {
   /// no tiene plan Pro.
   Future<bool> consumeLife() async {
     if (hasInfiniteLives) return true;
+    // Entering a board can call this before [build] has loaded the stored
+    // lives (right after a restart, say): wait for it first.
+    await future;
+    if (!ref.mounted) return false;
     if (_storedLives <= 0) return false;
 
     // Gastar desde el máximo es lo que arranca el reloj de recarga.

@@ -69,78 +69,98 @@ class _HistorySearchScreenState extends ConsumerState<HistorySearchScreen> {
       appBar: AppBar(title: Text(AppLocale.searchTitle.getString(context))),
       body: SafeArea(
         top: false,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.screenMargin,
-            AppSpacing.sm,
-            AppSpacing.screenMargin,
-            AppSpacing.xxl,
-          ),
+        // The question stays pinned: a long answer scrolls under it, so a
+        // follow-up question is always one tap away.
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _question,
-              autofocus: state.question == null,
-              textInputAction: TextInputAction.search,
-              onSubmitted: _ask,
-              decoration: InputDecoration(
-                hintText: AppLocale.searchHint.getString(context),
-                prefixIcon: const Icon(Icons.search_rounded),
-                suffixIcon: IconButton(
-                  tooltip: AppLocale.searchTitle.getString(context),
-                  icon: const Icon(Icons.arrow_forward_rounded),
-                  onPressed: () => _ask(_question.text),
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppSpacing.lg),
-                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.screenMargin,
+                AppSpacing.sm,
+                AppSpacing.screenMargin,
+                AppSpacing.md,
               ),
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Wrap(
-              spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
-              children: [
-                for (final example in _examples)
-                  ActionChip(
-                    label: Text(example.getString(context)),
-                    onPressed: () {
-                      _question.text = example.getString(context);
-                      _ask(_question.text);
-                    },
+              child: TextField(
+                controller: _question,
+                autofocus: state.question == null,
+                textInputAction: TextInputAction.search,
+                onSubmitted: _ask,
+                decoration: InputDecoration(
+                  hintText: AppLocale.searchHint.getString(context),
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon: IconButton(
+                    tooltip: AppLocale.searchTitle.getString(context),
+                    icon: const Icon(Icons.arrow_forward_rounded),
+                    onPressed: () => _ask(_question.text),
                   ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            if (state.answer case final answer?)
-              answer.when(
-                loading: () => const Padding(
-                  padding: EdgeInsets.all(AppSpacing.xl),
-                  child: Center(child: CircularProgressIndicator()),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppSpacing.lg),
+                  ),
                 ),
-                error: (_, _) => AppCard(
-                  child: Text(AppLocale.searchFailed.getString(context)),
-                ),
-                data: (answer) => _AnswerView(answer: answer, places: places),
               ),
-            const SizedBox(height: AppSpacing.lg),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Icon(
-                  Icons.lock_outline_rounded,
-                  size: AppSize.iconXs,
-                  color: AppColors.outline,
+            ),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenMargin,
+                  0,
+                  AppSpacing.screenMargin,
+                  AppSpacing.xxl,
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    AppLocale.searchPrivacyNote.getString(context),
-                    style: textTheme.bodySmall?.copyWith(
-                      color: AppColors.outline,
+                // Scrolling the results puts the keyboard away.
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                children: [
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: [
+                      for (final example in _examples)
+                        ActionChip(
+                          label: Text(example.getString(context)),
+                          onPressed: () {
+                            _question.text = example.getString(context);
+                            _ask(_question.text);
+                          },
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+                  if (state.answer case final answer?)
+                    answer.when(
+                      loading: () => const Padding(
+                        padding: EdgeInsets.all(AppSpacing.xl),
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                      error: (_, _) => AppCard(
+                        child: Text(AppLocale.searchFailed.getString(context)),
+                      ),
+                      data: (answer) =>
+                          _AnswerView(answer: answer, places: places),
                     ),
+                  const SizedBox(height: AppSpacing.lg),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.lock_outline_rounded,
+                        size: AppSize.iconXs,
+                        color: AppColors.outline,
+                      ),
+                      const SizedBox(width: AppSpacing.sm),
+                      Expanded(
+                        child: Text(
+                          AppLocale.searchPrivacyNote.getString(context),
+                          style: textTheme.bodySmall?.copyWith(
+                            color: AppColors.outline,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),

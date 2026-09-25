@@ -74,26 +74,31 @@ class SettingsScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             AppCard(
               padding: EdgeInsets.zero,
-              child: SwitchListTile(
-                value: preferences.timedMatches,
-                onChanged: controller.setTimedMatches,
-                activeTrackColor: AppColors.sunStrong,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.sm,
-                ),
-                secondary: const Icon(Icons.timer_outlined),
-                title: Text(
-                  AppLocale.timedMatchesTitle.getString(context),
-                  style: textTheme.titleMedium,
-                ),
-                subtitle: Text(
-                  (preferences.timedMatches
-                          ? AppLocale.timedMatchesOnSubtitle
-                          : AppLocale.timedMatchesOffSubtitle)
-                      .getString(context),
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: tokens.supportingTextColor,
+              // The card paints its own background; the tile needs a
+              // Material above it for its ink splash to show.
+              child: Material(
+                type: MaterialType.transparency,
+                child: SwitchListTile(
+                  value: preferences.timedMatches,
+                  onChanged: controller.setTimedMatches,
+                  activeTrackColor: AppColors.sunStrong,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.lg,
+                    vertical: AppSpacing.sm,
+                  ),
+                  secondary: const Icon(Icons.timer_outlined),
+                  title: Text(
+                    AppLocale.timedMatchesTitle.getString(context),
+                    style: textTheme.titleMedium,
+                  ),
+                  subtitle: Text(
+                    (preferences.timedMatches
+                            ? AppLocale.timedMatchesOnSubtitle
+                            : AppLocale.timedMatchesOffSubtitle)
+                        .getString(context),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: tokens.supportingTextColor,
+                    ),
                   ),
                 ),
               ),

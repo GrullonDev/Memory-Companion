@@ -9,6 +9,12 @@ class RoutePaths {
 
   /// Plays a duel; pass the `Duel` as `arguments`.
   static const String duel = '/versus/duel';
+
+  /// Plays against the computer; pass the `CpuLevel` as `arguments`.
+  static const String cpuDuel = '/versus/cpu';
+
+  /// Asks a newly signed-in player for the name others will see.
+  static const String completeProfile = '/complete-profile';
   static const String friends = '/friends';
   static const String shop = '/shop';
   static const String levelMap = '/level-map';

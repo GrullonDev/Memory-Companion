@@ -15,12 +15,14 @@ import 'package:memory_companion/features/friends/widget/friend_tile.dart';
 import 'package:memory_companion/features/friends/widget/invite_friends_card.dart';
 import 'package:memory_companion/features/friends/widget/lobby_banner.dart';
 import 'package:memory_companion/features/friends/widget/nearby_players_card.dart';
+import 'package:memory_companion/features/friends/widget/play_room_card.dart';
 import 'package:memory_companion/features/friends/widget/social_network_card.dart';
 import 'package:memory_companion/features/friends/widget/social_sign_in_card.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
+import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 
 class FriendsScreen extends ConsumerWidget {
@@ -105,6 +107,61 @@ class FriendsScreen extends ConsumerWidget {
     Navigator.of(context).pushReplacementNamed(RoutePaths.versus);
   }
 
+  void _playRoom(BuildContext context, Duel room) {
+    Navigator.of(context).pushNamed(RoutePaths.duel, arguments: room);
+  }
+
+  Future<void> _createRoom(BuildContext context, WidgetRef ref) async {
+    final room = await ref
+        .read(versusControllerProvider.notifier)
+        .createRoom(languageCode: Localizations.localeOf(context).languageCode);
+    if (!context.mounted) return;
+    final code = room?.roomCode;
+    if (room == null || code == null) {
+      _notify(context, AppLocale.duelCreateFailed);
+      return;
+    }
+    final play = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => _RoomCreatedDialog(
+        code: code,
+        onCopy: () => _copyCode(dialogContext, code),
+        onShare: () => SharePlus.instance.share(
+          ShareParams(
+            text: AppLocale.roomInviteShareText
+                .getString(dialogContext)
+                .replaceAll('{code}', code),
+          ),
+        ),
+      ),
+    );
+    if (play == true && context.mounted) _playRoom(context, room);
+  }
+
+  Future<bool> _joinRoom(
+    BuildContext context,
+    WidgetRef ref,
+    String code,
+  ) async {
+    final result = await ref
+        .read(versusControllerProvider.notifier)
+        .joinRoom(code);
+    if (!context.mounted) return false;
+    final room = result.duel;
+    if (result.status == JoinRoomStatus.joined && room != null) {
+      _playRoom(context, room);
+      return true;
+    }
+    _notify(context, switch (result.status) {
+      JoinRoomStatus.invalidCode => AppLocale.friendCodeInvalid,
+      JoinRoomStatus.notFound => AppLocale.roomNotFound,
+      JoinRoomStatus.joined ||
+      JoinRoomStatus.signedOut ||
+      JoinRoomStatus.failed => AppLocale.socialActionFailed,
+    });
+    return false;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Opening Friends marks the player online. Failures only mean they show
@@ -151,6 +208,11 @@ class FriendsScreen extends ConsumerWidget {
                       onCopyCode: () => _copyCode(context, code),
                     ),
                     const SizedBox(height: 20),
+                    PlayRoomCard(
+                      onCreate: () => _createRoom(context, ref),
+                      onJoin: (code) => _joinRoom(context, ref, code),
+                    ),
+                    const SizedBox(height: 20),
                     NearbyPlayersCard(
                       state: ref.watch(nearbySearchControllerProvider),
                       onSearch: () => ref
@@ -176,6 +238,74 @@ class FriendsScreen extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// The code of a room just opened, with ways to send it and to start
+/// playing. Pops `true` when the host chooses to play now.
+class _RoomCreatedDialog extends StatelessWidget {
+  const _RoomCreatedDialog({
+    required this.code,
+    required this.onCopy,
+    required this.onShare,
+  });
+
+  final String code;
+  final VoidCallback onCopy;
+  final VoidCallback onShare;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return AlertDialog(
+      backgroundColor: AppColors.surfaceContainerLowest,
+      title: Text(AppLocale.roomCreatedTitle.getString(context)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            AppLocale.roomCreatedMessage.getString(context),
+            style: textTheme.bodyMedium?.copyWith(
+              color: AppColors.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SelectableText(
+            code,
+            style: textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w900,
+              letterSpacing: 6,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                tooltip: AppLocale.copyCodeLabel.getString(context),
+                icon: const Icon(Icons.copy_rounded),
+                onPressed: onCopy,
+              ),
+              IconButton(
+                tooltip: AppLocale.inviteLinkLabel.getString(context),
+                icon: const Icon(Icons.share_rounded),
+                onPressed: onShare,
+              ),
+            ],
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(AppLocale.notNowLabel.getString(context)),
+        ),
+        FilledButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(AppLocale.playLabel.getString(context)),
+        ),
+      ],
     );
   }
 }

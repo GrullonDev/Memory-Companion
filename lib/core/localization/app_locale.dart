@@ -454,6 +454,47 @@ mixin AppLocale {
   static const String levelRewardChestTitle = 'levelRewardChestTitle';
   static const String levelRewardCoins = 'levelRewardCoins';
 
+  // --- Textos que antes estaban escritos en el código ---
+  static const String levelMapRegionName = 'levelMapRegionName';
+  static const String levelsTitle = 'levelsTitle';
+  static const String levelSelectedSnack = 'levelSelectedSnack';
+  static const String routeNotFound = 'routeNotFound';
+  static const String lobbyChipGameOn = 'lobbyChipGameOn';
+  static const String lobbyChipLevelUp = 'lobbyChipLevelUp';
+  static const String achievementStreak10 = 'achievementStreak10';
+  static const String achievementSprinter = 'achievementSprinter';
+  static const String achievementQuickMind = 'achievementQuickMind';
+  static const String achievementMaster = 'achievementMaster';
+  static const String achievementCollector = 'achievementCollector';
+  static const String achievementSocial = 'achievementSocial';
+  static const String timeAgoJustNow = 'timeAgoJustNow';
+  static const String timeAgoMinutes = 'timeAgoMinutes';
+  static const String timeAgoHours = 'timeAgoHours';
+  static const String timeAgoDays = 'timeAgoDays';
+  static const String timeAgoWeeks = 'timeAgoWeeks';
+  static const String timeAgoOneMonth = 'timeAgoOneMonth';
+  static const String timeAgoMonths = 'timeAgoMonths';
+  static const String cpuDuelTitle = 'cpuDuelTitle';
+  static const String cpuDuelMessage = 'cpuDuelMessage';
+  static const String cpuLevelEasy = 'cpuLevelEasy';
+  static const String cpuLevelNormal = 'cpuLevelNormal';
+  static const String cpuLevelHard = 'cpuLevelHard';
+  static const String cpuName = 'cpuName';
+  static const String playRoomTitle = 'playRoomTitle';
+  static const String playRoomMessage = 'playRoomMessage';
+  static const String createRoomLabel = 'createRoomLabel';
+  static const String joinRoomLabel = 'joinRoomLabel';
+  static const String roomCodeHint = 'roomCodeHint';
+  static const String roomCodeLabel = 'roomCodeLabel';
+  static const String roomCreatedTitle = 'roomCreatedTitle';
+  static const String roomCreatedMessage = 'roomCreatedMessage';
+  static const String roomInviteShareText = 'roomInviteShareText';
+  static const String roomNotFound = 'roomNotFound';
+  static const String copyCodeLabel = 'copyCodeLabel';
+  static const String completeProfileTitle = 'completeProfileTitle';
+  static const String completeProfileMessage = 'completeProfileMessage';
+  static const String displayNameRequired = 'displayNameRequired';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -896,6 +937,45 @@ mixin AppLocale {
     levelRewardGiftTitle: '¡Regalo de nivel!',
     levelRewardChestTitle: '¡Cofre de nivel!',
     levelRewardCoins: '+{coins} monedas',
+    levelMapRegionName: 'Bosque de los Acertijos',
+    levelsTitle: 'Niveles',
+    levelSelectedSnack: 'Nivel {level} · Dificultad: {stars}⭐',
+    routeNotFound: 'No encontramos esta pantalla.',
+    lobbyChipGameOn: '¡A JUGAR!',
+    lobbyChipLevelUp: 'SUBE DE NIVEL',
+    achievementStreak10: 'Racha x10',
+    achievementSprinter: 'Velocista',
+    achievementQuickMind: 'Mente Ágil',
+    achievementMaster: 'Maestro',
+    achievementCollector: 'Coleccionista',
+    achievementSocial: 'Social',
+    timeAgoJustNow: 'Hace unos segundos',
+    timeAgoMinutes: 'Hace {n} min',
+    timeAgoHours: 'Hace {n} h',
+    timeAgoDays: 'Hace {n} d',
+    timeAgoWeeks: 'Hace {n} sem',
+    timeAgoOneMonth: 'Hace 1 mes',
+    timeAgoMonths: 'Hace {n} meses',
+    cpuDuelTitle: 'Contra la máquina',
+    cpuDuelMessage: 'Sin cuenta ni conexión: el mismo tablero para los dos.',
+    cpuLevelEasy: 'Fácil',
+    cpuLevelNormal: 'Normal',
+    cpuLevelHard: 'Difícil',
+    cpuName: 'Máquina ({level})',
+    playRoomTitle: 'Sala de juego',
+    playRoomMessage: 'Crea una sala y comparte el código, o entra en la de alguien más.',
+    createRoomLabel: 'Crear sala',
+    joinRoomLabel: 'Entrar',
+    roomCodeHint: 'Código de sala',
+    roomCodeLabel: 'Sala {code}',
+    roomCreatedTitle: '¡Sala creada!',
+    roomCreatedMessage: 'Comparte este código. Puedes jugar ya: tu rival jugará el mismo tablero cuando entre.',
+    roomInviteShareText: '¡Te reto en Memory Arcade! Entra en mi sala con el código {code}',
+    roomNotFound: 'No hay ninguna sala abierta con ese código',
+    copyCodeLabel: 'Copiar código',
+    completeProfileTitle: '¿Cómo te llamamos?',
+    completeProfileMessage: 'Es el nombre que verán tus amigos y rivales. Puedes cambiarlo después en tu perfil.',
+    displayNameRequired: 'Escribe un nombre de al menos 2 letras',
   };
 
   static const Map<String, dynamic> en = {
@@ -1340,5 +1420,45 @@ mixin AppLocale {
     levelRewardGiftTitle: 'Level gift!',
     levelRewardChestTitle: 'Level chest!',
     levelRewardCoins: '+{coins} coins',
+    levelMapRegionName: 'Forest of Riddles',
+    levelsTitle: 'Levels',
+    levelSelectedSnack: 'Level {level} · Difficulty: {stars}⭐',
+    routeNotFound: "We couldn't find this screen.",
+    lobbyChipGameOn: 'GAME ON',
+    lobbyChipLevelUp: 'LEVEL UP',
+    achievementStreak10: 'Streak x10',
+    achievementSprinter: 'Sprinter',
+    achievementQuickMind: 'Quick Mind',
+    achievementMaster: 'Master',
+    achievementCollector: 'Collector',
+    achievementSocial: 'Social',
+    timeAgoJustNow: 'Just now',
+    timeAgoMinutes: '{n} min ago',
+    timeAgoHours: '{n} h ago',
+    timeAgoDays: '{n} d ago',
+    timeAgoWeeks: '{n} wk ago',
+    timeAgoOneMonth: '1 month ago',
+    timeAgoMonths: '{n} months ago',
+    cpuDuelTitle: 'Play the computer',
+    cpuDuelMessage: 'No account or connection needed: same board for both.',
+    cpuLevelEasy: 'Easy',
+    cpuLevelNormal: 'Normal',
+    cpuLevelHard: 'Hard',
+    cpuName: 'Computer ({level})',
+    playRoomTitle: 'Game room',
+    playRoomMessage: "Open a room and share its code, or join someone else's.",
+    createRoomLabel: 'Create room',
+    joinRoomLabel: 'Join',
+    roomCodeHint: 'Room code',
+    roomCodeLabel: 'Room {code}',
+    roomCreatedTitle: 'Room created!',
+    roomCreatedMessage: 'Share this code. You can play now: your rival gets the same board when they join.',
+    roomInviteShareText: 'I challenge you in Memory Arcade! Join my room with the code {code}',
+    roomNotFound: 'No open room has that code',
+    copyCodeLabel: 'Copy code',
+    completeProfileTitle: 'What should we call you?',
+    completeProfileMessage:
+        "It's the name your friends and rivals will see. You can change it later in your profile.",
+    displayNameRequired: 'Enter a name of at least 2 letters',
   };
 }

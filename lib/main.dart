@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/database/app_database.dart';
 import 'package:memory_companion/core/database/database_provider.dart';
+import 'package:memory_companion/core/firebase/provider_retry.dart';
 import 'package:memory_companion/utils/app.dart';
 
 Future<void> main() async {
@@ -21,6 +22,7 @@ Future<void> main() async {
   // de `firebaseInitializationProvider`.
   runApp(
     ProviderScope(
+      retry: appProviderRetry,
       overrides: [appDatabaseProvider.overrideWithValue(database)],
       child: const MyApp(),
     ),

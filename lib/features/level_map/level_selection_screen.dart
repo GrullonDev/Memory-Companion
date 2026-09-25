@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:memory_companion/core/localization/app_locale.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
@@ -27,7 +29,7 @@ class LevelSelectionScreen extends ConsumerWidget {
               backgroundColor: AppColors.background,
               elevation: 0,
               title: Text(
-                'Niveles',
+                AppLocale.levelsTitle.getString(context),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: AppColors.onSurface,
                   fontWeight: FontWeight.w800,
@@ -115,7 +117,12 @@ class _LevelCard extends ConsumerWidget {
               // Handle level selection
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Nivel ${level.levelNumber} - Dificultad: ${level.difficulty}⭐'),
+                  content: Text(
+                    AppLocale.levelSelectedSnack
+                        .getString(context)
+                        .replaceAll('{level}', '${level.levelNumber}')
+                        .replaceAll('{stars}', '${level.difficulty}'),
+                  ),
                 ),
               );
             },

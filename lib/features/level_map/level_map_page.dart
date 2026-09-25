@@ -6,6 +6,8 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/level_map/controller/level_map_controller.dart';
 import 'package:memory_companion/features/level_map/level_map_screen.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:memory_companion/core/localization/app_locale.dart';
 
 /// Connects [levelMapProvider] and the shared wallet to [LevelMapScreen].
 ///
@@ -13,9 +15,7 @@ import 'package:memory_companion/features/wallet/controller/wallet_controller.da
 /// local database at startup), so there is no loading state to show and it
 /// works offline.
 class LevelMapPage extends ConsumerWidget {
-  const LevelMapPage({super.key, required this.regionName});
-
-  final String regionName;
+  const LevelMapPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -26,7 +26,7 @@ class LevelMapPage extends ConsumerWidget {
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: LevelMapScreen(
-          regionName: regionName,
+          regionName: AppLocale.levelMapRegionName.getString(context),
           levels: levels,
           coins: wallet.value ?? 0,
           onSelectLevel: (level) {

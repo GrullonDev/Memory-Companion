@@ -28,12 +28,18 @@ class LobbyBanner extends StatelessWidget {
           Positioned(
             top: 14,
             left: 14,
-            child: _Chip(icon: Icons.videogame_asset_rounded, label: 'GAME ON'),
+            child: _Chip(
+              icon: Icons.videogame_asset_rounded,
+              label: AppLocale.lobbyChipGameOn.getString(context),
+            ),
           ),
           Positioned(
             top: 14,
             right: 14,
-            child: _Chip(icon: Icons.trending_up_rounded, label: 'LEVEL UP'),
+            child: _Chip(
+              icon: Icons.trending_up_rounded,
+              label: AppLocale.lobbyChipLevelUp.getString(context),
+            ),
           ),
           const Center(
             child: Icon(

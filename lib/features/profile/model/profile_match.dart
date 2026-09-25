@@ -5,13 +5,16 @@ class ProfileMatch {
     required this.title,
     required this.score,
     required this.moves,
-    required this.timeAgo,
+    required this.playedAt,
     required this.result,
   });
 
   final String title;
   final String score;
   final int moves;
-  final String timeAgo;
+
+  /// Shown relative to now ("2 h ago") and in the current language, so it
+  /// is formatted while painting.
+  final DateTime playedAt;
   final MatchResult result;
 }
