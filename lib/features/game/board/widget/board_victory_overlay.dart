@@ -8,6 +8,8 @@ import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
 import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/confetti_overlay.dart';
+import 'package:memory_companion/features/ladder/level_rewards.dart';
+import 'package:memory_companion/features/ladder/widget/level_reward_card.dart';
 import 'package:memory_companion/features/game/board/model/star_rating.dart';
 
 /// Full-screen result shown when a solo board ends: the title, a 1–3 star
@@ -37,7 +39,16 @@ class BoardVictoryOverlay extends StatelessWidget {
     required this.onPlayAgain,
     required this.onViewStats,
     required this.onExit,
+    this.completedLevel,
+    this.levelReward,
   });
+
+  /// The ladder level this win completed. Null on a loss and on the daily
+  /// board, which is not part of any ladder.
+  final int? completedLevel;
+
+  /// The ladder reward that level earned, if it was a reward step.
+  final LevelReward? levelReward;
 
   /// False when the countdown ran out before the board was cleared.
   final bool won;
@@ -144,6 +155,19 @@ class BoardVictoryOverlay extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if (won && completedLevel != null) ...[
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      AppLocale.levelCompletedLabel
+                          .getString(context)
+                          .replaceAll('{level}', '$completedLevel'),
+                      textAlign: TextAlign.center,
+                      style: textTheme.titleMedium?.copyWith(
+                        color: tokens.supportingTextColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
                   if (won) ...[
                     const SizedBox(height: AppSpacing.lg),
                     StarRatingWidget(stars: stars),
@@ -161,6 +185,10 @@ class BoardVictoryOverlay extends StatelessWidget {
                   ),
                   const SizedBox(height: AppSpacing.xl),
                   _RewardBanner(coins: coinsEarned, xp: xpEarned),
+                  if (won && levelReward != null) ...[
+                    const SizedBox(height: AppSpacing.md),
+                    LevelRewardCard(reward: levelReward!),
+                  ],
                   const SizedBox(height: AppSpacing.lg),
                   _SummaryCard(
                     score: score,

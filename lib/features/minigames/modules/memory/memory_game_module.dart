@@ -43,6 +43,11 @@ class MemoryGameModule extends BaseMinigame {
   @override
   Widget buildGameScreen() => const BoardPage();
 
+  /// Each board mode keeps its own ladder in `category_levels` instead,
+  /// driven by the adaptive difficulty.
+  @override
+  bool get climbsByWins => false;
+
   @override
   String statsKeyFor(String? variantId) => GameCategories.byId(variantId).id;
 

@@ -443,6 +443,17 @@ mixin AppLocale {
   static const String nearbyUnavailable = 'nearbyUnavailable';
   static const String nearbyPendingLabel = 'nearbyPendingLabel';
 
+  // --- Escalera de niveles por juego y sus premios ---
+  static const String ladderRewardHintOne = 'ladderRewardHintOne';
+  static const String ladderRewardHintMany = 'ladderRewardHintMany';
+  static const String ladderGiftReward = 'ladderGiftReward';
+  static const String ladderChestReward = 'ladderChestReward';
+  static const String ladderRewardSemantic = 'ladderRewardSemantic';
+  static const String levelCompletedLabel = 'levelCompletedLabel';
+  static const String levelRewardGiftTitle = 'levelRewardGiftTitle';
+  static const String levelRewardChestTitle = 'levelRewardChestTitle';
+  static const String levelRewardCoins = 'levelRewardCoins';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -853,6 +864,38 @@ mixin AppLocale {
     nearbyPermissionDenied: 'Hace falta el permiso de Bluetooth para buscar.',
     nearbyUnavailable: 'Enciende el Bluetooth para buscar.',
     nearbyPendingLabel: 'Pendiente',
+    // Restaurados: el merge de develop los había perdido.
+    saveStateInCloud: 'Guardado',
+    saveStateSyncing: 'Sincronizando…',
+    saveStateOnDevice: 'Guardado en este dispositivo',
+    saveProgressTitle: 'Guarda tu progreso',
+    saveProgressSubtitle: 'Crea una cuenta y llévate todo contigo',
+    saveProgressBenefitRecover: 'Recupera tu progreso',
+    saveProgressBenefitDevices: 'Juega en otros dispositivos',
+    saveProgressBenefitFriends: 'Agrega amigos',
+    saveProgressBenefitCompete: 'Compite con otros jugadores',
+    linkConflictTitle: 'Ya tienes un progreso guardado',
+    linkConflictSubtitle: '¿Con cuál quieres seguir?',
+    linkInThisAccount: 'En esta cuenta',
+    linkOnThisDevice: 'En este dispositivo',
+    linkKeepCloud: 'Seguir con el de la cuenta',
+    linkKeepLocal: 'Usar el de este dispositivo',
+    linkedMessage: '¡Listo! Tu progreso ya está a salvo',
+    accountSectionTitle: 'Tu cuenta',
+    accountSignedInAs: 'Sesión iniciada',
+    accountPlayingLocally: 'Juegas sin cuenta',
+    signOutLabel: 'Cerrar sesión',
+    levelShortLabel: 'Nivel',
+    coinsShortLabel: 'monedas',
+    ladderRewardHintOne: '¡Un nivel más y ganas {reward}!',
+    ladderRewardHintMany: 'Completa {n} niveles más y gana {reward}',
+    ladderGiftReward: 'un regalo de {coins} monedas',
+    ladderChestReward: 'un cofre de {coins} monedas',
+    ladderRewardSemantic: 'Progreso hacia el próximo premio',
+    levelCompletedLabel: 'Nivel {level} completado',
+    levelRewardGiftTitle: '¡Regalo de nivel!',
+    levelRewardChestTitle: '¡Cofre de nivel!',
+    levelRewardCoins: '+{coins} monedas',
   };
 
   static const Map<String, dynamic> en = {
@@ -1265,5 +1308,37 @@ mixin AppLocale {
     nearbyPermissionDenied: 'Bluetooth permission is needed to search.',
     nearbyUnavailable: 'Turn on Bluetooth to search.',
     nearbyPendingLabel: 'Pending',
+    // Restaurados: el merge de develop los había perdido.
+    saveStateInCloud: 'Saved',
+    saveStateSyncing: 'Syncing…',
+    saveStateOnDevice: 'Saved on this device',
+    saveProgressTitle: 'Save your progress',
+    saveProgressSubtitle: 'Create an account and take it all with you',
+    saveProgressBenefitRecover: 'Recover your progress',
+    saveProgressBenefitDevices: 'Play on other devices',
+    saveProgressBenefitFriends: 'Add friends',
+    saveProgressBenefitCompete: 'Compete with other players',
+    linkConflictTitle: 'You already have saved progress',
+    linkConflictSubtitle: 'Which one do you want to keep?',
+    linkInThisAccount: 'In this account',
+    linkOnThisDevice: 'On this device',
+    linkKeepCloud: 'Keep the account one',
+    linkKeepLocal: 'Use this device one',
+    linkedMessage: 'Done! Your progress is safe now',
+    accountSectionTitle: 'Your account',
+    accountSignedInAs: 'Signed in',
+    accountPlayingLocally: 'Playing without an account',
+    signOutLabel: 'Sign out',
+    levelShortLabel: 'Level',
+    coinsShortLabel: 'coins',
+    ladderRewardHintOne: 'One more level to win {reward}!',
+    ladderRewardHintMany: 'Complete {n} more levels to win {reward}',
+    ladderGiftReward: 'a {coins}-coin gift',
+    ladderChestReward: 'a {coins}-coin chest',
+    ladderRewardSemantic: 'Progress to the next reward',
+    levelCompletedLabel: 'Level {level} complete',
+    levelRewardGiftTitle: 'Level gift!',
+    levelRewardChestTitle: 'Level chest!',
+    levelRewardCoins: '+{coins} coins',
   };
 }

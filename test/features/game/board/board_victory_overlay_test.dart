@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/features/ladder/level_rewards.dart';
 import 'package:memory_companion/features/game/board/widget/board_victory_overlay.dart';
 
 void main() {
@@ -32,6 +33,8 @@ void main() {
     required bool won,
     int stars = 2,
     ProfileTokens tokens = ProfileTokens.vibrant,
+    int? completedLevel,
+    LevelReward? levelReward,
   }) async {
     final taps = <String>[];
     await tester.pumpWidget(
@@ -58,6 +61,8 @@ void main() {
               onPlayAgain: () => taps.add('again'),
               onViewStats: () => taps.add('stats'),
               onExit: () => taps.add('exit'),
+              completedLevel: completedLevel,
+              levelReward: levelReward,
             ),
           ),
         ),
@@ -66,6 +71,31 @@ void main() {
     await tester.pump();
     return taps;
   }
+
+  testWidgets('un peldaño de premio anuncia el nivel y el cofre', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      won: true,
+      completedLevel: 10,
+      levelReward: LevelRewards.forCompletedLevel(10),
+    );
+
+    expect(find.text('Level 10 complete'), findsOneWidget);
+    expect(find.bySemanticsLabel('Level chest! +400 coins'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('un nivel sin premio no muestra la tarjeta del premio', (
+    tester,
+  ) async {
+    await pump(tester, won: true, completedLevel: 3);
+
+    expect(find.text('Level 3 complete'), findsOneWidget);
+    expect(find.textContaining('Level gift'), findsNothing);
+    expect(find.textContaining('Level chest'), findsNothing);
+  });
 
   testWidgets('una victoria ofrece Next Level como acción principal', (
     tester,

@@ -6,6 +6,7 @@ import 'package:memory_companion/features/game/board/category/game_category.dart
 import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty.dart';
 import 'package:memory_companion/features/game/board/difficulty/difficulty_settings.dart';
 import 'package:memory_companion/features/game/board/difficulty/skill_repository.dart';
+import 'package:memory_companion/features/ladder/ladder_controller.dart';
 
 final skillRepositoryProvider = Provider<SkillRepository>(
   (ref) => SkillRepository(database: ref.watch(appDatabaseProvider)),
@@ -41,6 +42,16 @@ class AdaptiveDifficultyController extends Notifier<Map<String, SkillState>> {
       // No saved progress is a playable game: it starts from level 1.
       debugPrint('Error loading saved difficulty: $e\n$stack');
     }
+    if (!ref.mounted) return;
+    // Pays any ladder reward already earned but never delivered — e.g. a
+    // player who was past level 5 before rewards existed.
+    await ref
+        .read(ladderServiceProvider)
+        .claimAll(
+          boardLevels: {
+            for (final entry in state.entries) entry.key: entry.value.level,
+          },
+        );
   }
 
   SkillState skillFor(GameCategory category) =>
@@ -53,6 +64,8 @@ class AdaptiveDifficultyController extends Notifier<Map<String, SkillState>> {
     final next = _engine.update(category, skillFor(category), round);
     state = {...state, category.id: next};
     _save(category.id, next);
+    // Every few levels won pays a ladder reward (see `LevelRewards`).
+    ref.read(ladderServiceProvider).claimBoard(category.id, next.level);
   }
 
   Future<void> _save(String categoryId, SkillState skill) async {

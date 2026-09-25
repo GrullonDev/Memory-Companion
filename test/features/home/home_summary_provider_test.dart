@@ -6,6 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/core/database/app_database.dart';
 import 'package:memory_companion/core/database/database_provider.dart';
+import 'package:memory_companion/features/game/board/category/game_categories.dart';
+import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty.dart';
+import 'package:memory_companion/features/game/board/difficulty/adaptive_difficulty_controller.dart';
+import 'package:memory_companion/features/game/board/difficulty/skill_repository.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/model/home_summary.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
@@ -102,5 +106,23 @@ void main() {
     expect(summary.xpProgress, 0.0, reason: 'estrena nivel, barra vacía');
     expect(summary.targetXp, 2000, reason: 'el nivel 2 pide 2.000 XP');
     expect(summary.xpRemaining, 2000);
+  });
+
+  test('el nivel grande es la escalera del mapa, no el XP', () async {
+    // Un jugador que ya completó 6 niveles del mapa pero con poco XP: antes
+    // la Home le decía «Nivel 1».
+    await SkillRepository(database: db).save(
+      GameCategories.classic.id,
+      const SkillState(skill: 0.5, pairCount: 6, level: 7),
+    );
+    container.listen(adaptiveDifficultyProvider, (_, _) {});
+
+    final summary = await waitForSummary((s) => s.mainLadder.level == 7);
+
+    expect(summary.mainLadder.completedLevels, 6);
+    expect(summary.mainLadder.nextReward.level, 10);
+    expect(summary.mainLadder.levelsUntilReward, 4);
+    // Los demás juegos llevan su propia escalera y arrancan en el 1.
+    expect(summary.ladders.map((l) => l.level), [7, 1, 1, 1, 1, 1]);
   });
 }

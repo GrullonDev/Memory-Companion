@@ -1,3 +1,4 @@
+import 'package:memory_companion/features/ladder/level_rewards.dart';
 import 'package:memory_companion/features/game/board/model/memory_card.dart';
 import 'package:memory_companion/features/game/board/model/star_rating.dart';
 
@@ -19,6 +20,7 @@ class BoardState {
     this.xpEarned = 0,
     this.won = false,
     this.level,
+    this.levelReward,
   });
 
   /// UUID generado **al empezar** la partida, no al guardarla.
@@ -55,6 +57,11 @@ class BoardState {
   /// The explicit level this board belongs to. Null on the daily board,
   /// which is the same for everyone and is not part of any progression.
   final int? level;
+
+  /// The ladder reward this board's win earned, if [level] was a reward
+  /// step (see [LevelRewards]). Set when the board ends; the coins
+  /// themselves are delivered by `LevelRewardRepository`.
+  final LevelReward? levelReward;
 
   /// Whether the finished board unlocked the next level.
   bool get canAdvanceLevel => isCompleted && won && level != null;
@@ -98,6 +105,7 @@ class BoardState {
     int? coinsEarned,
     int? xpEarned,
     bool? won,
+    LevelReward? levelReward,
   }) {
     return BoardState(
       matchId: matchId,
@@ -116,6 +124,7 @@ class BoardState {
       xpEarned: xpEarned ?? this.xpEarned,
       won: won ?? this.won,
       level: level,
+      levelReward: levelReward ?? this.levelReward,
     );
   }
 }

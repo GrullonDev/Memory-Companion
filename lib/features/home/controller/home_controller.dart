@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/home/model/home_summary.dart';
+import 'package:memory_companion/features/ladder/ladder_controller.dart';
 import 'package:memory_companion/features/home/model/recent_match.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
 
@@ -70,9 +71,12 @@ final homeControllerProvider =
 final homeSummaryProvider = Provider<HomeSummary>((ref) {
   final playerAsync = ref.watch(localPlayerProvider);
   final player = playerAsync.value;
+  // El nivel de cada juego sale de su escalera, no del XP: es el número que
+  // el jugador ve subir en el mapa al ganar un tablero.
+  final ladders = ref.watch(gameLaddersProvider);
 
   if (player == null) {
-    return HomeSummary.empty(isLoading: playerAsync.isLoading);
+    return HomeSummary.empty(isLoading: playerAsync.isLoading, ladders: ladders);
   }
 
   return HomeSummary(
@@ -80,5 +84,6 @@ final homeSummaryProvider = Provider<HomeSummary>((ref) {
     totalXp: player.totalXp,
     streakDays: player.currentStreak,
     isLoading: false,
+    ladders: ladders,
   );
 });

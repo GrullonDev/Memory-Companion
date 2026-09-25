@@ -65,6 +65,26 @@ class StatsRepository {
     return row.read<int>('wins');
   }
 
+  /// Games won per `category_id`, now and again after every write.
+  ///
+  /// Feeds the level ladders of the mini-games that climb one level per
+  /// round won: one small row per stats key, never one per game.
+  Stream<Map<String, int>> watchWinsByCategory() {
+    return _db
+        .customSelect(
+          'SELECT category_id, COUNT(*) AS wins FROM game_stats '
+          'WHERE won = 1 GROUP BY category_id',
+          readsFrom: {_db.gameStats},
+        )
+        .watch()
+        .map(
+          (rows) => {
+            for (final row in rows)
+              row.read<String>('category_id'): row.read<int>('wins'),
+          },
+        );
+  }
+
   /// Reads the snapshot now, then again after every write to the table.
   ///
   /// [sinceDay] bounds the per-day rows to the chart's window.

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
 import 'package:memory_companion/features/game_context/service/game_context_capturer.dart';
+import 'package:memory_companion/features/ladder/ladder_controller.dart';
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
@@ -19,13 +20,20 @@ class MinigameResultReporter {
     required StatsRepository repository,
     required DateTime Function() clock,
     GameContextCapturer? context,
+    Future<void> Function(BaseMinigame game, MinigameResult result)? onRecorded,
   }) : _repository = repository,
        _clock = clock,
-       _context = context;
+       _context = context,
+       _onRecorded = onRecorded;
 
   final StatsRepository _repository;
   final DateTime Function() _clock;
   final GameContextCapturer? _context;
+
+  /// Runs once the row is stored. Wired to the level ladders, which count
+  /// rounds won from `game_stats`.
+  final Future<void> Function(BaseMinigame game, MinigameResult result)?
+  _onRecorded;
 
   /// Stores [result] under [game]'s stats key.
   ///
@@ -53,6 +61,7 @@ class MinigameResultReporter {
           nearby: context.nearby,
         ),
       );
+      await _onRecorded?.call(game, result);
     } catch (e, stack) {
       debugPrint('Error saving ${game.id} stats: $e\n$stack');
     }
@@ -66,5 +75,7 @@ final minigameResultReporterProvider = Provider<MinigameResultReporter>((ref) {
     repository: ref.watch(statsRepositoryProvider),
     clock: ref.watch(statsClockProvider),
     context: ref.watch(gameContextCapturerProvider),
+    onRecorded: (game, result) =>
+        ref.read(ladderServiceProvider).claimMinigame(game, won: result.won),
   );
 });

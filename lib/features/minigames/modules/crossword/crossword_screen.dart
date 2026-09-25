@@ -8,6 +8,7 @@ import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/controller/crossword_controller.dart';
+import 'package:memory_companion/features/minigames/modules/crossword/crossword_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/model/crossword_state.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/widget/crossword_grid.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/widget/letter_wheel.dart';
@@ -186,6 +187,8 @@ class _Solved extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MinigameResultView(
+      game: const CrosswordGameModule(),
+      showLadderLevel: false,
       won: true,
       headline: fill(
         AppLocale.crosswordLevelLabel.getString(context),

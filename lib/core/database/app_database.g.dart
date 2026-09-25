@@ -6247,6 +6247,284 @@ class PlacesCompanion extends UpdateCompanion<PlaceRow> {
   }
 }
 
+class $LadderRewardsTable extends LadderRewards
+    with TableInfo<$LadderRewardsTable, LadderRewardRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LadderRewardsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _ladderIdMeta = const VerificationMeta(
+    'ladderId',
+  );
+  @override
+  late final GeneratedColumn<String> ladderId = GeneratedColumn<String>(
+    'ladder_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _rewardedLevelMeta = const VerificationMeta(
+    'rewardedLevel',
+  );
+  @override
+  late final GeneratedColumn<int> rewardedLevel = GeneratedColumn<int>(
+    'rewarded_level',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [ladderId, rewardedLevel, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ladder_rewards';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LadderRewardRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('ladder_id')) {
+      context.handle(
+        _ladderIdMeta,
+        ladderId.isAcceptableOrUnknown(data['ladder_id']!, _ladderIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ladderIdMeta);
+    }
+    if (data.containsKey('rewarded_level')) {
+      context.handle(
+        _rewardedLevelMeta,
+        rewardedLevel.isAcceptableOrUnknown(
+          data['rewarded_level']!,
+          _rewardedLevelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {ladderId};
+  @override
+  LadderRewardRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LadderRewardRow(
+      ladderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ladder_id'],
+      )!,
+      rewardedLevel: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rewarded_level'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $LadderRewardsTable createAlias(String alias) {
+    return $LadderRewardsTable(attachedDatabase, alias);
+  }
+}
+
+class LadderRewardRow extends DataClass implements Insertable<LadderRewardRow> {
+  /// Id de la escalera: `GameCategory.id` o `game:<BaseMinigame.id>`.
+  final String ladderId;
+
+  /// Último nivel completado cuyo premio ya se entregó.
+  ///
+  /// Empieza en 0, así que quien ya iba por el Nivel 7 al actualizar recibe
+  /// el premio del Nivel 5 que se había ganado.
+  final int rewardedLevel;
+  final int updatedAt;
+  const LadderRewardRow({
+    required this.ladderId,
+    required this.rewardedLevel,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['ladder_id'] = Variable<String>(ladderId);
+    map['rewarded_level'] = Variable<int>(rewardedLevel);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  LadderRewardsCompanion toCompanion(bool nullToAbsent) {
+    return LadderRewardsCompanion(
+      ladderId: Value(ladderId),
+      rewardedLevel: Value(rewardedLevel),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory LadderRewardRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LadderRewardRow(
+      ladderId: serializer.fromJson<String>(json['ladderId']),
+      rewardedLevel: serializer.fromJson<int>(json['rewardedLevel']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'ladderId': serializer.toJson<String>(ladderId),
+      'rewardedLevel': serializer.toJson<int>(rewardedLevel),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  LadderRewardRow copyWith({
+    String? ladderId,
+    int? rewardedLevel,
+    int? updatedAt,
+  }) => LadderRewardRow(
+    ladderId: ladderId ?? this.ladderId,
+    rewardedLevel: rewardedLevel ?? this.rewardedLevel,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  LadderRewardRow copyWithCompanion(LadderRewardsCompanion data) {
+    return LadderRewardRow(
+      ladderId: data.ladderId.present ? data.ladderId.value : this.ladderId,
+      rewardedLevel: data.rewardedLevel.present
+          ? data.rewardedLevel.value
+          : this.rewardedLevel,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LadderRewardRow(')
+          ..write('ladderId: $ladderId, ')
+          ..write('rewardedLevel: $rewardedLevel, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(ladderId, rewardedLevel, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LadderRewardRow &&
+          other.ladderId == this.ladderId &&
+          other.rewardedLevel == this.rewardedLevel &&
+          other.updatedAt == this.updatedAt);
+}
+
+class LadderRewardsCompanion extends UpdateCompanion<LadderRewardRow> {
+  final Value<String> ladderId;
+  final Value<int> rewardedLevel;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const LadderRewardsCompanion({
+    this.ladderId = const Value.absent(),
+    this.rewardedLevel = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  LadderRewardsCompanion.insert({
+    required String ladderId,
+    this.rewardedLevel = const Value.absent(),
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : ladderId = Value(ladderId),
+       updatedAt = Value(updatedAt);
+  static Insertable<LadderRewardRow> custom({
+    Expression<String>? ladderId,
+    Expression<int>? rewardedLevel,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (ladderId != null) 'ladder_id': ladderId,
+      if (rewardedLevel != null) 'rewarded_level': rewardedLevel,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  LadderRewardsCompanion copyWith({
+    Value<String>? ladderId,
+    Value<int>? rewardedLevel,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return LadderRewardsCompanion(
+      ladderId: ladderId ?? this.ladderId,
+      rewardedLevel: rewardedLevel ?? this.rewardedLevel,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (ladderId.present) {
+      map['ladder_id'] = Variable<String>(ladderId.value);
+    }
+    if (rewardedLevel.present) {
+      map['rewarded_level'] = Variable<int>(rewardedLevel.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LadderRewardsCompanion(')
+          ..write('ladderId: $ladderId, ')
+          ..write('rewardedLevel: $rewardedLevel, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6265,6 +6543,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $GameStatsTable gameStats = $GameStatsTable(this);
   late final $CategoryLevelsTable categoryLevels = $CategoryLevelsTable(this);
   late final $PlacesTable places = $PlacesTable(this);
+  late final $LadderRewardsTable ladderRewards = $LadderRewardsTable(this);
   late final Index idxMatchesPlayerPlayedAt = Index(
     'idx_matches_player_played_at',
     'CREATE INDEX idx_matches_player_played_at ON matches (player_local_id, played_at)',
@@ -6305,6 +6584,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     gameStats,
     categoryLevels,
     places,
+    ladderRewards,
     idxMatchesPlayerPlayedAt,
     idxMatchesSyncStatus,
     idxSyncOpsStatusNextAttempt,
@@ -10561,6 +10841,179 @@ typedef $$PlacesTableProcessedTableManager =
       PlaceRow,
       PrefetchHooks Function()
     >;
+typedef $$LadderRewardsTableCreateCompanionBuilder =
+    LadderRewardsCompanion Function({
+      required String ladderId,
+      Value<int> rewardedLevel,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$LadderRewardsTableUpdateCompanionBuilder =
+    LadderRewardsCompanion Function({
+      Value<String> ladderId,
+      Value<int> rewardedLevel,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$LadderRewardsTableFilterComposer
+    extends Composer<_$AppDatabase, $LadderRewardsTable> {
+  $$LadderRewardsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get ladderId => $composableBuilder(
+    column: $table.ladderId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rewardedLevel => $composableBuilder(
+    column: $table.rewardedLevel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$LadderRewardsTableOrderingComposer
+    extends Composer<_$AppDatabase, $LadderRewardsTable> {
+  $$LadderRewardsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get ladderId => $composableBuilder(
+    column: $table.ladderId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rewardedLevel => $composableBuilder(
+    column: $table.rewardedLevel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$LadderRewardsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $LadderRewardsTable> {
+  $$LadderRewardsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get ladderId =>
+      $composableBuilder(column: $table.ladderId, builder: (column) => column);
+
+  GeneratedColumn<int> get rewardedLevel => $composableBuilder(
+    column: $table.rewardedLevel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$LadderRewardsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $LadderRewardsTable,
+          LadderRewardRow,
+          $$LadderRewardsTableFilterComposer,
+          $$LadderRewardsTableOrderingComposer,
+          $$LadderRewardsTableAnnotationComposer,
+          $$LadderRewardsTableCreateCompanionBuilder,
+          $$LadderRewardsTableUpdateCompanionBuilder,
+          (
+            LadderRewardRow,
+            BaseReferences<_$AppDatabase, $LadderRewardsTable, LadderRewardRow>,
+          ),
+          LadderRewardRow,
+          PrefetchHooks Function()
+        > {
+  $$LadderRewardsTableTableManager(_$AppDatabase db, $LadderRewardsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LadderRewardsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$LadderRewardsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$LadderRewardsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> ladderId = const Value.absent(),
+                Value<int> rewardedLevel = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => LadderRewardsCompanion(
+                ladderId: ladderId,
+                rewardedLevel: rewardedLevel,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String ladderId,
+                Value<int> rewardedLevel = const Value.absent(),
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => LadderRewardsCompanion.insert(
+                ladderId: ladderId,
+                rewardedLevel: rewardedLevel,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$LadderRewardsTable, LadderRewardRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $LadderRewardsTable,
+                    LadderRewardRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$LadderRewardsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $LadderRewardsTable,
+      LadderRewardRow,
+      $$LadderRewardsTableFilterComposer,
+      $$LadderRewardsTableOrderingComposer,
+      $$LadderRewardsTableAnnotationComposer,
+      $$LadderRewardsTableCreateCompanionBuilder,
+      $$LadderRewardsTableUpdateCompanionBuilder,
+      (
+        LadderRewardRow,
+        BaseReferences<_$AppDatabase, $LadderRewardsTable, LadderRewardRow>,
+      ),
+      LadderRewardRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -10590,4 +11043,6 @@ class $AppDatabaseManager {
       $$CategoryLevelsTableTableManager(_db, _db.categoryLevels);
   $$PlacesTableTableManager get places =>
       $$PlacesTableTableManager(_db, _db.places);
+  $$LadderRewardsTableTableManager get ladderRewards =>
+      $$LadderRewardsTableTableManager(_db, _db.ladderRewards);
 }

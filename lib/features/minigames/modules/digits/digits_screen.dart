@@ -9,6 +9,7 @@ import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/digits/controller/digits_controller.dart';
+import 'package:memory_companion/features/minigames/modules/digits/digits_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/digits/model/digits_state.dart';
 import 'package:memory_companion/features/statistics/widget/stats_format.dart';
 
@@ -28,6 +29,7 @@ class DigitsScreen extends ConsumerWidget {
       DigitsPhase.input => _Input(state: state, controller: controller),
       DigitsPhase.feedback => _Feedback(state: state),
       DigitsPhase.finished => MinigameResultView(
+        game: const DigitsGameModule(),
         won: state.won,
         headline: '${state.bestSpan}',
         caption: AppLocale.digitsBestSpanLabel.getString(context),

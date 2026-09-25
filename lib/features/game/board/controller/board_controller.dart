@@ -15,6 +15,7 @@ import 'package:memory_companion/features/game/board/model/shared_board.dart';
 import 'package:memory_companion/features/game/board/rules/round_tracker.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/game/model/match_rewards.dart';
+import 'package:memory_companion/features/ladder/level_rewards.dart';
 import 'package:memory_companion/features/level_map/controller/level_map_controller.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -198,10 +199,17 @@ class BoardController extends Notifier<BoardState> {
       won: won,
     );
 
+    // Winning a board completes its level; on a reward step the overlay
+    // announces the prize, and `LadderService` pays it (see
+    // `AdaptiveDifficultyController.recordRound`).
+    final completedLevel = won ? finished.level : null;
     state = state.copyWith(
       coinsEarned: rewards.coins,
       xpEarned: rewards.xp,
       won: won,
+      levelReward: completedLevel == null
+          ? null
+          : LevelRewards.forCompletedLevel(completedLevel),
     );
 
     // Local statistics, on their own: they need no account and no network.

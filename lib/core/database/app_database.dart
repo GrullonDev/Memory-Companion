@@ -6,6 +6,7 @@ import 'package:memory_companion/core/database/tables/category_levels.dart';
 import 'package:memory_companion/core/database/tables/daily_challenges.dart';
 import 'package:memory_companion/core/database/tables/display_settings.dart';
 import 'package:memory_companion/core/database/tables/game_stats.dart';
+import 'package:memory_companion/core/database/tables/ladder_rewards.dart';
 import 'package:memory_companion/core/database/tables/level_progress.dart';
 import 'package:memory_companion/core/database/tables/lives_states.dart';
 import 'package:memory_companion/core/database/tables/matches.dart';
@@ -37,6 +38,7 @@ part 'app_database.g.dart';
     GameStats,
     CategoryLevels,
     Places,
+    LadderRewards,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -58,8 +60,10 @@ class AppDatabase extends _$AppDatabase {
   ///  6. Contexto automático: `places`, el lugar y los jugadores cercanos de
   ///     cada partida en `game_stats`, y los dos permisos opcionales en
   ///     `display_settings`. Todo solo local.
+  ///  7. `ladder_rewards` — premios ya entregados de la escalera de niveles
+  ///     de cada juego.
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration {
@@ -90,6 +94,7 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(settings, settings.contextLocation);
           await m.addColumn(settings, settings.contextNearby);
         }
+        if (from < 7) await m.createTable(ladderRewards);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

@@ -46,8 +46,8 @@ void main() {
     );
   }
 
-  test('el esquema arranca en la versión 6 y vacío', () async {
-    expect(db.schemaVersion, 6);
+  test('el esquema arranca en la versión 7 y vacío', () async {
+    expect(db.schemaVersion, 7);
     expect(await db.select(db.playerProfiles).get(), isEmpty);
     expect(await db.select(db.syncOperations).get(), isEmpty);
     expect(await db.select(db.displaySettings).get(), isEmpty);
@@ -198,5 +198,7 @@ void main() {
     expect(settings.contextNearby, isFalse);
 
     expect(await old.select(old.places).get(), isEmpty);
+    // Y la 7 crea la tabla de premios de la escalera, vacía.
+    expect(await old.select(old.ladderRewards).get(), isEmpty);
   });
 }

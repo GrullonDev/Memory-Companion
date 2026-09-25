@@ -99,6 +99,11 @@ abstract class BaseMinigame {
   String statsKeyFor(String? variantId) =>
       variantId == null ? id : '$id:$variantId';
 
+  /// Whether the game climbs a level ladder of its own, one level per round
+  /// won (see `GameLadder`). Every round won is a `game_stats` row, so the
+  /// ladder needs no storage beyond the rewards already paid.
+  bool get climbsByWins => true;
+
   /// Whether a stored `category_id` belongs to this game. Must agree with
   /// [statsKeyFor].
   bool ownsStatsKey(String key) => key == id || key.startsWith('$id:');

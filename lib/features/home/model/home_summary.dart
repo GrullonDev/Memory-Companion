@@ -1,3 +1,5 @@
+import 'package:memory_companion/features/game/board/category/game_categories.dart';
+import 'package:memory_companion/features/ladder/game_ladder.dart';
 import 'package:memory_companion/features/player/model/player_level.dart';
 
 /// Todo lo que la cabecera de la Home necesita saber del jugador, en una
@@ -16,9 +18,10 @@ class HomeSummary {
     required this.totalXp,
     required this.streakDays,
     required this.isLoading,
+    this.ladders = const [],
   });
 
-  const HomeSummary.empty({this.isLoading = false})
+  const HomeSummary.empty({this.isLoading = false, this.ladders = const []})
       : playerName = '',
         totalXp = 0,
         streakDays = 0;
@@ -34,6 +37,17 @@ class HomeSummary {
   final int streakDays;
 
   final bool isLoading;
+
+  /// Cada juego con su propia escalera de niveles. Ver [GameLadder].
+  final List<GameLadder> ladders;
+
+  /// La escalera que abre el botón principal: el mapa de niveles del juego
+  /// clásico. Es el «Nivel» grande de la Home.
+  GameLadder get mainLadder {
+    final classic = GameLadder.boardId(GameCategories.classic);
+    return ladders.where((l) => l.id == classic).firstOrNull ??
+        GameLadder.board(GameCategories.classic, level: 1);
+  }
 
   int get level => levelFromTotalXp(totalXp);
 

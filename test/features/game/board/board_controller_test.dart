@@ -15,6 +15,7 @@ import 'package:memory_companion/features/game/board/model/board_state.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
 import 'package:memory_companion/features/game/model/match_rewards.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 import 'package:memory_companion/features/settings/model/display_preferences.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
@@ -138,6 +139,43 @@ void main() {
             .roundsPlayed,
         12,
       );
+    });
+  });
+
+  test('cada 5 niveles ganados el tablero anuncia y entrega un premio', () {
+    fakeAsync((async) {
+      container.listen(boardControllerProvider(setup), (_, _) {});
+      async.elapse(Duration(seconds: state().previewSecondsRemaining));
+
+      final announced = <int?>[];
+      for (var round = 0; round < 5; round++) {
+        expect(state().level, round + 1);
+        for (final (a, b) in pairIndexes()) {
+          controller()
+            ..flipCard(a)
+            ..flipCard(b);
+          async.elapse(const Duration(seconds: 1));
+        }
+        expect(state().won, isTrue);
+        announced.add(state().levelReward?.level);
+
+        controller().nextLevel();
+        async.elapse(Duration(seconds: state().previewSecondsRemaining));
+      }
+
+      // Solo el Nivel 5 es peldaño de premio.
+      expect(announced, [null, null, null, null, 5]);
+      expect(state().level, 6);
+
+      // Y las monedas llegan de verdad al saldo local.
+      async.elapse(const Duration(seconds: 1));
+      int? coins;
+      container
+          .read(playerRepositoryProvider)
+          .readLocalProfile()
+          .then((p) => coins = p?.totalCoins);
+      async.elapse(const Duration(seconds: 1));
+      expect(coins, 100);
     });
   });
 

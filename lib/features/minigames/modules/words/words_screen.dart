@@ -11,6 +11,7 @@ import 'package:memory_companion/core/widgets/app_progress_bar.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/words/controller/words_controller.dart';
 import 'package:memory_companion/features/minigames/modules/words/model/words_state.dart';
+import 'package:memory_companion/features/minigames/modules/words/words_game_module.dart';
 import 'package:memory_companion/features/statistics/widget/stats_format.dart';
 
 /// The word-recognition game, dealt in the app's current language.
@@ -31,6 +32,7 @@ class WordsScreen extends ConsumerWidget {
       WordsPhase.study => _Study(state: state, onReady: controller.finishStudy),
       WordsPhase.test => _Test(state: state, controller: controller),
       WordsPhase.finished => MinigameResultView(
+        game: const WordsGameModule(),
         won: state.won,
         headline: _ofTotal(
           AppLocale.wordsScoreLabel.getString(context),

@@ -110,6 +110,8 @@ class BoardScreen extends StatelessWidget {
                 elapsedSeconds: state.elapsedSeconds,
                 coinsEarned: state.coinsEarned,
                 xpEarned: state.xpEarned,
+                completedLevel: state.won ? state.level : null,
+                levelReward: state.levelReward,
                 onNextLevel: onNextLevel ?? onRestart,
                 onPlayAgain: onRestart,
                 onViewStats: () =>
