@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/features/auth/complete_profile/complete_profile_screen.dart';
 import 'package:memory_companion/features/auth/login/login_screen.dart';
 import 'package:memory_companion/features/auth/register/register_screen.dart';
 import 'package:memory_companion/features/auth/splash/splash_page.dart';
@@ -15,6 +16,8 @@ import 'package:memory_companion/features/settings/settings_screen.dart';
 import 'package:memory_companion/features/shop/shop_screen.dart';
 import 'package:memory_companion/features/history_search/history_search_screen.dart';
 import 'package:memory_companion/features/statistics/statistics_screen.dart';
+import 'package:memory_companion/features/versus/cpu/cpu_duel_page.dart';
+import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/duel_page.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/versus_screen.dart';
@@ -47,6 +50,15 @@ class RouteSwitch {
           );
         }
         return MaterialPageRoute(builder: (_) => const VersusScreen());
+      case RoutePaths.cpuDuel:
+        final level = settings.arguments;
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) =>
+              CpuDuelPage(level: level is CpuLevel ? level : CpuLevel.normal),
+        );
+      case RoutePaths.completeProfile:
+        return MaterialPageRoute(builder: (_) => const CompleteProfileScreen());
       case RoutePaths.friends:
         return MaterialPageRoute(builder: (_) => const FriendsScreen());
       case RoutePaths.shop:

@@ -474,6 +474,26 @@ mixin AppLocale {
   static const String timeAgoWeeks = 'timeAgoWeeks';
   static const String timeAgoOneMonth = 'timeAgoOneMonth';
   static const String timeAgoMonths = 'timeAgoMonths';
+  static const String cpuDuelTitle = 'cpuDuelTitle';
+  static const String cpuDuelMessage = 'cpuDuelMessage';
+  static const String cpuLevelEasy = 'cpuLevelEasy';
+  static const String cpuLevelNormal = 'cpuLevelNormal';
+  static const String cpuLevelHard = 'cpuLevelHard';
+  static const String cpuName = 'cpuName';
+  static const String playRoomTitle = 'playRoomTitle';
+  static const String playRoomMessage = 'playRoomMessage';
+  static const String createRoomLabel = 'createRoomLabel';
+  static const String joinRoomLabel = 'joinRoomLabel';
+  static const String roomCodeHint = 'roomCodeHint';
+  static const String roomCodeLabel = 'roomCodeLabel';
+  static const String roomCreatedTitle = 'roomCreatedTitle';
+  static const String roomCreatedMessage = 'roomCreatedMessage';
+  static const String roomInviteShareText = 'roomInviteShareText';
+  static const String roomNotFound = 'roomNotFound';
+  static const String copyCodeLabel = 'copyCodeLabel';
+  static const String completeProfileTitle = 'completeProfileTitle';
+  static const String completeProfileMessage = 'completeProfileMessage';
+  static const String displayNameRequired = 'displayNameRequired';
 
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
@@ -936,6 +956,26 @@ mixin AppLocale {
     timeAgoWeeks: 'Hace {n} sem',
     timeAgoOneMonth: 'Hace 1 mes',
     timeAgoMonths: 'Hace {n} meses',
+    cpuDuelTitle: 'Contra la máquina',
+    cpuDuelMessage: 'Sin cuenta ni conexión: el mismo tablero para los dos.',
+    cpuLevelEasy: 'Fácil',
+    cpuLevelNormal: 'Normal',
+    cpuLevelHard: 'Difícil',
+    cpuName: 'Máquina ({level})',
+    playRoomTitle: 'Sala de juego',
+    playRoomMessage: 'Crea una sala y comparte el código, o entra en la de alguien más.',
+    createRoomLabel: 'Crear sala',
+    joinRoomLabel: 'Entrar',
+    roomCodeHint: 'Código de sala',
+    roomCodeLabel: 'Sala {code}',
+    roomCreatedTitle: '¡Sala creada!',
+    roomCreatedMessage: 'Comparte este código. Puedes jugar ya: tu rival jugará el mismo tablero cuando entre.',
+    roomInviteShareText: '¡Te reto en Memory Arcade! Entra en mi sala con el código {code}',
+    roomNotFound: 'No hay ninguna sala abierta con ese código',
+    copyCodeLabel: 'Copiar código',
+    completeProfileTitle: '¿Cómo te llamamos?',
+    completeProfileMessage: 'Es el nombre que verán tus amigos y rivales. Puedes cambiarlo después en tu perfil.',
+    displayNameRequired: 'Escribe un nombre de al menos 2 letras',
   };
 
   static const Map<String, dynamic> en = {
@@ -1399,5 +1439,26 @@ mixin AppLocale {
     timeAgoWeeks: '{n} wk ago',
     timeAgoOneMonth: '1 month ago',
     timeAgoMonths: '{n} months ago',
+    cpuDuelTitle: 'Play the computer',
+    cpuDuelMessage: 'No account or connection needed: same board for both.',
+    cpuLevelEasy: 'Easy',
+    cpuLevelNormal: 'Normal',
+    cpuLevelHard: 'Hard',
+    cpuName: 'Computer ({level})',
+    playRoomTitle: 'Game room',
+    playRoomMessage: "Open a room and share its code, or join someone else's.",
+    createRoomLabel: 'Create room',
+    joinRoomLabel: 'Join',
+    roomCodeHint: 'Room code',
+    roomCodeLabel: 'Room {code}',
+    roomCreatedTitle: 'Room created!',
+    roomCreatedMessage: 'Share this code. You can play now: your rival gets the same board when they join.',
+    roomInviteShareText: 'I challenge you in Memory Arcade! Join my room with the code {code}',
+    roomNotFound: 'No open room has that code',
+    copyCodeLabel: 'Copy code',
+    completeProfileTitle: 'What should we call you?',
+    completeProfileMessage:
+        "It's the name your friends and rivals will see. You can change it later in your profile.",
+    displayNameRequired: 'Enter a name of at least 2 letters',
   };
 }
