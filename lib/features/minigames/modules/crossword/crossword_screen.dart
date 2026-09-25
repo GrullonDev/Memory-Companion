@@ -6,6 +6,7 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/core/widgets/success_pulse.dart';
 import 'package:memory_companion/features/minigames/core/widget/minigame_result_view.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/controller/crossword_controller.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/crossword_game_module.dart';
@@ -66,9 +67,12 @@ class _Board extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final highlight = state.feedback == CrosswordFeedback.found
+    final found = state.feedback == CrosswordFeedback.found;
+    final highlight = found
         ? state.layout.wordOf(state.feedbackWord).cells.toSet()
         : const <(int, int)>{};
+    // One id per find: the tiles and the message pop once for each word.
+    final findId = found ? state.found.length : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -104,9 +108,15 @@ class _Board extends StatelessWidget {
           layout: state.layout,
           revealed: state.revealed,
           highlight: highlight,
+          highlightId: findId,
         ),
         const SizedBox(height: AppSpacing.md),
-        _FeedbackLine(state: state),
+        SuccessPulse(
+          trigger: findId,
+          color: Colors.transparent,
+          haptic: true,
+          child: _FeedbackLine(state: state),
+        ),
         const SizedBox(height: AppSpacing.sm),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -169,9 +179,9 @@ class _FeedbackLine extends StatelessWidget {
         child: Text(
           key == null ? '' : fill(key.getString(context), state.feedbackWord),
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: color,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: color),
         ),
       ),
     );

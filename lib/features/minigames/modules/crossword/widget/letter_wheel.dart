@@ -38,6 +38,12 @@ class _LetterWheelState extends State<LetterWheel> {
   Offset? _finger;
   bool _dragging = false;
 
+  /// Where the current touch went down, and the tap-spelt word it
+  /// interrupted: a touch that never travels is a tap, not a swipe.
+  Offset? _downAt;
+  bool _travelled = false;
+  List<int> _beforeTouch = const [];
+
   String get _word => _selected.map((i) => widget.letters[i]).join();
 
   @override
@@ -49,7 +55,8 @@ class _LetterWheelState extends State<LetterWheel> {
   }
 
   static bool _sameLetters(List<String> a, List<String> b) =>
-      a.length == b.length && Iterable.generate(a.length).every((i) => a[i] == b[i]);
+      a.length == b.length &&
+      Iterable.generate(a.length).every((i) => a[i] == b[i]);
 
   List<Offset> _centers() {
     final center = Offset(_wheelSize / 2, _wheelSize / 2);
@@ -57,8 +64,7 @@ class _LetterWheelState extends State<LetterWheel> {
     final count = widget.letters.length;
     return [
       for (var i = 0; i < count; i++)
-        center +
-            Offset.fromDirection(-pi / 2 + 2 * pi * i / count, radius),
+        center + Offset.fromDirection(-pi / 2 + 2 * pi * i / count, radius),
     ];
   }
 
@@ -73,6 +79,9 @@ class _LetterWheelState extends State<LetterWheel> {
   }
 
   void _onPanStart(DragStartDetails details) {
+    _downAt = details.localPosition;
+    _travelled = false;
+    _beforeTouch = List.of(_selected);
     setState(() {
       _selected.clear();
       _dragging = true;
@@ -83,6 +92,10 @@ class _LetterWheelState extends State<LetterWheel> {
   }
 
   void _onPanUpdate(DragUpdateDetails details) {
+    if (!_travelled &&
+        (details.localPosition - _downAt!).distance > kTouchSlop) {
+      _travelled = true;
+    }
     setState(() {
       _finger = details.localPosition;
       final hit = _letterAt(details.localPosition);
@@ -97,6 +110,20 @@ class _LetterWheelState extends State<LetterWheel> {
   }
 
   void _onPanEnd(DragEndDetails _) {
+    // The wheel claims every touch on a letter (see [_LetterGrabRecognizer]),
+    // taps included; one that never moved spells by tapping instead.
+    if (!_travelled && _selected.length == 1) {
+      final tapped = _selected.single;
+      setState(() {
+        _dragging = false;
+        _finger = null;
+        _selected
+          ..clear()
+          ..addAll(_beforeTouch);
+      });
+      _tap(tapped);
+      return;
+    }
     final word = _word;
     setState(() {
       _selected.clear();
@@ -171,16 +198,22 @@ class _LetterWheelState extends State<LetterWheel> {
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
-        GestureDetector(
-          // Start where the finger lands, not where the drag is recognised a
-          // few pixels later — by then it may have left the first letter.
-          dragStartBehavior: DragStartBehavior.down,
-          onPanStart: _onPanStart,
-          onPanUpdate: _onPanUpdate,
-          onPanEnd: _onPanEnd,
-          onTapUp: (details) {
-            final hit = _letterAt(details.localPosition);
-            if (hit != null) _tap(hit);
+        RawGestureDetector(
+          gestures: {
+            _LetterGrabRecognizer:
+                GestureRecognizerFactoryWithHandlers<_LetterGrabRecognizer>(
+                  () => _LetterGrabRecognizer(
+                    grabs: (point) => _letterAt(point) != null,
+                  ),
+                  (recognizer) => recognizer
+                    // Start where the finger lands, not where the drag is
+                    // recognised a few pixels later — by then it may have
+                    // left the first letter.
+                    ..dragStartBehavior = DragStartBehavior.down
+                    ..onStart = _onPanStart
+                    ..onUpdate = _onPanUpdate
+                    ..onEnd = _onPanEnd,
+                ),
           },
           child: SizedBox.square(
             dimension: _wheelSize,
@@ -250,6 +283,27 @@ class _LetterWheelState extends State<LetterWheel> {
   }
 }
 
+/// A pan that wins at once when the finger lands on a letter.
+///
+/// The wheel sits in a scrolling screen. A plain pan only wins after 36px
+/// of travel, but the screen's vertical drag claims the gesture after 18px,
+/// so a mostly vertical stroke scrolled the page instead of spelling. A
+/// touch that starts on a letter is always meant for the wheel; one on the
+/// wheel's background still scrolls the page.
+class _LetterGrabRecognizer extends PanGestureRecognizer {
+  _LetterGrabRecognizer({required this.grabs});
+
+  final bool Function(Offset localPosition) grabs;
+
+  @override
+  void addAllowedPointer(PointerDownEvent event) {
+    super.addAllowedPointer(event);
+    if (grabs(event.localPosition)) {
+      resolvePointer(event.pointer, GestureDisposition.accepted);
+    }
+  }
+}
+
 class _LetterTile extends StatelessWidget {
   const _LetterTile({
     required this.letter,
@@ -312,15 +366,13 @@ class _PathPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..strokeJoin = StrokeJoin.round
       ..style = PaintingStyle.stroke;
-    canvas.drawPath(
-      Path()..addPolygon(points, false),
-      paint,
-    );
+    canvas.drawPath(Path()..addPolygon(points, false), paint);
   }
 
   @override
   bool shouldRepaint(_PathPainter oldDelegate) =>
       oldDelegate.points.length != points.length ||
-      Iterable.generate(points.length)
-          .any((i) => oldDelegate.points[i] != points[i]);
+      Iterable.generate(
+        points.length,
+      ).any((i) => oldDelegate.points[i] != points[i]);
 }
