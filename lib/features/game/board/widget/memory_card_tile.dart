@@ -4,6 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/core/widgets/success_pulse.dart';
 import 'package:memory_companion/features/game/board/model/card_face.dart';
 import 'package:memory_companion/features/game/board/model/memory_card.dart';
 
@@ -52,22 +53,35 @@ class MemoryCardTile extends StatelessWidget {
         button: true,
         enabled: !card.isMatched,
         label: _semanticLabel(context, revealed),
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: card.isMatched ? null : onTap,
-            borderRadius: radius,
-            child: ExcludeSemantics(
-              child: AnimatedSwitcher(
-                duration: tokens.flipDuration,
-                child: revealed
-                    ? _FaceUp(
-                        key: const ValueKey('up'),
-                        face: card.face,
-                        isMatched: card.isMatched,
-                        tokens: tokens,
-                      )
-                    : _FaceDown(key: const ValueKey('down'), tokens: tokens),
+        // Both cards of a pair pop and glow the moment they match.
+        child: SuccessPulse(
+          trigger: card.isMatched ? card.id : null,
+          borderRadius: radius,
+          haptic: true,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: card.isMatched ? null : onTap,
+              borderRadius: radius,
+              child: ExcludeSemantics(
+                child: AnimatedSwitcher(
+                  duration: tokens.flipDuration,
+                  // The default layout loosens the constraints, which shrank
+                  // the face-up card to the size of its symbol: a small white
+                  // box floating in the cell. Both faces fill the cell.
+                  layoutBuilder: (current, previous) => Stack(
+                    fit: StackFit.expand,
+                    children: [...previous, ?current],
+                  ),
+                  child: revealed
+                      ? _FaceUp(
+                          key: const ValueKey('up'),
+                          face: card.face,
+                          isMatched: card.isMatched,
+                          tokens: tokens,
+                        )
+                      : _FaceDown(key: const ValueKey('down'), tokens: tokens),
+                ),
               ),
             ),
           ),
@@ -112,12 +126,13 @@ class _FaceDown extends StatelessWidget {
                 ),
               ),
             )
-          : ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+          // Transparent cut-out of the mascot: the full logo has an opaque
+          // white background, which showed as a white square on the card.
+          : FractionallySizedBox(
+              widthFactor: 0.62,
+              heightFactor: 0.62,
               child: Image.asset(
-                'assets/logo_mascota.png',
-                width: 36,
-                height: 36,
+                'assets/card_back_mascot.png',
                 fit: BoxFit.contain,
               ),
             ),
