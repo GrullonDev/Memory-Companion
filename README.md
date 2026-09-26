@@ -145,7 +145,9 @@ firebase deploy --only firestore:rules --project memory-compaknion
 | `(default)` | Desarrollo: builds de debug y profile |
 | `produccion` | App publicada: builds de release |
 
-La elige `lib/core/firebase/firestore_database.dart`. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
+La elige `lib/core/firebase/firestore_database.dart`.
+
+Desarrollo y producción también son apps distintas en el teléfono: debug y profile se instalan como `com.grullondev.memory_arcade.dev` ("Memory Arcade Dev") y release como `com.grullondev.memory_arcade` ("Memory Arcade"). Pueden estar instaladas a la vez y cada una tiene sus propios datos locales y su propia sesión. Las dos apps Android tienen que estar registradas en el proyecto de Firebase y `android/app/google-services.json` tiene que incluir ambas; si falta la de `.dev`, el build de debug falla con *No matching client found*. Para Google Sign-In, registra además la huella SHA-1 de la clave de debug en la app `.dev`. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
 
 > Si Amigos o Versus muestran "Reintentar" con `permission-denied`, casi siempre es que las reglas desplegadas están desactualizadas.
 

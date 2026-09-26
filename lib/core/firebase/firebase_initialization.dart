@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/firebase_options.dart';
@@ -14,8 +15,15 @@ import 'package:memory_companion/firebase_options.dart';
 /// Ojo: `initializeApp` es una operación **local** (lee la configuración
 /// empaquetada), así que no necesita red y resuelve rápido incluso en avión.
 /// Lo que quitamos no es tiempo de espera, es una dependencia estructural.
+///
+/// En Android no se pasan opciones: el SDK nativo toma la configuración de
+/// `google-services.json` para el paquete instalado. Así el build de
+/// desarrollo (`com.grullondev.memory_arcade.dev`) y el de producción se
+/// registran cada uno como su propia app de Firebase.
 final firebaseInitializationProvider = FutureProvider<void>((ref) async {
+  final useNativeConfig =
+      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    options: useNativeConfig ? null : DefaultFirebaseOptions.currentPlatform,
   );
 });
