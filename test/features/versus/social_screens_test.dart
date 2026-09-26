@@ -16,11 +16,17 @@ import 'package:memory_companion/features/friends/repository/social_repository.d
 import 'package:memory_companion/features/friends/widget/invite_friends_card.dart';
 import 'package:memory_companion/features/friends/widget/social_network_card.dart';
 import 'package:memory_companion/features/game/board/category/game_categories.dart';
+import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
+import 'package:memory_companion/features/game_context/service/nearby_radio.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/player/model/player_profile.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
 import 'package:memory_companion/features/versus/duel_page.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/duel_game.dart';
+import 'package:memory_companion/features/versus/widget/duel_presence_bar.dart';
+import 'package:memory_companion/features/versus/widget/opponent_mirror.dart';
+import 'package:memory_companion/features/minigames/modules/digits/digits_screen.dart';
 import 'package:memory_companion/features/versus/repository/duel_repository.dart';
 import 'package:memory_companion/features/versus/versus_screen.dart';
 
@@ -112,6 +118,8 @@ void main() {
           socialRepositoryProvider.overrideWithValue(social),
           duelRepositoryProvider.overrideWithValue(duels),
           duelRandomProvider.overrideWithValue(Random(1)),
+          versusOnlineProvider.overrideWithValue(true),
+          nearbyRadioProvider.overrideWithValue(_SilentRadio()),
         ],
         child: MaterialApp(
           locale: const Locale('en'),
@@ -141,8 +149,8 @@ void main() {
     await pump(tester, const VersusScreen(), uid: null);
 
     expect(find.text('Alice'), findsOneWidget);
-    expect(find.text('Play with friends'), findsOneWidget);
-    expect(find.text('START DUEL'), findsNothing);
+    expect(find.text('Opponent'), findsOneWidget);
+    expect(find.text('PLAY'), findsOneWidget, reason: 'se juega sin cuenta');
     expect(find.text('Versus'), findsOneWidget, reason: 'pestaña Versus');
     expect(find.text('Shop'), findsNothing, reason: 'la Tienda está oculta');
   });
@@ -154,17 +162,22 @@ void main() {
     await pump(tester, const VersusScreen());
 
     expect(find.text('Bob'), findsOneWidget);
-    await tester.tap(find.text('START DUEL'));
+    await tester.tap(find.text('PLAY'));
+    await settle(tester);
+    await tester.tap(find.text('Find an online opponent'));
     await settle(tester);
 
     expect(find.text('duel:bob'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('Versus sin amigos lleva a Amigos', (tester) async {
+  testWidgets('Versus sin amigos muestra el oponente por encontrar', (
+    tester,
+  ) async {
     await pump(tester, const VersusScreen());
-    expect(find.text('No rival yet'), findsOneWidget);
-    expect(find.text('START DUEL'), findsNothing);
+    expect(find.text('Opponent'), findsOneWidget);
+    expect(find.text('Go to Friends'), findsNothing);
+    expect(find.text('PLAY'), findsOneWidget);
   });
 
   // La pantalla de Amigos entera no se monta: su cabecera usa google_fonts,
@@ -248,9 +261,9 @@ void main() {
     );
   });
 
-  testWidgets('un duelo ya jugado muestra el resultado, no el tablero', (
-    tester,
-  ) async {
+  testWidgets('la serie se sigue en vivo hasta la victoria', (tester) async {
+    const mine = DuelScore(score: 640, seconds: 52, moves: 11);
+    const theirs = DuelScore(score: 500, seconds: 40, moves: 10);
     late Duel duel;
     await tester.runAsync(() async {
       await befriend('bob', 'Bob');
@@ -261,29 +274,111 @@ void main() {
         seed: 9,
         categoryId: GameCategories.classic.id,
         languageCode: 'en',
+        game: DuelGame.digits,
       );
-      await duels.submitResult(
-        duelId: duel.id,
-        uid: 'alice',
-        score: const DuelScore(score: 640, seconds: 52, moves: 11),
-      );
+      for (var round = 0; round < 3; round++) {
+        await duels.submitRound(
+          duelId: duel.id,
+          uid: 'alice',
+          round: round,
+          score: mine,
+        );
+      }
     });
     await pump(tester, DuelPage(duel: duel));
 
-    expect(find.text('Waiting for rival'), findsOneWidget);
-    expect(find.text('640 pts'), findsOneWidget);
-    expect(find.text('vs Bob'), findsOneWidget);
+    expect(find.text('Waiting for Bob'), findsOneWidget);
+    expect(find.text('Has not played yet'), findsOneWidget);
+    expect(find.text('0 - 0'), findsOneWidget);
 
-    // Bob termina mientras Alice mira el resultado.
+    // Bob juega mientras Alice mira: su avance aparece ronda a ronda.
     await tester.runAsync(
-      () => duels.submitResult(
+      () => duels.submitRound(
         duelId: duel.id,
         uid: 'bob',
-        score: const DuelScore(score: 500, seconds: 40, moves: 10),
+        round: 0,
+        score: theirs,
       ),
     );
     await settle(tester);
-    expect(find.text('You won'), findsOneWidget);
-    expect(find.text('500 pts'), findsOneWidget);
+    expect(find.text('1 - 0'), findsOneWidget);
+    expect(find.text('Played 1 of 3 rounds'), findsOneWidget);
+
+    await tester.runAsync(
+      () => duels.submitRound(
+        duelId: duel.id,
+        uid: 'bob',
+        round: 1,
+        score: theirs,
+      ),
+    );
+    await settle(tester);
+    expect(find.text('Victory!'), findsOneWidget);
+    expect(find.text('2 - 0'), findsOneWidget);
+    expect(find.text('Rematch'), findsOneWidget);
+    expect(find.text('Not needed'), findsOneWidget, reason: 'ronda 3');
   });
+
+  testWidgets('jugar una ronda la muestra bajo el cara a cara', (tester) async {
+    late Duel duel;
+    await tester.runAsync(() async {
+      await befriend('bob', 'Bob');
+      duel = await duels.create(
+        challengerUid: 'alice',
+        opponentUid: 'bob',
+        friendshipId: 'alice_bob',
+        seed: 9,
+        categoryId: GameCategories.classic.id,
+        languageCode: 'en',
+        game: DuelGame.digits,
+      );
+    });
+    await pump(tester, DuelPage(duel: duel));
+    expect(find.text('Duel in progress'), findsOneWidget);
+
+    await tester.tap(find.text('Play round 1'));
+    await settle(tester);
+
+    expect(find.byType(DuelPresenceBar), findsOneWidget);
+    expect(find.text('Round 1 of 3'), findsOneWidget);
+    expect(find.byType(DigitsScreen), findsOneWidget);
+    expect(find.byType(OpponentMirror), findsOneWidget);
+    expect(find.text('Not playing right now'), findsOneWidget);
+
+    // Bob acierta en su teléfono: Alice lo ve al instante en el suyo.
+    await tester.runAsync(
+      () => duels.reportProgress(
+        duelId: duel.id,
+        uid: 'bob',
+        progress: const DuelProgress(
+          round: 0,
+          score: 30,
+          solved: 1,
+          total: 5,
+          event: DuelEvent.hit,
+          seq: 1,
+        ),
+      ),
+    );
+    await settle(tester);
+    expect(find.text('Bob got one right!'), findsOneWidget);
+    expect(find.text('30 pts'), findsWidgets, reason: 'espejo y barra');
+    expect(find.text('1/5'), findsOneWidget, reason: 'anillo del espejo');
+    expect(tester.takeException(), isNull);
+  });
+}
+
+/// Bluetooth that never hears anyone.
+class _SilentRadio implements NearbyRadio {
+  @override
+  Future<bool> requestPermission() async => true;
+
+  @override
+  Future<Set<String>?> scan(Duration duration) async => const {};
+
+  @override
+  Future<void> startAdvertising(String friendCode) async {}
+
+  @override
+  Future<void> stopAdvertising() async {}
 }

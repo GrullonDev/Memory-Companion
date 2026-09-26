@@ -2,13 +2,19 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:memory_companion/core/connectivity/controller/connection_status_controller.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
 import 'package:memory_companion/features/friends/model/friend.dart';
+import 'package:memory_companion/features/friends/model/friend_code.dart';
+import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
 import 'package:memory_companion/features/game/board/category/game_categories.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/player/model/player_level.dart';
+import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
+import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/duel_game.dart';
 import 'package:memory_companion/features/versus/model/room_code.dart';
 import 'package:memory_companion/features/versus/model/versus_player.dart';
 import 'package:memory_companion/features/versus/repository/duel_repository.dart';
@@ -26,6 +32,49 @@ final duelsProvider = StreamProvider.autoDispose.family<List<Duel>, String>(
 
 final duelProvider = StreamProvider.autoDispose.family<Duel?, String>(
   (ref, id) => ref.watch(duelRepositoryProvider).watchDuel(id),
+);
+
+/// Whether matchmaking may try Firestore. Overridden in tests, where the
+/// connectivity plugin is missing.
+final versusOnlineProvider = Provider<bool>(
+  (ref) =>
+      ref.watch(connectionStatusControllerProvider) == ConnectionStatus.online,
+);
+
+/// How the player asked to play from the Versus "Play" button.
+enum PlayMode { online, nearby }
+
+/// Where matchmaking is looking, for the progress dialog.
+enum MatchPhase { online, nearby }
+
+/// What matchmaking settled on: a duel against a real player, or a match
+/// against the computer when nobody was found.
+sealed class MatchResult {
+  const MatchResult();
+}
+
+class DuelMatch extends MatchResult {
+  const DuelMatch(this.duel);
+
+  final Duel duel;
+}
+
+class CpuMatch extends MatchResult {
+  const CpuMatch(this.level);
+
+  final CpuLevel level;
+}
+
+/// The game the player picked for their next duel.
+class SelectedDuelGame extends Notifier<DuelGame> {
+  @override
+  DuelGame build() => DuelGame.memory;
+
+  void select(DuelGame game) => state = game;
+}
+
+final selectedDuelGameProvider = NotifierProvider<SelectedDuelGame, DuelGame>(
+  SelectedDuelGame.new,
 );
 
 /// The friend the player means to challenge. Null picks the first friend.
@@ -162,6 +211,93 @@ class VersusController extends AsyncNotifier<VersusState> {
   void selectRival(String uid) =>
       ref.read(selectedRivalProvider.notifier).select(uid);
 
+  /// Finds someone to play, falling back step by step so the player always
+  /// gets a match: an online opponent (for [PlayMode.online], when there is
+  /// a connection), then a friend within Bluetooth range, then the
+  /// computer at a level suited to the player's.
+  Future<MatchResult> findMatch({
+    required PlayMode mode,
+    required String languageCode,
+    void Function(MatchPhase phase)? onPhase,
+  }) async {
+    final uid = await ref.read(socialUidProvider.future);
+    if (uid != null) {
+      if (mode == PlayMode.online && ref.read(versusOnlineProvider)) {
+        onPhase?.call(MatchPhase.online);
+        final duel = await _findOnline(uid, languageCode);
+        if (duel != null) return DuelMatch(duel);
+      }
+      onPhase?.call(MatchPhase.nearby);
+      final duel = await _findNearby(uid, languageCode);
+      if (duel != null) return DuelMatch(duel);
+    }
+    final player = await ref.read(localPlayerProvider.future);
+    return CpuMatch(cpuLevelFor(levelFromTotalXp(player.totalXp)));
+  }
+
+  /// The computer's level for a player at [level].
+  static CpuLevel cpuLevelFor(int level) {
+    if (level >= 10) return CpuLevel.hard;
+    if (level >= 5) return CpuLevel.normal;
+    return CpuLevel.easy;
+  }
+
+  /// Takes a seat in a stranger's open room, or else challenges the
+  /// selected friend.
+  Future<Duel?> _findOnline(String uid, String languageCode) async {
+    final repository = ref.read(duelRepositoryProvider);
+    try {
+      final room = await repository
+          .findAnyOpenRoom(excludingUid: uid)
+          .timeout(_networkTimeout);
+      if (room != null) {
+        final player = await ref.read(localPlayerProvider.future);
+        final joined = await repository
+            .joinRoom(room: room, uid: uid, name: player.displayName)
+            .timeout(_networkTimeout);
+        if (joined != null) return joined;
+      }
+    } on Exception {
+      // Falls through to the friend, then to the next step.
+    }
+    final rival = state.value?.rival;
+    if (rival == null) return null;
+    return _challenge(uid, rival, languageCode);
+  }
+
+  /// Challenges the first friend heard over Bluetooth. Strangers are not
+  /// matched: a duel is only shared with a friend or through a room.
+  Future<Duel?> _findNearby(String uid, String languageCode) async {
+    final radio = ref.read(nearbyRadioProvider);
+    final own = FriendCode.fromUid(uid);
+    try {
+      if (!await radio.requestPermission()) return null;
+      await radio.startAdvertising(own);
+      final Set<String>? heard;
+      try {
+        heard = await radio.scan(nearbyScanDuration);
+      } finally {
+        if (!ref.read(displayPreferencesProvider).contextNearby) {
+          await radio.stopAdvertising();
+        }
+      }
+      if (heard == null || !ref.mounted) return null;
+      final rival = state.value?.rivals
+          .where((friend) => heard!.contains(FriendCode.fromUid(friend.uid)))
+          .firstOrNull;
+      if (rival == null) return null;
+      return await _challenge(uid, rival, languageCode);
+    } on Exception {
+      return null;
+    }
+  }
+
+  /// How long the nearby step listens.
+  static const nearbyScanDuration = Duration(seconds: 8);
+
+  /// Firestore waits forever offline; matchmaking moves on instead.
+  static const _networkTimeout = Duration(seconds: 8);
+
   /// Challenges the selected rival to a new duel, dealt in [languageCode].
   /// Returns the duel to play, or null if it could not be created.
   Future<Duel?> startDuel({required String languageCode}) async {
@@ -169,7 +305,15 @@ class VersusController extends AsyncNotifier<VersusState> {
     final uid = current?.uid;
     final rival = current?.rival;
     if (uid == null || rival == null) return null;
+    return _challenge(uid, rival, languageCode);
+  }
 
+  Future<Duel?> _challenge(
+    String uid,
+    Friend rival,
+    String languageCode, {
+    DuelGame? game,
+  }) async {
     final random = ref.read(duelRandomProvider);
     final categories = GameCategories.all;
     try {
@@ -182,7 +326,9 @@ class VersusController extends AsyncNotifier<VersusState> {
             seed: Duel.newSeed(random),
             categoryId: categories[random.nextInt(categories.length)].id,
             languageCode: languageCode,
-          );
+            game: game ?? ref.read(selectedDuelGameProvider),
+          )
+          .timeout(_networkTimeout);
     } on Exception {
       return null;
     }
@@ -190,7 +336,10 @@ class VersusController extends AsyncNotifier<VersusState> {
 
   /// Opens a room for anyone with its code, dealt in [languageCode].
   /// Returns the room to play, or null if it could not be created.
-  Future<Duel?> createRoom({required String languageCode}) async {
+  Future<Duel?> createRoom({
+    required String languageCode,
+    DuelGame? game,
+  }) async {
     final uid = await ref.read(socialUidProvider.future);
     if (uid == null) return null;
     final player = await ref.read(localPlayerProvider.future);
@@ -215,6 +364,7 @@ class VersusController extends AsyncNotifier<VersusState> {
         seed: Duel.newSeed(random),
         categoryId: categories[random.nextInt(categories.length)].id,
         languageCode: languageCode,
+        game: game ?? ref.read(selectedDuelGameProvider),
       );
     } on Exception {
       return null;
@@ -250,19 +400,58 @@ class VersusController extends AsyncNotifier<VersusState> {
     }
   }
 
-  /// Saves the player's result for [duel]. Returns false if it could not be
-  /// sent; Firestore retries queued writes once the connection returns.
-  Future<bool> submitResult(Duel duel, DuelScore score) async {
+  /// Saves the player's result for [round] of [duel]. Returns false if it
+  /// could not be sent; Firestore retries queued writes once the
+  /// connection returns.
+  Future<bool> submitResult(Duel duel, DuelScore score, {int round = 0}) async {
     final uid = await ref.read(socialUidProvider.future);
     if (uid == null) return false;
+    final repository = ref.read(duelRepositoryProvider);
     try {
-      await ref
-          .read(duelRepositoryProvider)
-          .submitResult(duelId: duel.id, uid: uid, score: score);
+      if (duel.isSeries) {
+        await repository.submitRound(
+          duelId: duel.id,
+          uid: uid,
+          round: round,
+          score: score,
+        );
+      } else {
+        await repository.submitResult(duelId: duel.id, uid: uid, score: score);
+      }
       return true;
     } on Exception {
       return false;
     }
+  }
+
+  /// Lets the rival follow a round of [duel] as it is played. Best effort,
+  /// like [setPlaying].
+  Future<void> reportProgress(Duel duel, DuelProgress progress) async {
+    try {
+      final uid = await ref.read(socialUidProvider.future);
+      if (uid == null || !duel.isSeries) return;
+      await ref
+          .read(duelRepositoryProvider)
+          .reportProgress(duelId: duel.id, uid: uid, progress: progress);
+    } on Exception {
+      // Ignored on purpose.
+    }
+  }
+
+  /// A new duel against the same rival on the same game. Friends are
+  /// challenged straight away; anyone else gets a fresh room to share,
+  /// since only friends can be challenged directly.
+  Future<Duel?> rematch(Duel duel, {required String languageCode}) async {
+    final uid = await ref.read(socialUidProvider.future);
+    if (uid == null) return null;
+    final rivalUid = duel.rivalOf(uid);
+    final friend = state.value?.rivals
+        .where((f) => f.uid == rivalUid)
+        .firstOrNull;
+    if (friend != null) {
+      return _challenge(uid, friend, languageCode, game: duel.game);
+    }
+    return createRoom(languageCode: languageCode, game: duel.game);
   }
 
   /// Shows the player as "in game" to their friends while they duel.

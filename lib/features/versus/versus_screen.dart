@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,71 +8,76 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
-import 'package:memory_companion/core/widgets/adaptive_button.dart';
-import 'package:memory_companion/core/widgets/app_card.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/floating_bob.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
 import 'package:memory_companion/features/friends/widget/friend_tile.dart';
-import 'package:memory_companion/features/friends/widget/social_sign_in_card.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
-import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/model/versus_player.dart';
+import 'package:memory_companion/features/versus/widget/duel_game_picker.dart';
 import 'package:memory_companion/features/versus/widget/duel_list_card.dart';
 import 'package:memory_companion/features/versus/widget/versus_player_card.dart';
 import 'package:memory_companion/features/versus/widget/versus_top_bar.dart';
 import 'package:memory_companion/features/versus/widget/vs_badge.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 
-/// The player against a friend, the button that challenges them, and the
-/// player's duels.
+/// The player, their opponent and one "Play" button that finds a match:
+/// online, nearby, or against the computer when nobody is around.
 class VersusScreen extends ConsumerWidget {
   const VersusScreen({super.key});
 
   static const _tabIndex = 1;
-  static const _friendsTabIndex = 2;
 
-  void _notify(BuildContext context, String messageKey) {
+  void _notify(BuildContext context, String message) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(messageKey.getString(context))));
+      ..showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Future<void> _startDuel(BuildContext context, WidgetRef ref) async {
+  Future<void> _onPlay(BuildContext context, WidgetRef ref) async {
+    final mode = await showModalBottomSheet<PlayMode>(
+      context: context,
+      backgroundColor: AppColors.surfaceContainerLowest,
+      showDragHandle: true,
+      builder: (_) => const _PlayModeSheet(),
+    );
+    if (mode == null || !context.mounted) return;
+
     final languageCode = Localizations.localeOf(context).languageCode;
+    final phase = ValueNotifier(
+      mode == PlayMode.online ? MatchPhase.online : MatchPhase.nearby,
+    );
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (dialogContext) => AlertDialog(
-        backgroundColor: AppColors.surfaceContainerLowest,
-        content: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircularProgressIndicator(color: AppColors.primaryFixedDim),
-            const SizedBox(width: 20),
-            Flexible(
-              child: Text(
-                AppLocale.searchingOpponentLabel.getString(dialogContext),
-              ),
-            ),
-          ],
-        ),
-      ),
+      builder: (_) => _SearchingDialog(phase: phase),
     );
 
-    final duel = await ref
+    final result = await ref
         .read(versusControllerProvider.notifier)
-        .startDuel(languageCode: languageCode);
+        .findMatch(
+          mode: mode,
+          languageCode: languageCode,
+          onPhase: (value) => phase.value = value,
+        );
 
     if (!context.mounted) return;
     Navigator.of(context).pop();
-    if (duel == null) {
-      _notify(context, AppLocale.duelCreateFailed);
-      return;
+    phase.dispose();
+    switch (result) {
+      case DuelMatch(:final duel):
+        _play(context, duel);
+      case CpuMatch(:final level):
+        _notify(
+          context,
+          AppLocale.matchCpuFallback
+              .getString(context)
+              .replaceAll('{level}', level.labelKey.getString(context)),
+        );
+        Navigator.of(context).pushNamed(RoutePaths.cpuDuel, arguments: level);
     }
-    _play(context, duel);
   }
 
   void _play(BuildContext context, Duel duel) {
@@ -80,7 +86,9 @@ class VersusScreen extends ConsumerWidget {
 
   Future<void> _decline(BuildContext context, WidgetRef ref, Duel duel) async {
     final ok = await ref.read(versusControllerProvider.notifier).decline(duel);
-    if (!ok && context.mounted) _notify(context, AppLocale.socialActionFailed);
+    if (!ok && context.mounted) {
+      _notify(context, AppLocale.socialActionFailed.getString(context));
+    }
   }
 
   @override
@@ -90,7 +98,6 @@ class VersusScreen extends ConsumerWidget {
 
     final wallet = ref.watch(walletControllerProvider);
     final versus = ref.watch(versusControllerProvider);
-    final canDuel = versus.value?.rival != null;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -125,45 +132,35 @@ class VersusScreen extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  if (!state.isSignedIn)
-                    const SocialSignInCard()
-                  else if (state.rivalCard case final rival?) ...[
-                    FloatingBob(
-                      phase: 0.25,
-                      child: _PlayerCardFromModel(player: rival),
-                    ),
-                    if (state.rivals.length > 1) ...[
-                      const SizedBox(height: AppSpacing.lg),
-                      _RivalPicker(state: state),
-                    ],
-                  ] else
-                    _NoRivalCard(
-                      onFindFriends: () =>
-                          RoutePaths.navigateToTab(context, _friendsTabIndex),
-                    ),
+                  FloatingBob(
+                    phase: 0.25,
+                    child: switch (state.rivalCard) {
+                      final rival? => _PlayerCardFromModel(player: rival),
+                      null => const _UnknownOpponentCard(),
+                    },
+                  ),
+                  if (state.rivals.length > 1) ...[
+                    const SizedBox(height: AppSpacing.lg),
+                    _RivalPicker(state: state),
+                  ],
                 ],
               ),
             ),
-            if (canDuel) ...[
-              const SizedBox(height: 28),
-              _StartDuelButton(onTap: () => _startDuel(context, ref)),
-              const SizedBox(height: AppSpacing.md),
-              Text(
-                AppLocale.versusHowItWorks.getString(context),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.onSurfaceVariant,
-                ),
+            const SizedBox(height: 28),
+            _PlayButton(onTap: () => _onPlay(context, ref)),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              AppLocale.versusHowItWorks.getString(context),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: AppColors.onSurfaceVariant,
               ),
-            ],
-            const SizedBox(height: 24),
-            // Outside the social section on purpose: playing the computer
-            // needs no account and no connection, so it never waits on them.
-            const _CpuDuelCard(),
+            ),
             if (versus.value case final state?) ...[
               const SizedBox(height: 24),
               DuelListCard(
                 state: state,
+                showWaiting: false,
                 onPlay: (duel) => _play(context, duel),
                 onDecline: (duel) => _decline(context, ref, duel),
               ),
@@ -175,8 +172,8 @@ class VersusScreen extends ConsumerWidget {
   }
 }
 
-class _StartDuelButton extends StatelessWidget {
-  const _StartDuelButton({required this.onTap});
+class _PlayButton extends StatelessWidget {
+  const _PlayButton({required this.onTap});
 
   final VoidCallback onTap;
 
@@ -197,12 +194,12 @@ class _StartDuelButton extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Icon(
-                Icons.sports_esports_rounded,
+                Icons.play_arrow_rounded,
                 color: AppColors.onPrimaryFixed,
               ),
               const SizedBox(width: 10),
               Text(
-                AppLocale.startDuel.getString(context),
+                AppLocale.playLabel.getString(context).toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: AppColors.onPrimaryFixed,
                   fontWeight: FontWeight.w800,
@@ -212,6 +209,136 @@ class _StartDuelButton extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// The game, then online or nearby: all the "Play" button asks for.
+class _PlayModeSheet extends ConsumerWidget {
+  const _PlayModeSheet();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.xl,
+          0,
+          AppSpacing.xl,
+          AppSpacing.xl,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              AppLocale.playModeTitle.getString(context),
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            DuelGamePicker(
+              selected: ref.watch(selectedDuelGameProvider),
+              onSelected: ref.read(selectedDuelGameProvider.notifier).select,
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            const _PlayModeOption(
+              icon: Icons.public_rounded,
+              color: AppColors.skyStrong,
+              titleKey: AppLocale.playOnlineTitle,
+              messageKey: AppLocale.playOnlineMessage,
+              mode: PlayMode.online,
+            ),
+            const SizedBox(height: AppSpacing.md),
+            const _PlayModeOption(
+              icon: Icons.bluetooth_searching_rounded,
+              color: AppColors.secondaryContainer,
+              titleKey: AppLocale.playLocalTitle,
+              messageKey: AppLocale.playLocalMessage,
+              mode: PlayMode.nearby,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PlayModeOption extends StatelessWidget {
+  const _PlayModeOption({
+    required this.icon,
+    required this.color,
+    required this.titleKey,
+    required this.messageKey,
+    required this.mode,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String titleKey;
+  final String messageKey;
+  final PlayMode mode;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    return Material(
+      color: AppColors.surfaceContainerLow,
+      clipBehavior: Clip.antiAlias,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
+        leading: Icon(icon, size: 32, color: color),
+        title: Text(
+          titleKey.getString(context),
+          style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        subtitle: Text(
+          messageKey.getString(context),
+          style: textTheme.bodySmall?.copyWith(
+            color: AppColors.onSurfaceVariant,
+          ),
+        ),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        onTap: () => Navigator.of(context).pop(mode),
+      ),
+    );
+  }
+}
+
+/// Shown while matchmaking looks online, then nearby.
+class _SearchingDialog extends StatelessWidget {
+  const _SearchingDialog({required this.phase});
+
+  final ValueListenable<MatchPhase> phase;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      backgroundColor: AppColors.surfaceContainerLowest,
+      content: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: AppColors.primaryFixedDim),
+          const SizedBox(width: 20),
+          Flexible(
+            child: ValueListenableBuilder(
+              valueListenable: phase,
+              builder: (context, value, _) => Text(
+                switch (value) {
+                  MatchPhase.online => AppLocale.searchingOnlineLabel,
+                  MatchPhase.nearby => AppLocale.searchingNearbyLabel,
+                }.getString(context),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -255,121 +382,21 @@ class _RivalPicker extends ConsumerWidget {
   }
 }
 
-/// Plays a duel against the computer, at the chosen difficulty.
-class _CpuDuelCard extends StatefulWidget {
-  const _CpuDuelCard();
-
-  @override
-  State<_CpuDuelCard> createState() => _CpuDuelCardState();
-}
-
-class _CpuDuelCardState extends State<_CpuDuelCard> {
-  var _level = CpuLevel.normal;
+/// The opponent's seat before anyone is in it.
+class _UnknownOpponentCard extends StatelessWidget {
+  const _UnknownOpponentCard();
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            children: [
-              const Icon(
-                Icons.smart_toy_rounded,
-                size: 36,
-                color: AppColors.skyStrong,
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      AppLocale.cpuDuelTitle.getString(context),
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      AppLocale.cpuDuelMessage.getString(context),
-                      style: textTheme.bodySmall?.copyWith(
-                        color: AppColors.onSurfaceVariant,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: [
-              for (final level in CpuLevel.values)
-                ChoiceChip(
-                  label: Text(level.labelKey.getString(context)),
-                  selected: level == _level,
-                  onSelected: (_) => setState(() => _level = level),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.lg),
-          AdaptiveButton(
-            label: AppLocale.playLabel.getString(context),
-            icon: Icons.play_arrow_rounded,
-            onPressed: () => Navigator.of(
-              context,
-            ).pushNamed(RoutePaths.cpuDuel, arguments: _level),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _NoRivalCard extends StatelessWidget {
-  const _NoRivalCard({required this.onFindFriends});
-
-  final VoidCallback onFindFriends;
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.xl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Icon(
-            Icons.person_search_rounded,
-            size: 48,
-            color: AppColors.error,
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            AppLocale.versusNoRivalTitle.getString(context),
-            textAlign: TextAlign.center,
-            style: textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800),
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            AppLocale.versusNoRivalMessage.getString(context),
-            textAlign: TextAlign.center,
-            style: textTheme.bodyMedium?.copyWith(
-              color: AppColors.onSurfaceVariant,
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          AdaptiveButton(
-            label: AppLocale.goToFriendsLabel.getString(context),
-            icon: Icons.group_add_rounded,
-            onPressed: onFindFriends,
-          ),
-        ],
-      ),
+    return VersusPlayerCard(
+      name: AppLocale.opponentLabel.getString(context),
+      rankLabel: AppLocale.findOpponentLabel.getString(context),
+      level: 0,
+      powerValue: '? XP',
+      powerProgress: 0,
+      formWins: const [],
+      accentColor: AppColors.onSurfaceVariant,
+      reversed: true,
     );
   }
 }
