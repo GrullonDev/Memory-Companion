@@ -73,7 +73,9 @@ class BoardScreen extends StatelessWidget {
               BoardPausedOverlay(
                 onResume: onTogglePause,
                 onSettings: () => ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(AppLocale.comingSoon.getString(context))),
+                  SnackBar(
+                    content: Text(AppLocale.comingSoon.getString(context)),
+                  ),
                 ),
                 onQuit: onExit,
               ),

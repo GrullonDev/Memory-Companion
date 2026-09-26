@@ -42,15 +42,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     final password = _passwordController.text;
     if (username.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(AppLocale.fieldsRequiredMessage.getString(context))),
+        SnackBar(
+          content: Text(AppLocale.fieldsRequiredMessage.getString(context)),
+        ),
       );
       return;
     }
-    ref.read(authControllerProvider.notifier).register(
-      email: email,
-      password: password,
-      displayName: username,
-    );
+    ref
+        .read(authControllerProvider.notifier)
+        .register(email: email, password: password, displayName: username);
   }
 
   @override
@@ -66,7 +66,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           if (previous is AsyncLoading) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(AppLocale.accountCreatedMessage.getString(context)),
+                content: Text(
+                  AppLocale.accountCreatedMessage.getString(context),
+                ),
               ),
             );
           }
@@ -204,8 +206,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         onGoogleTap: isLoading
                             ? null
                             : () => ref
-                                .read(authControllerProvider.notifier)
-                                .signInWithGoogle(),
+                                  .read(authControllerProvider.notifier)
+                                  .signInWithGoogle(),
                         onPhoneTap: isLoading
                             ? null
                             : () => showPhoneSignInDialog(context),

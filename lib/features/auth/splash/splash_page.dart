@@ -20,8 +20,7 @@ class SplashPage extends ConsumerWidget {
     ref.listen(splashBootProvider, (previous, next) {
       next.whenOrNull(
         data: (_) {
-          final isSignedIn =
-              ref.read(firebaseAuthProvider).currentUser != null;
+          final isSignedIn = ref.read(firebaseAuthProvider).currentUser != null;
           Navigator.pushReplacementNamed(
             context,
             isSignedIn ? RoutePaths.home : RoutePaths.login,

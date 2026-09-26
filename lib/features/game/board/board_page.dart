@@ -101,8 +101,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
     final controller = ref.read(boardControllerProvider.notifier);
     final lives = ref.watch(livesControllerProvider);
     final isLivesUnlimited =
-        ref.watch(shopControllerProvider).value?.currentPlanId ==
-        PlanId.pro;
+        ref.watch(shopControllerProvider).value?.currentPlanId == PlanId.pro;
 
     return BoardScreen(
       state: state,

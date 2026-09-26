@@ -22,8 +22,7 @@ class _PhoneSignInDialog extends ConsumerStatefulWidget {
   const _PhoneSignInDialog();
 
   @override
-  ConsumerState<_PhoneSignInDialog> createState() =>
-      _PhoneSignInDialogState();
+  ConsumerState<_PhoneSignInDialog> createState() => _PhoneSignInDialogState();
 }
 
 class _PhoneSignInDialogState extends ConsumerState<_PhoneSignInDialog> {
