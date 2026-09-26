@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/core/routes/tab_root_scope.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
@@ -99,73 +100,76 @@ class VersusScreen extends ConsumerWidget {
     final wallet = ref.watch(walletControllerProvider);
     final versus = ref.watch(versusControllerProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        activeIndex: _tabIndex,
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          children: [
-            VersusTopBar(coins: wallet.value ?? 0),
-            const SizedBox(height: 28),
-            AsyncValueView<VersusState>(
-              value: versus,
-              minHeight: 420,
-              onRetry: () => ref.invalidate(versusControllerProvider),
-              data: (context, state) => Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FloatingBob(
-                    phase: 0,
-                    child: _PlayerCardFromModel(player: state.me),
-                  ),
-                  SizedBox(
-                    height: 140,
-                    child: Center(
-                      child: FloatingBob(
-                        phase: 0.5,
-                        amplitude: 6,
-                        child: const VsBadge(),
+    return TabRootScope(
+      isHome: false,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        bottomNavigationBar: HomeBottomNav(
+          activeIndex: _tabIndex,
+          onTap: (index) => RoutePaths.navigateToTab(context, index),
+        ),
+        body: SafeArea(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            children: [
+              VersusTopBar(coins: wallet.value ?? 0),
+              const SizedBox(height: 28),
+              AsyncValueView<VersusState>(
+                value: versus,
+                minHeight: 420,
+                onRetry: () => ref.invalidate(versusControllerProvider),
+                data: (context, state) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FloatingBob(
+                      phase: 0,
+                      child: _PlayerCardFromModel(player: state.me),
+                    ),
+                    SizedBox(
+                      height: 140,
+                      child: Center(
+                        child: FloatingBob(
+                          phase: 0.5,
+                          amplitude: 6,
+                          child: const VsBadge(),
+                        ),
                       ),
                     ),
-                  ),
-                  FloatingBob(
-                    phase: 0.25,
-                    child: switch (state.rivalCard) {
-                      final rival? => _PlayerCardFromModel(player: rival),
-                      null => const _UnknownOpponentCard(),
-                    },
-                  ),
-                  if (state.rivals.length > 1) ...[
-                    const SizedBox(height: AppSpacing.lg),
-                    _RivalPicker(state: state),
+                    FloatingBob(
+                      phase: 0.25,
+                      child: switch (state.rivalCard) {
+                        final rival? => _PlayerCardFromModel(player: rival),
+                        null => const _UnknownOpponentCard(),
+                      },
+                    ),
+                    if (state.rivals.length > 1) ...[
+                      const SizedBox(height: AppSpacing.lg),
+                      _RivalPicker(state: state),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 28),
-            _PlayButton(onTap: () => _onPlay(context, ref)),
-            const SizedBox(height: AppSpacing.md),
-            Text(
-              AppLocale.versusHowItWorks.getString(context),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.onSurfaceVariant,
+              const SizedBox(height: 28),
+              _PlayButton(onTap: () => _onPlay(context, ref)),
+              const SizedBox(height: AppSpacing.md),
+              Text(
+                AppLocale.versusHowItWorks.getString(context),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
               ),
-            ),
-            if (versus.value case final state?) ...[
-              const SizedBox(height: 24),
-              DuelListCard(
-                state: state,
-                showWaiting: false,
-                onPlay: (duel) => _play(context, duel),
-                onDecline: (duel) => _decline(context, ref, duel),
-              ),
+              if (versus.value case final state?) ...[
+                const SizedBox(height: 24),
+                DuelListCard(
+                  state: state,
+                  showWaiting: false,
+                  onPlay: (duel) => _play(context, duel),
+                  onDecline: (duel) => _decline(context, ref, duel),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
