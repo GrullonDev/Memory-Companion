@@ -32,6 +32,7 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+pubspec.lock
 
 # Symbolication related
 app.*.symbols
@@ -46,3 +47,20 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# iOS will place build artifacts here
+/ios/Runner.xcworkspace
+/ios/Runner.xcodeproj
+
+# Claude Code tooling
+# .agents/  — temporarily un-ignored for commit
+.claude/
+skills-lock.json
+
+# macOS ephemeral build artifacts
+macos/Flutter/ephemeral/

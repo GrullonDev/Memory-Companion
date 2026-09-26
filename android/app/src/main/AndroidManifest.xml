@@ -1,6 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Contexto automático, opcional y apagado por defecto. La ubicación
+         aproximada basta para agrupar partidas por lugar. Los permisos de
+         Bluetooth (escanear y anunciarse) los aporta flutter_ble_peripheral. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
-        android:label="digital_legacy_manager"
+        android:label="Memory Arcade"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

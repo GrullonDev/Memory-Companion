@@ -1,0 +1,311 @@
+rules_version = '2';
+
+// Memory Companion — reglas de Firestore
+//
+// Dos cosas cambian respecto a la versión anterior:
+//
+//  1. Se cierra la fuga de datos personales. Antes `users/{uid}` tenía
+//     `allow read: if true`, lo que exponía el documento entero —email y
+//     teléfono incluidos— a cualquiera sin autenticar. Lo que amigos y
+//     rankings necesitan vive ahora en `user_index/{uid}`, con cuatro campos.
+//
+//  2. Se valida la escritura. Antes cualquier usuario autenticado podía
+//     hacer `set({totalCoins: 99999999})` sobre su propio documento.
+//
+// LÍMITE CONOCIDO: ninguna regla puede hacer confiable un saldo que calcula
+// el cliente. Las reglas solo ven la escritura, no la partida que la
+// justifica. Aquí se acota el daño —lista blanca de campos, monotonía y topes
+// por escritura—, pero un cliente modificado siempre podrá inventarse una
+// partida plausible. La solución real es que el servidor recalcule, y eso son
+// Cloud Functions: ver la fase 2 en docs/OFFLINE_FIRST.md.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function current() {
+      return resource.data;
+    }
+
+    // Único conjunto de campos que el cliente puede escribir en su perfil.
+    // Cualquier clave desconocida rechaza la escritura entera.
+    function profileFields() {
+      return [
+        'uid', 'email', 'displayName', 'photoUrl', 'phoneNumber',
+        'createdAt', 'updatedAt', 'version', 'avatarSeed', 'rank',
+        'totalXp', 'totalCoins', 'gamesWon', 'totalMoves',
+        'currentStreak', 'longestStreak', 'lastPlayedDate'
+      ];
+    }
+
+    // Un acumulado nunca puede bajar. Impide rebajarse los totales para
+    // reordenar un ranking, o deshacer partidas ya contadas.
+    function monotonic(field) {
+      return !(field in incoming())
+          || !(field in current())
+          || incoming()[field] >= current()[field];
+    }
+
+    function unchanged(field) {
+      return !(field in incoming())
+          || (field in current() && incoming()[field] == current()[field]);
+    }
+
+    // Tope por escritura. Convierte «me pongo diez millones de XP» en «me
+    // hacen falta miles de escrituras detectables».
+    //
+    // La excepción de valor cero es la adopción: al vincular una cuenta nueva
+    // se sube de una vez todo el progreso acumulado sin conexión, sobre un
+    // documento que todavía está a cero.
+    function deltaWithin(field, cap) {
+      return !(field in incoming())
+          || !(field in current())
+          || current()[field] == 0
+          || incoming()[field] - current()[field] <= cap;
+    }
+
+    // ---------------------------------------------------------------
+    // Perfil privado. Solo su dueño lo lee.
+    // ---------------------------------------------------------------
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+
+      allow create: if isOwner(uid)
+                    && incoming().keys().hasOnly(profileFields());
+
+      allow update: if isOwner(uid)
+                    && incoming().keys().hasOnly(profileFields())
+                    && unchanged('createdAt')
+                    && unchanged('email')
+                    && monotonic('totalXp')
+                    && monotonic('gamesWon')
+                    && monotonic('totalMoves')
+                    && monotonic('longestStreak')
+                    && deltaWithin('totalXp', 2000)
+                    && deltaWithin('totalCoins', 2000)
+                    && deltaWithin('gamesWon', 5);
+
+      allow delete: if false;
+
+      // Historial. Una partida escrita no se reescribe ni se borra: si
+      // pudiera editarse, el historial dejaría de ser una prueba de nada.
+      match /matches/{matchId} {
+        allow read, create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+
+      // Progreso de niveles. Se puede actualizar (mejorar la marca) pero no
+      // borrar.
+      match /level_progress/{levelNumber} {
+        allow read, create, update: if isOwner(uid);
+        allow delete: if false;
+      }
+
+      // Registro de idempotencia. Crear sí; borrar **nunca**: si se pudiera
+      // borrar una entrada, podría reaplicarse su operación y duplicar las
+      // recompensas.
+      match /sync_ops/{opId} {
+        allow read, create: if isOwner(uid);
+        allow update, delete: if false;
+      }
+
+      match /achievements/{achievementId} {
+        allow read, write: if isOwner(uid);
+      }
+    }
+
+    // ---------------------------------------------------------------
+    // Perfil público: lo que amigos y rankings necesitan, y nada más.
+    // Sustituye al `allow read: if true` sobre el documento privado.
+    //
+    // `friendCode` se deriva del uid en el cliente. LÍMITE CONOCIDO: las
+    // reglas no pueden recalcular ese hash, así que un cliente modificado
+    // podría publicar el código de otro. Solo afecta a quién recibe una
+    // solicitud, que el destinatario igualmente tiene que aceptar.
+    // ---------------------------------------------------------------
+    match /user_index/{uid} {
+      allow read: if signedIn();
+      allow write: if isOwner(uid)
+                   && incoming().keys().hasOnly(
+                        ['displayName', 'avatarSeed', 'level', 'totalXp',
+                         'friendCode', 'lastSeenAt', 'playing', 'updatedAt']
+                      );
+    }
+
+    // ---------------------------------------------------------------
+    // Amistades. Un documento por pareja, con id `uidA_uidB` (ordenados),
+    // para que dos personas nunca tengan dos amistades.
+    // ---------------------------------------------------------------
+    function isMember() {
+      return signedIn() && request.auth.uid in resource.data.members;
+    }
+
+    match /friendships/{pairId} {
+      // `resource == null`: la transacción que envía una solicitud lee
+      // primero el documento, que todavía no existe.
+      allow read: if signedIn()
+                  && (resource == null || request.auth.uid in resource.data.members);
+
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['members', 'requestedBy', 'status', 'createdAt',
+                          'updatedAt'])
+                    && incoming().members.size() == 2
+                    && incoming().members[0] < incoming().members[1]
+                    && pairId == incoming().members[0] + '_' + incoming().members[1]
+                    && incoming().requestedBy == request.auth.uid
+                    && request.auth.uid in incoming().members
+                    && incoming().status == 'pending';
+
+      // Solo quien recibió la solicitud la acepta, y aceptar es lo único
+      // que se puede cambiar.
+      allow update: if isMember()
+                    && request.auth.uid != current().requestedBy
+                    && current().status == 'pending'
+                    && incoming().status == 'accepted'
+                    && incoming().diff(current()).affectedKeys()
+                         .hasOnly(['status', 'updatedAt']);
+
+      // Rechazar, cancelar o dejar de ser amigos.
+      allow delete: if isMember();
+    }
+
+    // ---------------------------------------------------------------
+    // Duelos asíncronos: los dos juegan el mismo tablero (misma semilla)
+    // cuando pueden, y cada uno escribe solo su propio resultado.
+    // ---------------------------------------------------------------
+    match /duels/{duelId} {
+      // Una sala abierta la puede leer cualquiera con sesión: es la forma de
+      // encontrarla por su código. En cuanto alguien entra deja de estar
+      // abierta y vuelve a ser privada de sus dos jugadores.
+      allow read: if isMember()
+                  || (signedIn() && resource.data.status == 'open');
+
+      // Sala: un duelo sin rival que se une por código, sin amistad previa.
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['challengerUid', 'opponentUid', 'members',
+                          'friendshipId', 'roomCode', 'names', 'seed',
+                          'categoryId', 'languageCode', 'status', 'results',
+                          'gameId', 'rounds', 'roundResults',
+                          'createdAt', 'updatedAt'])
+                    && incoming().challengerUid == request.auth.uid
+                    && incoming().opponentUid == ''
+                    && incoming().members == [request.auth.uid]
+                    && incoming().friendshipId == ''
+                    && incoming().roomCode is string
+                    && incoming().roomCode.size() == 6
+                    && incoming().names.keys().hasOnly([request.auth.uid])
+                    && incoming().status == 'open'
+                    && incoming().results.size() == 0
+                    && incoming().get('roundResults', {}).size() == 0
+                    && incoming().get('rounds', 1) in [1, 3];
+
+      // Solo entre amigos: la amistad aceptada tiene que existir.
+      allow create: if signedIn()
+                    && incoming().keys().hasOnly(
+                         ['challengerUid', 'opponentUid', 'members',
+                          'friendshipId', 'seed', 'categoryId', 'languageCode',
+                          'status', 'results', 'gameId', 'rounds',
+                          'roundResults', 'createdAt', 'updatedAt'])
+                    && incoming().challengerUid == request.auth.uid
+                    && incoming().members
+                         == [incoming().challengerUid, incoming().opponentUid]
+                    && incoming().status == 'pending'
+                    && incoming().results.size() == 0
+                    && get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.status == 'accepted'
+                    && incoming().opponentUid in get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.members
+                    && request.auth.uid in get(/databases/$(database)/documents/friendships/$(incoming().friendshipId)).data.members;
+
+      // Cada jugador añade su resultado una sola vez; nunca toca el del
+      // otro. El rival puede además rechazar el reto antes de jugarlo.
+      // Entrar en una sala abierta: ocupar el asiento libre, y nada más.
+      allow update: if signedIn()
+                    && current().status == 'open'
+                    && request.auth.uid != current().challengerUid
+                    && incoming().status == 'pending'
+                    && incoming().opponentUid == request.auth.uid
+                    && incoming().members
+                         == [current().challengerUid, request.auth.uid]
+                    && incoming().diff(current()).affectedKeys()
+                         .hasOnly(['opponentUid', 'members', 'status',
+                                   'names', 'updatedAt'])
+                    && incoming().names.diff(current().names)
+                         .affectedKeys().hasOnly([request.auth.uid]);
+
+      // El anfitrión de una sala puede jugarla antes de que entre nadie.
+      allow update: if isMember()
+                    && current().status in ['pending', 'open']
+                    && (
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['results', 'updatedAt'])
+                       && !(request.auth.uid in current().results)
+                       && incoming().results.diff(current().results)
+                            .affectedKeys().hasOnly([request.auth.uid]))
+                      ||
+                      // Una ronda de la serie: solo las propias, y cada
+                      // ronda una sola vez.
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['roundResults', 'updatedAt'])
+                       && incoming().roundResults
+                            .diff(current().get('roundResults', {}))
+                            .affectedKeys().hasOnly([request.auth.uid])
+                       && incoming().roundResults[request.auth.uid]
+                            .diff(current().get('roundResults', {})
+                                    .get(request.auth.uid, {}))
+                            .affectedKeys()
+                          == incoming().roundResults[request.auth.uid]
+                            .diff(current().get('roundResults', {})
+                                    .get(request.auth.uid, {}))
+                            .addedKeys())
+                      ||
+                      // Progreso en vivo, para que el rival lo siga.
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['progress'])
+                       && incoming().progress
+                            .diff(current().get('progress', {}))
+                            .affectedKeys().hasOnly([request.auth.uid])
+                       // Solo los campos del informe; las listas, del
+                       // tamaño de un tablero.
+                       && incoming().progress[request.auth.uid].keys()
+                            .hasOnly(['round', 'score', 'solved', 'total',
+                                      'event', 'seq', 'cards', 'matched',
+                                      'at'])
+                       && incoming().progress[request.auth.uid]
+                            .get('matched', []).size() <= 64
+                       && incoming().progress[request.auth.uid]
+                            .get('cards', []).size() <= 4)
+                      ||
+                      (incoming().diff(current()).affectedKeys()
+                         .hasOnly(['status', 'updatedAt'])
+                       && request.auth.uid == current().opponentUid
+                       && !(request.auth.uid in current().results)
+                       && incoming().status == 'declined')
+                    );
+
+      allow delete: if false;
+    }
+
+    // Contenido de los retos diarios: lectura para todos, escritura de nadie.
+    match /daily_challenges/{challengeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Rankings: los calcula el servidor.
+    match /leaderboards/{leaderboardId} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+  }
+}
