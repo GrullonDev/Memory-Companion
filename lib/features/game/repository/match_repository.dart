@@ -36,11 +36,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-          return [
-            for (final doc in snapshot.docs)
-              Match.fromFirestore(doc.data(), doc.id),
-          ];
-        });
+      return [
+        for (final doc in snapshot.docs)
+          Match.fromFirestore(doc.data(), doc.id),
+      ];
+    });
   }
 
   /// Get recent wins only
@@ -54,11 +54,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-          return [
-            for (final doc in snapshot.docs)
-              Match.fromFirestore(doc.data(), doc.id),
-          ];
-        });
+      return [
+        for (final doc in snapshot.docs)
+          Match.fromFirestore(doc.data(), doc.id),
+      ];
+    });
   }
 
   /// Get matches by game mode
@@ -76,11 +76,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-          return [
-            for (final doc in snapshot.docs)
-              Match.fromFirestore(doc.data(), doc.id),
-          ];
-        });
+      return [
+        for (final doc in snapshot.docs)
+          Match.fromFirestore(doc.data(), doc.id),
+      ];
+    });
   }
 
   /// Get statistics for a user

@@ -17,10 +17,10 @@ class UserRepository {
   /// Called right after authentication
   Future<void> createUser(AppUser user) async {
     try {
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .set(user.toFirestore(), SetOptions(merge: true));
+      await _firestore.collection('users').doc(user.uid).set(
+            user.toFirestore(),
+            SetOptions(merge: true),
+          );
     } catch (e) {
       rethrow;
     }
@@ -53,7 +53,9 @@ class UserRepository {
     int? avatarSeed,
   }) async {
     try {
-      final data = <String, dynamic>{'updatedAt': FieldValue.serverTimestamp()};
+      final data = <String, dynamic>{
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
       if (displayName != null) data['displayName'] = displayName;
       if (photoUrl != null) data['photoUrl'] = photoUrl;
       if (avatarSeed != null) data['avatarSeed'] = avatarSeed;
@@ -75,7 +77,9 @@ class UserRepository {
     String? rank,
   }) async {
     try {
-      final data = <String, dynamic>{'updatedAt': FieldValue.serverTimestamp()};
+      final data = <String, dynamic>{
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
       if (gamesWon != null) data['gamesWon'] = gamesWon;
       if (totalMoves != null) data['totalMoves'] = totalMoves;
       if (bestStreak != null) data['bestStreak'] = bestStreak;
