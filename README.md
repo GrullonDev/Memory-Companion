@@ -176,8 +176,10 @@ keyPassword=...
 `storeFile` es relativo a `android/`. Sin ese archivo, el release se firma con la clave de debug: sirve para probar en local, pero no se puede publicar.
 
 ```bash
-fvm flutter build appbundle --release
+bash scripts/build_release.sh            # appbundle; también: apk, ipa
 ```
+
+El nombre de la versión (`1.0.1`) está en `pubspec.yaml` y se cambia a mano. El número de build lo pone el script: es el número de commits de la rama, así que sube con cada merge a `main` y cada build que llega a la tienda tiene uno mayor que el anterior. Para fijarlo a mano (por ejemplo en CI, o en un clon superficial): `BUILD_NUMBER=42 bash scripts/build_release.sh`.
 
 ### Pruebas
 
