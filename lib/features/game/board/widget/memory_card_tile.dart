@@ -4,6 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/core/widgets/success_pulse.dart';
 import 'package:memory_companion/features/game/board/model/card_face.dart';
 import 'package:memory_companion/features/game/board/model/memory_card.dart';
@@ -58,11 +59,12 @@ class MemoryCardTile extends StatelessWidget {
           trigger: card.isMatched ? card.id : null,
           borderRadius: radius,
           haptic: true,
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: card.isMatched ? null : onTap,
-              borderRadius: radius,
+          child: Pressable(
+            onTap: card.isMatched ? null : onTap,
+            enabled: !card.isMatched,
+            borderRadius: radius,
+            child: Material(
+              color: Colors.transparent,
               child: ExcludeSemantics(
                 child: AnimatedSwitcher(
                   duration: tokens.flipDuration,

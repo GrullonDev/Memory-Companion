@@ -6,6 +6,7 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
@@ -175,12 +176,12 @@ class _PlanCardFromModel extends StatelessWidget {
             )
           : SizedBox(
               width: double.infinity,
-              child: Material(
-                color: AppColors.primaryFixed,
+              child: Pressable(
+                onTap: onUpgrade,
                 borderRadius: BorderRadius.circular(16),
-                child: InkWell(
+                child: Material(
+                  color: AppColors.primaryFixed,
                   borderRadius: BorderRadius.circular(16),
-                  onTap: onUpgrade,
                   child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     alignment: Alignment.center,

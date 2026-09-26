@@ -11,6 +11,7 @@ import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/floating_bob.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
 import 'package:memory_companion/features/friends/widget/friend_tile.dart';
 import 'package:memory_companion/features/friends/widget/social_sign_in_card.dart';
@@ -185,14 +186,16 @@ class _StartDuelButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 56,
-      child: Material(
-        color: AppColors.primaryFixedDim,
-        clipBehavior: Clip.antiAlias,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        elevation: 4,
-        shadowColor: const Color(0x40E6B400),
-        child: InkWell(
-          onTap: onTap,
+      child: Pressable(
+        onTap: onTap,
+        child: Material(
+          color: AppColors.primaryFixedDim,
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+          elevation: 4,
+          shadowColor: const Color(0x40E6B400),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

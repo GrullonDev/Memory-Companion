@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 class ThemeChip extends StatelessWidget {
   const ThemeChip({super.key, required this.icon, this.onTap});
@@ -10,12 +11,12 @@ class ThemeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.secondaryFixed,
+    return Pressable.small(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(18),
-      child: InkWell(
+      child: Material(
+        color: AppColors.secondaryFixed,
         borderRadius: BorderRadius.circular(18),
-        onTap: onTap,
         child: Container(
           width: 72,
           height: 72,

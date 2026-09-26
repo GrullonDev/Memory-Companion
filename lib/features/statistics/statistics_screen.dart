@@ -7,6 +7,7 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/core/widgets/section_header.dart';
 import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
 import 'package:memory_companion/features/game_context/model/place.dart';
@@ -192,15 +193,15 @@ class _AskHistoryEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surfaceContainerLowest,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSpacing.lg),
-        side: const BorderSide(color: AppColors.outlineVariant),
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(AppSpacing.lg),
-        onTap: () => Navigator.of(context).pushNamed(RoutePaths.historySearch),
+    return Pressable(
+      onTap: () => Navigator.of(context).pushNamed(RoutePaths.historySearch),
+      borderRadius: BorderRadius.circular(AppSpacing.lg),
+      child: Material(
+        color: AppColors.surfaceContainerLowest,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.lg),
+          side: const BorderSide(color: AppColors.outlineVariant),
+        ),
         child: ConstrainedBox(
           constraints: const BoxConstraints(
             minHeight: AppSize.touchComfortable,

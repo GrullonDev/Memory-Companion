@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 class BoardBottomBar extends StatelessWidget {
   const BoardBottomBar({
@@ -51,13 +52,13 @@ class _RoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: background,
-      shape: const CircleBorder(),
-      clipBehavior: Clip.antiAlias,
-      elevation: 2,
-      child: InkWell(
-        onTap: onTap,
+    return Pressable.small(
+      onTap: onTap,
+      child: Material(
+        color: background,
+        shape: const CircleBorder(),
+        clipBehavior: Clip.antiAlias,
+        elevation: 2,
         child: SizedBox(
           width: 56,
           height: 56,

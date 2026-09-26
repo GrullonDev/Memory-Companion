@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 /// "OR PLAY WITH" divider plus a row of quick-login provider buttons,
 /// matching the providers enabled on the Firebase project (Google, Phone).
@@ -61,12 +62,12 @@ class _ProviderButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: AppColors.surfaceContainerLowest,
+    return Pressable(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(14),
-      child: InkWell(
+      child: Material(
+        color: AppColors.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
         child: Container(
           height: 52,
           alignment: Alignment.center,

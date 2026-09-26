@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
@@ -44,13 +45,12 @@ class ProfileHeader extends StatelessWidget {
             Positioned(
               right: -4,
               bottom: -4,
-              child: Material(
-                color: AppColors.primaryFixed,
-                shape: const CircleBorder(),
-                elevation: 3,
-                child: InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: onEditAvatar,
+              child: Pressable.small(
+                onTap: onEditAvatar,
+                child: Material(
+                  color: AppColors.primaryFixed,
+                  shape: const CircleBorder(),
+                  elevation: 3,
                   child: const Padding(
                     padding: EdgeInsets.all(10),
                     child: Icon(

@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/friends/model/friend.dart';
 
 /// One person in the Friends list: avatar with a presence dot, name, a
@@ -141,12 +142,11 @@ class FriendTileAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: background,
-        shape: const CircleBorder(),
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap,
+      child: Pressable.small(
+        onTap: onTap,
+        child: Material(
+          color: background,
+          shape: const CircleBorder(),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: Icon(icon, size: 20, color: foreground),
