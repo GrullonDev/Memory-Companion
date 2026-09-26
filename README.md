@@ -138,6 +138,15 @@ Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE
 firebase deploy --only firestore:rules --project memory-compaknion
 ```
 
+`firebase.json` declara las dos bases de datos de Firestore del proyecto, así que ese comando despliega las mismas reglas e índices en ambas:
+
+| Base de datos | Uso |
+|---|---|
+| `(default)` | Desarrollo: builds de debug y profile |
+| `produccion` | App publicada: builds de release |
+
+La elige `lib/core/firebase/firestore_database.dart`. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
+
 > Si Amigos o Versus muestran "Reintentar" con `permission-denied`, casi siempre es que las reglas desplegadas están desactualizadas.
 
 ### 5. Permisos (contexto automático)
@@ -151,6 +160,23 @@ Ya están declarados; solo se piden cuando el jugador activa cada opción en Aju
 
 ```bash
 fvm flutter run
+```
+
+### Build de release
+
+El release se firma con el keystore de `android/key.properties`, que no se sube al repositorio:
+
+```properties
+storeFile=../upload-keystore.jks
+storePassword=...
+keyAlias=upload
+keyPassword=...
+```
+
+`storeFile` es relativo a `android/`. Sin ese archivo, el release se firma con la clave de debug: sirve para probar en local, pero no se puede publicar.
+
+```bash
+fvm flutter build appbundle --release
 ```
 
 ### Pruebas

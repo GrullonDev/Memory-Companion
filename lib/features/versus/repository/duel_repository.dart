@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/model/duel_game.dart';
 
@@ -10,7 +11,7 @@ class DuelRepository {
 
   final FirebaseFirestore? _injected;
 
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   CollectionReference<Map<String, dynamic>> get _duels =>
       _firestore.collection('duels');

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/features/game/model/match.dart';
 
 /// Repository for managing match/game history in Firestore
@@ -9,7 +10,7 @@ class MatchRepository {
 
   /// Se resuelve en el primer uso, no al construir: crear un
   /// repositorio no debe exigir que Firebase ya esté inicializado.
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   /// Save a completed match to Firestore
   Future<void> saveMatch(Match match) async {
@@ -35,11 +36,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-      return [
-        for (final doc in snapshot.docs)
-          Match.fromFirestore(doc.data(), doc.id),
-      ];
-    });
+          return [
+            for (final doc in snapshot.docs)
+              Match.fromFirestore(doc.data(), doc.id),
+          ];
+        });
   }
 
   /// Get recent wins only
@@ -53,11 +54,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-      return [
-        for (final doc in snapshot.docs)
-          Match.fromFirestore(doc.data(), doc.id),
-      ];
-    });
+          return [
+            for (final doc in snapshot.docs)
+              Match.fromFirestore(doc.data(), doc.id),
+          ];
+        });
   }
 
   /// Get matches by game mode
@@ -75,11 +76,11 @@ class MatchRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-      return [
-        for (final doc in snapshot.docs)
-          Match.fromFirestore(doc.data(), doc.id),
-      ];
-    });
+          return [
+            for (final doc in snapshot.docs)
+              Match.fromFirestore(doc.data(), doc.id),
+          ];
+        });
   }
 
   /// Get statistics for a user

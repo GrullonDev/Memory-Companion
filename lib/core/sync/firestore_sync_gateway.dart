@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:memory_companion/core/database/database_enums.dart';
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/core/sync/sync_gateway.dart';
 import 'package:memory_companion/core/sync/sync_operation.dart';
 
@@ -19,13 +20,12 @@ class FirestoreSyncGateway implements SyncGateway {
 
   final FirebaseFirestore? _injected;
 
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   @override
   Future<Map<String, Object?>?> readProfile(String cloudUid) async {
     try {
-      final snapshot =
-          await _firestore.collection('users').doc(cloudUid).get();
+      final snapshot = await _firestore.collection('users').doc(cloudUid).get();
       return snapshot.exists ? snapshot.data() : null;
     } on FirebaseException catch (error) {
       throw _toFailure(error);
@@ -54,24 +54,17 @@ class FirestoreSyncGateway implements SyncGateway {
             _applyRecordMatch(transaction, operation, userDoc, userData);
           case SyncOperationType.earnCoins:
           case SyncOperationType.spendCoins:
-            transaction.set(
-              userDoc,
-              {
-                'totalCoins':
-                    FieldValue.increment(operation.intValue('totalCoins')),
-                'updatedAt': FieldValue.serverTimestamp(),
-              },
-              SetOptions(merge: true),
-            );
+            transaction.set(userDoc, {
+              'totalCoins': FieldValue.increment(
+                operation.intValue('totalCoins'),
+              ),
+              'updatedAt': FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
           case SyncOperationType.addXp:
-            transaction.set(
-              userDoc,
-              {
-                'totalXp': FieldValue.increment(operation.intValue('totalXp')),
-                'updatedAt': FieldValue.serverTimestamp(),
-              },
-              SetOptions(merge: true),
-            );
+            transaction.set(userDoc, {
+              'totalXp': FieldValue.increment(operation.intValue('totalXp')),
+              'updatedAt': FieldValue.serverTimestamp(),
+            }, SetOptions(merge: true));
           case SyncOperationType.updateStreak:
             transaction.set(
               userDoc,
@@ -170,16 +163,12 @@ class FirestoreSyncGateway implements SyncGateway {
     // La mejor marca se resuelve con máximo del lado del servidor, no con
     // «gana el último»: si dos dispositivos jugaron el mismo nivel sin
     // conexión, la buena es la mejor de las dos.
-    transaction.set(
-      userDoc.collection('level_progress').doc('$number'),
-      {
-        'levelNumber': number,
-        'isCompleted': true,
-        'bestScore': level['bestScore'],
-        'updatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    transaction.set(userDoc.collection('level_progress').doc('$number'), {
+      'levelNumber': number,
+      'isCompleted': true,
+      'bestScore': level['bestScore'],
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 
   /// La racha no es acumulable: el récord se resuelve con máximo y el día se
@@ -199,7 +188,8 @@ class FirestoreSyncGateway implements SyncGateway {
 
     final remoteDate = userData['lastPlayedDate'];
     final localDate = streak['lastPlayedDate'];
-    final keepRemote = remoteDate is String &&
+    final keepRemote =
+        remoteDate is String &&
         localDate is String &&
         remoteDate.compareTo(localDate) > 0;
 
