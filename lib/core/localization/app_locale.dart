@@ -505,6 +505,7 @@ mixin AppLocale {
   static const String levelsTitle = 'levelsTitle';
   static const String levelSelectedSnack = 'levelSelectedSnack';
   static const String routeNotFound = 'routeNotFound';
+  static const String pressBackAgainToExit = 'pressBackAgainToExit';
   static const String lobbyChipGameOn = 'lobbyChipGameOn';
   static const String lobbyChipLevelUp = 'lobbyChipLevelUp';
   static const String achievementStreak10 = 'achievementStreak10';
@@ -1031,6 +1032,7 @@ mixin AppLocale {
     levelsTitle: 'Niveles',
     levelSelectedSnack: 'Nivel {level} · Dificultad: {stars}⭐',
     routeNotFound: 'No encontramos esta pantalla.',
+    pressBackAgainToExit: 'Pulsa atrás otra vez para salir',
     lobbyChipGameOn: '¡A JUGAR!',
     lobbyChipLevelUp: 'SUBE DE NIVEL',
     achievementStreak10: 'Racha x10',
@@ -1558,6 +1560,7 @@ mixin AppLocale {
     levelsTitle: 'Levels',
     levelSelectedSnack: 'Level {level} · Difficulty: {stars}⭐',
     routeNotFound: "We couldn't find this screen.",
+    pressBackAgainToExit: 'Press back again to exit',
     lobbyChipGameOn: 'GAME ON',
     lobbyChipLevelUp: 'LEVEL UP',
     achievementStreak10: 'Streak x10',
