@@ -46,8 +46,8 @@ void main() {
     );
   }
 
-  test('el esquema arranca en la versión 7 y vacío', () async {
-    expect(db.schemaVersion, 7);
+  test('el esquema arranca en la versión 8 y vacío', () async {
+    expect(db.schemaVersion, 8);
     expect(await db.select(db.playerProfiles).get(), isEmpty);
     expect(await db.select(db.syncOperations).get(), isEmpty);
     expect(await db.select(db.displaySettings).get(), isEmpty);
@@ -200,5 +200,7 @@ void main() {
     expect(await old.select(old.places).get(), isEmpty);
     // Y la 7 crea la tabla de premios de la escalera, vacía.
     expect(await old.select(old.ladderRewards).get(), isEmpty);
+    // Y la 8 añade la pista del navegador del mapa, sin mostrar.
+    expect(settings.mapNavigatorHintSeen, isFalse);
   });
 }

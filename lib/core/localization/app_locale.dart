@@ -35,7 +35,6 @@ mixin AppLocale {
   static const String quitMatch = 'quitMatch';
   static const String powerLevelLabel = 'powerLevelLabel';
   static const String formLabel = 'formLabel';
-  static const String startDuel = 'startDuel';
   static const String comingSoon = 'comingSoon';
   static const String profileTitle = 'profileTitle';
   static const String nextLevelLabel = 'nextLevelLabel';
@@ -102,7 +101,6 @@ mixin AppLocale {
   static const String upgradeSuccessMessage = 'upgradeSuccessMessage';
   static const String avatarUpdatedMessage = 'avatarUpdatedMessage';
   static const String chooseAvatarTitle = 'chooseAvatarTitle';
-  static const String searchingOpponentLabel = 'searchingOpponentLabel';
   static const String forgotPasswordSentMessage = 'forgotPasswordSentMessage';
   static const String offlineBannerMessage = 'offlineBannerMessage';
   static const String backOnlineBannerMessage = 'backOnlineBannerMessage';
@@ -362,10 +360,47 @@ mixin AppLocale {
   static const String rankExpert = 'rankExpert';
   static const String rankMaster = 'rankMaster';
   static const String rankGrandmaster = 'rankGrandmaster';
-  static const String versusNoRivalTitle = 'versusNoRivalTitle';
-  static const String versusNoRivalMessage = 'versusNoRivalMessage';
-  static const String goToFriendsLabel = 'goToFriendsLabel';
   static const String chooseRivalLabel = 'chooseRivalLabel';
+  static const String opponentLabel = 'opponentLabel';
+  static const String findOpponentLabel = 'findOpponentLabel';
+  static const String playModeTitle = 'playModeTitle';
+  static const String playOnlineTitle = 'playOnlineTitle';
+  static const String playOnlineMessage = 'playOnlineMessage';
+  static const String playLocalTitle = 'playLocalTitle';
+  static const String playLocalMessage = 'playLocalMessage';
+  static const String searchingOnlineLabel = 'searchingOnlineLabel';
+  static const String searchingNearbyLabel = 'searchingNearbyLabel';
+  static const String matchCpuFallback = 'matchCpuFallback';
+  static const String chooseGameLabel = 'chooseGameLabel';
+  static const String bestOfThreeLabel = 'bestOfThreeLabel';
+  static const String roundOfLabel = 'roundOfLabel';
+  static const String playRoundLabel = 'playRoundLabel';
+  static const String youLabel = 'youLabel';
+  static const String seriesVictoryTitle = 'seriesVictoryTitle';
+  static const String seriesDefeatTitle = 'seriesDefeatTitle';
+  static const String seriesDrawTitle = 'seriesDrawTitle';
+  static const String seriesInProgressTitle = 'seriesInProgressTitle';
+  static const String seriesWaitingTitle = 'seriesWaitingTitle';
+  static const String seriesWaitingMessage = 'seriesWaitingMessage';
+  static const String seriesVictoryMessage = 'seriesVictoryMessage';
+  static const String seriesDefeatMessage = 'seriesDefeatMessage';
+  static const String rematchLabel = 'rematchLabel';
+  static const String rematchRoomCreated = 'rematchRoomCreated';
+  static const String rivalPlayingRound = 'rivalPlayingRound';
+  static const String rivalNotStarted = 'rivalNotStarted';
+  static const String rivalRoundsPlayed = 'rivalRoundsPlayed';
+  static const String rivalHitPair = 'rivalHitPair';
+  static const String rivalMissPair = 'rivalMissPair';
+  static const String rivalHitAnswer = 'rivalHitAnswer';
+  static const String rivalMissAnswer = 'rivalMissAnswer';
+  static const String rivalNotPlayingNow = 'rivalNotPlayingNow';
+  static const String rivalRoundFinal = 'rivalRoundFinal';
+  static const String watchRivalLive = 'watchRivalLive';
+  static const String mirrorExpandHint = 'mirrorExpandHint';
+  static const String roundPendingLabel = 'roundPendingLabel';
+  static const String roundNotNeededLabel = 'roundNotNeededLabel';
+  static const String roundTiedLabel = 'roundTiedLabel';
+  static const String totalPointsLabel = 'totalPointsLabel';
   static const String versusHowItWorks = 'versusHowItWorks';
   static const String duelsToPlayTitle = 'duelsToPlayTitle';
   static const String duelsWaitingTitle = 'duelsWaitingTitle';
@@ -456,6 +491,17 @@ mixin AppLocale {
 
   // --- Textos que antes estaban escritos en el código ---
   static const String levelMapRegionName = 'levelMapRegionName';
+  static const String mapNavigatorLabel = 'mapNavigatorLabel';
+  static const String mapNavigatorHint = 'mapNavigatorHint';
+  static const String gotItLabel = 'gotItLabel';
+  static const String mapCurrentLevelLabel = 'mapCurrentLevelLabel';
+  static const String mapLevelsCleared = 'mapLevelsCleared';
+  static const String mapNextGift = 'mapNextGift';
+  static const String mapNextChest = 'mapNextChest';
+  static const String mapLevelsToReward = 'mapLevelsToReward';
+  static const String mapRewardOneAway = 'mapRewardOneAway';
+  static const String mapGoToMyLevel = 'mapGoToMyLevel';
+  static const String mapPlayLevel = 'mapPlayLevel';
   static const String levelsTitle = 'levelsTitle';
   static const String levelSelectedSnack = 'levelSelectedSnack';
   static const String routeNotFound = 'routeNotFound';
@@ -474,8 +520,6 @@ mixin AppLocale {
   static const String timeAgoWeeks = 'timeAgoWeeks';
   static const String timeAgoOneMonth = 'timeAgoOneMonth';
   static const String timeAgoMonths = 'timeAgoMonths';
-  static const String cpuDuelTitle = 'cpuDuelTitle';
-  static const String cpuDuelMessage = 'cpuDuelMessage';
   static const String cpuLevelEasy = 'cpuLevelEasy';
   static const String cpuLevelNormal = 'cpuLevelNormal';
   static const String cpuLevelHard = 'cpuLevelHard';
@@ -528,7 +572,6 @@ mixin AppLocale {
     quitMatch: 'Salir de la partida',
     powerLevelLabel: 'NIVEL DE PODER',
     formLabel: 'FORMA',
-    startDuel: 'INICIAR DUELO',
     comingSoon: 'Muy pronto',
     profileTitle: 'Perfil y Estadísticas',
     nextLevelLabel: 'Próximo Nivel',
@@ -596,7 +639,6 @@ mixin AppLocale {
     upgradeSuccessMessage: '¡Ahora eres Memory Pro!',
     avatarUpdatedMessage: 'Avatar actualizado',
     chooseAvatarTitle: 'Elige tu avatar',
-    searchingOpponentLabel: 'Preparando el duelo...',
     forgotPasswordSentMessage:
         'Te enviamos un enlace para recuperar tu contraseña',
     offlineBannerMessage:
@@ -826,10 +868,47 @@ mixin AppLocale {
     rankExpert: 'Experto',
     rankMaster: 'Maestro',
     rankGrandmaster: 'Gran maestro',
-    versusNoRivalTitle: 'Aún no tienes rival',
-    versusNoRivalMessage: 'Agrega amigos para retarlos a un duelo.',
-    goToFriendsLabel: 'Ir a Amigos',
     chooseRivalLabel: 'Elige a tu rival',
+    opponentLabel: 'Oponente',
+    findOpponentLabel: 'Pulsa Jugar para encontrar rival',
+    playModeTitle: '¿Cómo quieres jugar?',
+    playOnlineTitle: 'Buscar oponente en línea',
+    playOnlineMessage: 'Te emparejamos con alguien conectado ahora mismo.',
+    playLocalTitle: 'Jugar cerca de ti',
+    playLocalMessage: 'Busca jugadores a tu alrededor, incluso sin internet.',
+    searchingOnlineLabel: 'Buscando oponente...',
+    searchingNearbyLabel: 'Buscando jugadores cerca...',
+    matchCpuFallback: 'No hay nadie disponible: juegas contra la máquina ({level}).',
+    chooseGameLabel: 'Elige el juego',
+    bestOfThreeLabel: 'Al mejor de 3 rondas: gana quien se lleve 2.',
+    roundOfLabel: 'Ronda {n} de {total}',
+    playRoundLabel: 'Jugar ronda {n}',
+    youLabel: 'Tú',
+    seriesVictoryTitle: '¡Victoria!',
+    seriesDefeatTitle: 'Derrota',
+    seriesDrawTitle: 'Empate',
+    seriesInProgressTitle: 'Duelo en juego',
+    seriesWaitingTitle: 'Esperando a {name}',
+    seriesWaitingMessage: 'El resultado aparece en cuanto juegue sus rondas.',
+    seriesVictoryMessage: '¿Le das la revancha?',
+    seriesDefeatMessage: 'Pide la revancha y demuestra quién manda.',
+    rematchLabel: 'Revancha',
+    rematchRoomCreated: 'Sala de revancha {code}: compártela con tu rival.',
+    rivalPlayingRound: 'Jugando la ronda {n} · {points} pts',
+    rivalNotStarted: 'Aún no ha jugado',
+    rivalRoundsPlayed: 'Jugó {n} de {total} rondas',
+    rivalHitPair: '¡{name} encontró una pareja!',
+    rivalMissPair: '{name} falló una pareja',
+    rivalHitAnswer: '¡{name} acertó!',
+    rivalMissAnswer: '{name} se equivocó',
+    rivalNotPlayingNow: 'No está jugando ahora',
+    rivalRoundFinal: 'Terminó: {points} pts',
+    watchRivalLive: '{name} está jugando: míralo en directo',
+    mirrorExpandHint: 'Toca para ampliar o reducir',
+    roundPendingLabel: 'Pendiente',
+    roundNotNeededLabel: 'No hizo falta',
+    roundTiedLabel: 'Empate',
+    totalPointsLabel: 'Puntos totales',
     versusHowItWorks: 'Los dos juegan el mismo tablero, cada uno cuando pueda. Gana la mejor puntuación.',
     duelsToPlayTitle: 'Tu turno',
     duelsWaitingTitle: 'Esperando al rival',
@@ -938,6 +1017,17 @@ mixin AppLocale {
     levelRewardChestTitle: '¡Cofre de nivel!',
     levelRewardCoins: '+{coins} monedas',
     levelMapRegionName: 'Bosque de los Acertijos',
+    mapNavigatorLabel: 'Navegador del mapa',
+    mapNavigatorHint: 'Tu mapa: progreso, premios y un atajo a tu nivel.',
+    gotItLabel: 'Entendido',
+    mapCurrentLevelLabel: 'Estás en el nivel {n}',
+    mapLevelsCleared: '{n} niveles superados',
+    mapNextGift: 'Regalo de {coins} monedas en el nivel {level}',
+    mapNextChest: 'Cofre de {coins} monedas en el nivel {level}',
+    mapLevelsToReward: 'Te faltan {n} niveles',
+    mapRewardOneAway: '¡Gana un tablero más y es tuyo!',
+    mapGoToMyLevel: 'Ir a mi nivel',
+    mapPlayLevel: 'Jugar nivel {n}',
     levelsTitle: 'Niveles',
     levelSelectedSnack: 'Nivel {level} · Dificultad: {stars}⭐',
     routeNotFound: 'No encontramos esta pantalla.',
@@ -956,8 +1046,6 @@ mixin AppLocale {
     timeAgoWeeks: 'Hace {n} sem',
     timeAgoOneMonth: 'Hace 1 mes',
     timeAgoMonths: 'Hace {n} meses',
-    cpuDuelTitle: 'Contra la máquina',
-    cpuDuelMessage: 'Sin cuenta ni conexión: el mismo tablero para los dos.',
     cpuLevelEasy: 'Fácil',
     cpuLevelNormal: 'Normal',
     cpuLevelHard: 'Difícil',
@@ -1011,7 +1099,6 @@ mixin AppLocale {
     quitMatch: 'Quit Match',
     powerLevelLabel: 'POWER LEVEL',
     formLabel: 'FORM',
-    startDuel: 'START DUEL',
     comingSoon: 'Coming soon',
     profileTitle: 'Profile & Stats',
     nextLevelLabel: 'Next Level',
@@ -1080,7 +1167,6 @@ mixin AppLocale {
     upgradeSuccessMessage: "You're now Memory Pro!",
     avatarUpdatedMessage: 'Avatar updated',
     chooseAvatarTitle: 'Choose your avatar',
-    searchingOpponentLabel: 'Setting up the duel...',
     forgotPasswordSentMessage: "We've sent you a password reset link",
     offlineBannerMessage:
         "You're offline. Your scores will sync once you reconnect.",
@@ -1309,10 +1395,47 @@ mixin AppLocale {
     rankExpert: 'Expert',
     rankMaster: 'Master',
     rankGrandmaster: 'Grandmaster',
-    versusNoRivalTitle: 'No rival yet',
-    versusNoRivalMessage: 'Add friends to challenge them to a duel.',
-    goToFriendsLabel: 'Go to Friends',
     chooseRivalLabel: 'Choose your rival',
+    opponentLabel: 'Opponent',
+    findOpponentLabel: 'Tap Play to find a rival',
+    playModeTitle: 'How do you want to play?',
+    playOnlineTitle: 'Find an online opponent',
+    playOnlineMessage: 'We match you with someone playing right now.',
+    playLocalTitle: 'Play nearby',
+    playLocalMessage: 'Looks for players around you, even without internet.',
+    searchingOnlineLabel: 'Finding an opponent...',
+    searchingNearbyLabel: 'Looking for players nearby...',
+    matchCpuFallback: 'Nobody around: you are playing the machine ({level}).',
+    chooseGameLabel: 'Choose the game',
+    bestOfThreeLabel: 'Best of 3 rounds: first to win 2 takes it.',
+    roundOfLabel: 'Round {n} of {total}',
+    playRoundLabel: 'Play round {n}',
+    youLabel: 'You',
+    seriesVictoryTitle: 'Victory!',
+    seriesDefeatTitle: 'Defeat',
+    seriesDrawTitle: 'Draw',
+    seriesInProgressTitle: 'Duel in progress',
+    seriesWaitingTitle: 'Waiting for {name}',
+    seriesWaitingMessage: 'The result appears as soon as they play their rounds.',
+    seriesVictoryMessage: 'Will you give them a rematch?',
+    seriesDefeatMessage: 'Ask for a rematch and show who is boss.',
+    rematchLabel: 'Rematch',
+    rematchRoomCreated: 'Rematch room {code}: share it with your rival.',
+    rivalPlayingRound: 'Playing round {n} · {points} pts',
+    rivalNotStarted: 'Has not played yet',
+    rivalRoundsPlayed: 'Played {n} of {total} rounds',
+    rivalHitPair: '{name} found a pair!',
+    rivalMissPair: '{name} missed a pair',
+    rivalHitAnswer: '{name} got one right!',
+    rivalMissAnswer: '{name} slipped up',
+    rivalNotPlayingNow: 'Not playing right now',
+    rivalRoundFinal: 'Finished: {points} pts',
+    watchRivalLive: '{name} is playing: watch live',
+    mirrorExpandHint: 'Tap to expand or shrink',
+    roundPendingLabel: 'Pending',
+    roundNotNeededLabel: 'Not needed',
+    roundTiedLabel: 'Tie',
+    totalPointsLabel: 'Total points',
     versusHowItWorks: 'You both play the same board, whenever you can. Best score wins.',
     duelsToPlayTitle: 'Your turn',
     duelsWaitingTitle: 'Waiting for rival',
@@ -1421,6 +1544,17 @@ mixin AppLocale {
     levelRewardChestTitle: 'Level chest!',
     levelRewardCoins: '+{coins} coins',
     levelMapRegionName: 'Forest of Riddles',
+    mapNavigatorLabel: 'Map navigator',
+    mapNavigatorHint: 'Your map: progress, rewards and a shortcut to your level.',
+    gotItLabel: 'Got it',
+    mapCurrentLevelLabel: 'You are on level {n}',
+    mapLevelsCleared: '{n} levels cleared',
+    mapNextGift: '{coins}-coin gift at level {level}',
+    mapNextChest: '{coins}-coin chest at level {level}',
+    mapLevelsToReward: '{n} levels to go',
+    mapRewardOneAway: 'Win one more board and it is yours!',
+    mapGoToMyLevel: 'Go to my level',
+    mapPlayLevel: 'Play level {n}',
     levelsTitle: 'Levels',
     levelSelectedSnack: 'Level {level} · Difficulty: {stars}⭐',
     routeNotFound: "We couldn't find this screen.",
@@ -1439,8 +1573,6 @@ mixin AppLocale {
     timeAgoWeeks: '{n} wk ago',
     timeAgoOneMonth: '1 month ago',
     timeAgoMonths: '{n} months ago',
-    cpuDuelTitle: 'Play the computer',
-    cpuDuelMessage: 'No account or connection needed: same board for both.',
     cpuLevelEasy: 'Easy',
     cpuLevelNormal: 'Normal',
     cpuLevelHard: 'Hard',

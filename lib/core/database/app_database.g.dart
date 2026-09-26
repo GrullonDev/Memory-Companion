@@ -4116,6 +4116,20 @@ class $DisplaySettingsTable extends DisplaySettings
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _mapNavigatorHintSeenMeta =
+      const VerificationMeta('mapNavigatorHintSeen');
+  @override
+  late final GeneratedColumn<bool> mapNavigatorHintSeen = GeneratedColumn<bool>(
+    'map_navigator_hint_seen',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("map_navigator_hint_seen" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -4134,6 +4148,7 @@ class $DisplaySettingsTable extends DisplaySettings
     timedMatches,
     contextLocation,
     contextNearby,
+    mapNavigatorHintSeen,
     updatedAt,
   ];
   @override
@@ -4178,6 +4193,15 @@ class $DisplaySettingsTable extends DisplaySettings
         ),
       );
     }
+    if (data.containsKey('map_navigator_hint_seen')) {
+      context.handle(
+        _mapNavigatorHintSeenMeta,
+        mapNavigatorHintSeen.isAcceptableOrUnknown(
+          data['map_navigator_hint_seen']!,
+          _mapNavigatorHintSeenMeta,
+        ),
+      );
+    }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
@@ -4217,6 +4241,10 @@ class $DisplaySettingsTable extends DisplaySettings
         DriftSqlType.bool,
         data['${effectivePrefix}context_nearby'],
       )!,
+      mapNavigatorHintSeen: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}map_navigator_hint_seen'],
+      )!,
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}updated_at'],
@@ -4253,6 +4281,9 @@ class DisplaySettingsRow extends DataClass
   /// Contexto automático: anunciarse y buscar jugadores cercanos por
   /// Bluetooth. Nace apagado, igual que la ubicación.
   final bool contextNearby;
+
+  /// The level map's navigator button has explained itself once.
+  final bool mapNavigatorHintSeen;
   final int updatedAt;
   const DisplaySettingsRow({
     required this.id,
@@ -4260,6 +4291,7 @@ class DisplaySettingsRow extends DataClass
     required this.timedMatches,
     required this.contextLocation,
     required this.contextNearby,
+    required this.mapNavigatorHintSeen,
     required this.updatedAt,
   });
   @override
@@ -4274,6 +4306,7 @@ class DisplaySettingsRow extends DataClass
     map['timed_matches'] = Variable<bool>(timedMatches);
     map['context_location'] = Variable<bool>(contextLocation);
     map['context_nearby'] = Variable<bool>(contextNearby);
+    map['map_navigator_hint_seen'] = Variable<bool>(mapNavigatorHintSeen);
     map['updated_at'] = Variable<int>(updatedAt);
     return map;
   }
@@ -4285,6 +4318,7 @@ class DisplaySettingsRow extends DataClass
       timedMatches: Value(timedMatches),
       contextLocation: Value(contextLocation),
       contextNearby: Value(contextNearby),
+      mapNavigatorHintSeen: Value(mapNavigatorHintSeen),
       updatedAt: Value(updatedAt),
     );
   }
@@ -4302,6 +4336,9 @@ class DisplaySettingsRow extends DataClass
       timedMatches: serializer.fromJson<bool>(json['timedMatches']),
       contextLocation: serializer.fromJson<bool>(json['contextLocation']),
       contextNearby: serializer.fromJson<bool>(json['contextNearby']),
+      mapNavigatorHintSeen: serializer.fromJson<bool>(
+        json['mapNavigatorHintSeen'],
+      ),
       updatedAt: serializer.fromJson<int>(json['updatedAt']),
     );
   }
@@ -4316,6 +4353,7 @@ class DisplaySettingsRow extends DataClass
       'timedMatches': serializer.toJson<bool>(timedMatches),
       'contextLocation': serializer.toJson<bool>(contextLocation),
       'contextNearby': serializer.toJson<bool>(contextNearby),
+      'mapNavigatorHintSeen': serializer.toJson<bool>(mapNavigatorHintSeen),
       'updatedAt': serializer.toJson<int>(updatedAt),
     };
   }
@@ -4326,6 +4364,7 @@ class DisplaySettingsRow extends DataClass
     bool? timedMatches,
     bool? contextLocation,
     bool? contextNearby,
+    bool? mapNavigatorHintSeen,
     int? updatedAt,
   }) => DisplaySettingsRow(
     id: id ?? this.id,
@@ -4333,6 +4372,7 @@ class DisplaySettingsRow extends DataClass
     timedMatches: timedMatches ?? this.timedMatches,
     contextLocation: contextLocation ?? this.contextLocation,
     contextNearby: contextNearby ?? this.contextNearby,
+    mapNavigatorHintSeen: mapNavigatorHintSeen ?? this.mapNavigatorHintSeen,
     updatedAt: updatedAt ?? this.updatedAt,
   );
   DisplaySettingsRow copyWithCompanion(DisplaySettingsCompanion data) {
@@ -4350,6 +4390,9 @@ class DisplaySettingsRow extends DataClass
       contextNearby: data.contextNearby.present
           ? data.contextNearby.value
           : this.contextNearby,
+      mapNavigatorHintSeen: data.mapNavigatorHintSeen.present
+          ? data.mapNavigatorHintSeen.value
+          : this.mapNavigatorHintSeen,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -4362,6 +4405,7 @@ class DisplaySettingsRow extends DataClass
           ..write('timedMatches: $timedMatches, ')
           ..write('contextLocation: $contextLocation, ')
           ..write('contextNearby: $contextNearby, ')
+          ..write('mapNavigatorHintSeen: $mapNavigatorHintSeen, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -4374,6 +4418,7 @@ class DisplaySettingsRow extends DataClass
     timedMatches,
     contextLocation,
     contextNearby,
+    mapNavigatorHintSeen,
     updatedAt,
   );
   @override
@@ -4385,6 +4430,7 @@ class DisplaySettingsRow extends DataClass
           other.timedMatches == this.timedMatches &&
           other.contextLocation == this.contextLocation &&
           other.contextNearby == this.contextNearby &&
+          other.mapNavigatorHintSeen == this.mapNavigatorHintSeen &&
           other.updatedAt == this.updatedAt);
 }
 
@@ -4394,6 +4440,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
   final Value<bool> timedMatches;
   final Value<bool> contextLocation;
   final Value<bool> contextNearby;
+  final Value<bool> mapNavigatorHintSeen;
   final Value<int> updatedAt;
   const DisplaySettingsCompanion({
     this.id = const Value.absent(),
@@ -4401,6 +4448,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     this.timedMatches = const Value.absent(),
     this.contextLocation = const Value.absent(),
     this.contextNearby = const Value.absent(),
+    this.mapNavigatorHintSeen = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   DisplaySettingsCompanion.insert({
@@ -4409,6 +4457,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     this.timedMatches = const Value.absent(),
     this.contextLocation = const Value.absent(),
     this.contextNearby = const Value.absent(),
+    this.mapNavigatorHintSeen = const Value.absent(),
     required int updatedAt,
   }) : updatedAt = Value(updatedAt);
   static Insertable<DisplaySettingsRow> custom({
@@ -4417,6 +4466,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     Expression<bool>? timedMatches,
     Expression<bool>? contextLocation,
     Expression<bool>? contextNearby,
+    Expression<bool>? mapNavigatorHintSeen,
     Expression<int>? updatedAt,
   }) {
     return RawValuesInsertable({
@@ -4425,6 +4475,8 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
       if (timedMatches != null) 'timed_matches': timedMatches,
       if (contextLocation != null) 'context_location': contextLocation,
       if (contextNearby != null) 'context_nearby': contextNearby,
+      if (mapNavigatorHintSeen != null)
+        'map_navigator_hint_seen': mapNavigatorHintSeen,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
@@ -4435,6 +4487,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     Value<bool>? timedMatches,
     Value<bool>? contextLocation,
     Value<bool>? contextNearby,
+    Value<bool>? mapNavigatorHintSeen,
     Value<int>? updatedAt,
   }) {
     return DisplaySettingsCompanion(
@@ -4443,6 +4496,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
       timedMatches: timedMatches ?? this.timedMatches,
       contextLocation: contextLocation ?? this.contextLocation,
       contextNearby: contextNearby ?? this.contextNearby,
+      mapNavigatorHintSeen: mapNavigatorHintSeen ?? this.mapNavigatorHintSeen,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -4469,6 +4523,11 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
     if (contextNearby.present) {
       map['context_nearby'] = Variable<bool>(contextNearby.value);
     }
+    if (mapNavigatorHintSeen.present) {
+      map['map_navigator_hint_seen'] = Variable<bool>(
+        mapNavigatorHintSeen.value,
+      );
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<int>(updatedAt.value);
     }
@@ -4483,6 +4542,7 @@ class DisplaySettingsCompanion extends UpdateCompanion<DisplaySettingsRow> {
           ..write('timedMatches: $timedMatches, ')
           ..write('contextLocation: $contextLocation, ')
           ..write('contextNearby: $contextNearby, ')
+          ..write('mapNavigatorHintSeen: $mapNavigatorHintSeen, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -9728,6 +9788,7 @@ typedef $$DisplaySettingsTableCreateCompanionBuilder =
       Value<bool> timedMatches,
       Value<bool> contextLocation,
       Value<bool> contextNearby,
+      Value<bool> mapNavigatorHintSeen,
       required int updatedAt,
     });
 typedef $$DisplaySettingsTableUpdateCompanionBuilder =
@@ -9737,6 +9798,7 @@ typedef $$DisplaySettingsTableUpdateCompanionBuilder =
       Value<bool> timedMatches,
       Value<bool> contextLocation,
       Value<bool> contextNearby,
+      Value<bool> mapNavigatorHintSeen,
       Value<int> updatedAt,
     });
 
@@ -9772,6 +9834,11 @@ class $$DisplaySettingsTableFilterComposer
 
   ColumnFilters<bool> get contextNearby => $composableBuilder(
     column: $table.contextNearby,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get mapNavigatorHintSeen => $composableBuilder(
+    column: $table.mapNavigatorHintSeen,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9815,6 +9882,11 @@ class $$DisplaySettingsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get mapNavigatorHintSeen => $composableBuilder(
+    column: $table.mapNavigatorHintSeen,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -9851,6 +9923,11 @@ class $$DisplaySettingsTableAnnotationComposer
 
   GeneratedColumn<bool> get contextNearby => $composableBuilder(
     column: $table.contextNearby,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get mapNavigatorHintSeen => $composableBuilder(
+    column: $table.mapNavigatorHintSeen,
     builder: (column) => column,
   );
 
@@ -9900,6 +9977,7 @@ class $$DisplaySettingsTableTableManager
                 Value<bool> timedMatches = const Value.absent(),
                 Value<bool> contextLocation = const Value.absent(),
                 Value<bool> contextNearby = const Value.absent(),
+                Value<bool> mapNavigatorHintSeen = const Value.absent(),
                 Value<int> updatedAt = const Value.absent(),
               }) => DisplaySettingsCompanion(
                 id: id,
@@ -9907,6 +9985,7 @@ class $$DisplaySettingsTableTableManager
                 timedMatches: timedMatches,
                 contextLocation: contextLocation,
                 contextNearby: contextNearby,
+                mapNavigatorHintSeen: mapNavigatorHintSeen,
                 updatedAt: updatedAt,
               ),
           createCompanionCallback:
@@ -9916,6 +9995,7 @@ class $$DisplaySettingsTableTableManager
                 Value<bool> timedMatches = const Value.absent(),
                 Value<bool> contextLocation = const Value.absent(),
                 Value<bool> contextNearby = const Value.absent(),
+                Value<bool> mapNavigatorHintSeen = const Value.absent(),
                 required int updatedAt,
               }) => DisplaySettingsCompanion.insert(
                 id: id,
@@ -9923,6 +10003,7 @@ class $$DisplaySettingsTableTableManager
                 timedMatches: timedMatches,
                 contextLocation: contextLocation,
                 contextNearby: contextNearby,
+                mapNavigatorHintSeen: mapNavigatorHintSeen,
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
