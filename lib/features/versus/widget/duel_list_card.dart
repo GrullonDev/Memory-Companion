@@ -17,19 +17,22 @@ class DuelListCard extends StatelessWidget {
     required this.state,
     required this.onPlay,
     required this.onDecline,
+    this.showWaiting = true,
   });
 
   final VersusState state;
   final ValueChanged<Duel> onPlay;
   final ValueChanged<Duel> onDecline;
 
+  /// Whether duels waiting on the rival are listed.
+  final bool showWaiting;
+
   @override
   Widget build(BuildContext context) {
     final uid = state.uid;
+    final waiting = showWaiting ? state.waiting : const <Duel>[];
     if (uid == null ||
-        (state.toPlay.isEmpty &&
-            state.waiting.isEmpty &&
-            state.finished.isEmpty)) {
+        (state.toPlay.isEmpty && waiting.isEmpty && state.finished.isEmpty)) {
       return const SizedBox.shrink();
     }
     final textTheme = Theme.of(context).textTheme;
@@ -72,7 +75,7 @@ class DuelListCard extends StatelessWidget {
             section(AppLocale.duelsToPlayTitle),
             for (final duel in state.toPlay)
               _DuelRow(
-                icon: Icons.sports_esports_rounded,
+                icon: duel.game.icon,
                 iconColor: AppColors.skyStrong,
                 title:
                     (duel.isInvitationFor(uid)
@@ -97,9 +100,9 @@ class DuelListCard extends StatelessWidget {
                 ],
               ),
           ],
-          if (state.waiting.isNotEmpty) ...[
+          if (waiting.isNotEmpty) ...[
             section(AppLocale.duelsWaitingTitle),
-            for (final duel in state.waiting)
+            for (final duel in waiting)
               _DuelRow(
                 icon: Icons.hourglass_top_rounded,
                 iconColor: AppColors.onSurfaceVariant,

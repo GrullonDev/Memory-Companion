@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/duel_game.dart';
 
 /// Versus duels, in Firestore. Like friends, they only exist in the cloud:
 /// a duel is shared between two devices by definition.
@@ -24,6 +25,7 @@ class DuelRepository {
     required int seed,
     required String categoryId,
     required String languageCode,
+    DuelGame game = DuelGame.memory,
   }) async {
     final ref = _duels.doc();
     await ref.set({
@@ -36,6 +38,9 @@ class DuelRepository {
       'languageCode': languageCode,
       'status': 'pending',
       'results': <String, Object>{},
+      'gameId': game.id,
+      'rounds': Duel.seriesRounds,
+      'roundResults': <String, Object>{},
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -48,6 +53,8 @@ class DuelRepository {
       categoryId: categoryId,
       languageCode: languageCode,
       status: DuelStatus.pending,
+      rounds: Duel.seriesRounds,
+      gameId: game.id,
       createdAt: DateTime.now(),
     );
   }
@@ -95,6 +102,37 @@ class DuelRepository {
     });
   }
 
+  /// Records [uid]'s result for [round] of a series duel. Like
+  /// [submitResult], a plain update Firestore can queue offline, and the
+  /// rules refuse to overwrite a round already played.
+  Future<void> submitRound({
+    required String duelId,
+    required String uid,
+    required int round,
+    required DuelScore score,
+  }) {
+    return _duels.doc(duelId).update({
+      'roundResults.$uid.$round': score.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  /// Tells the rival where [uid] is in the duel while they play: one
+  /// small field, overwritten on every report, so a round costs a few
+  /// dozen writes at most. Firestore queues it offline like any update.
+  Future<void> reportProgress({
+    required String duelId,
+    required String uid,
+    required DuelProgress progress,
+  }) {
+    return _duels.doc(duelId).update({
+      'progress.$uid': {
+        ...progress.toMap(),
+        'at': FieldValue.serverTimestamp(),
+      },
+    });
+  }
+
   /// Opens a room: a duel with no opponent yet, which anyone holding
   /// [roomCode] can join. The host can play it straight away.
   Future<Duel> createRoom({
@@ -104,6 +142,7 @@ class DuelRepository {
     required int seed,
     required String categoryId,
     required String languageCode,
+    DuelGame game = DuelGame.memory,
   }) async {
     final ref = _duels.doc();
     await ref.set({
@@ -118,6 +157,9 @@ class DuelRepository {
       'languageCode': languageCode,
       'status': 'open',
       'results': <String, Object>{},
+      'gameId': game.id,
+      'rounds': Duel.seriesRounds,
+      'roundResults': <String, Object>{},
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });
@@ -130,6 +172,8 @@ class DuelRepository {
       categoryId: categoryId,
       languageCode: languageCode,
       status: DuelStatus.open,
+      rounds: Duel.seriesRounds,
+      gameId: game.id,
       createdAt: DateTime.now(),
       roomCode: roomCode,
       names: {hostUid: hostName},
@@ -146,6 +190,22 @@ class DuelRepository {
     if (query.docs.isEmpty) return null;
     final doc = query.docs.single;
     return Duel.fromFirestore(doc.id, doc.data());
+  }
+
+  /// Any open room hosted by someone other than [uid], for matchmaking.
+  ///
+  /// Filters on status alone, which needs no composite index; the few
+  /// rooms fetched are enough to skip the player's own.
+  Future<Duel?> findAnyOpenRoom({required String excludingUid}) async {
+    final query = await _duels
+        .where('status', isEqualTo: 'open')
+        .limit(10)
+        .get();
+    for (final doc in query.docs) {
+      final room = Duel.fromFirestore(doc.id, doc.data());
+      if (room.challengerUid != excludingUid) return room;
+    }
+    return null;
   }
 
   /// Takes the free seat in [room]. A transaction, so two players entering

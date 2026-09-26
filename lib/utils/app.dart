@@ -59,6 +59,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       supportedLocales: _localization.supportedLocales,
       localizationsDelegates: _localization.localizationsDelegates,
       initialRoute: RoutePaths.splash,
+      onGenerateInitialRoutes: RouteSwitch.onGenerateInitialRoutes,
       onGenerateRoute: RouteSwitch.onGenerateRoute,
       // Players who enlarge system text get that enlargement — up to 135%,
       // which covers the common "Large"/"Larger" accessibility steps. Past

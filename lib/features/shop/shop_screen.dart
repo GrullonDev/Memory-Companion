@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/core/routes/tab_root_scope.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/pressable.dart';
@@ -43,79 +44,82 @@ class ShopScreen extends ConsumerWidget {
     final summary = ref.watch(homeSummaryProvider);
     final shop = ref.watch(shopControllerProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        activeIndex: 3,
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          children: [
-            HomeTopBar(
-              playerName: summary.playerName,
-              coins: wallet.value ?? 0,
-              onAvatarTap: () =>
-                  Navigator.of(context).pushNamed(RoutePaths.profile),
-            ),
-            const SizedBox(height: 24),
-            const ShopHeroBanner(),
-            const SizedBox(height: 20),
-            Text(
-              AppLocale.shopHeroTitle.getString(context),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w800,
+    return TabRootScope(
+      isHome: false,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        bottomNavigationBar: HomeBottomNav(
+          activeIndex: 3,
+          onTap: (index) => RoutePaths.navigateToTab(context, index),
+        ),
+        body: SafeArea(
+          bottom: true,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            children: [
+              HomeTopBar(
+                playerName: summary.playerName,
+                coins: wallet.value ?? 0,
+                onAvatarTap: () =>
+                    Navigator.of(context).pushNamed(RoutePaths.profile),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              AppLocale.shopHeroSubtitle.getString(context),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppColors.onSurfaceVariant,
+              const SizedBox(height: 24),
+              const ShopHeroBanner(),
+              const SizedBox(height: 20),
+              Text(
+                AppLocale.shopHeroTitle.getString(context),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: AppColors.onSurface,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-            const SizedBox(height: 24),
-            AsyncValueView(
-              value: shop,
-              onRetry: () => ref.invalidate(shopControllerProvider),
-              data: (context, shopState) => Column(
-                children: [
-                  for (final plan in shopState.plans) ...[
-                    _PlanCardFromModel(
-                      plan: plan,
-                      isCurrent: plan.id == shopState.currentPlanId,
-                      onUpgrade: () => _upgrade(context, ref),
-                    ),
-                    const SizedBox(height: 20),
+              const SizedBox(height: 8),
+              Text(
+                AppLocale.shopHeroSubtitle.getString(context),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: AppColors.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 24),
+              AsyncValueView(
+                value: shop,
+                onRetry: () => ref.invalidate(shopControllerProvider),
+                data: (context, shopState) => Column(
+                  children: [
+                    for (final plan in shopState.plans) ...[
+                      _PlanCardFromModel(
+                        plan: plan,
+                        isCurrent: plan.id == shopState.currentPlanId,
+                        onUpgrade: () => _upgrade(context, ref),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              AppLocale.exclusiveThemesTitle.getString(context),
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: AppColors.onSurface,
-                fontWeight: FontWeight.w700,
+              const SizedBox(height: 4),
+              Text(
+                AppLocale.exclusiveThemesTitle.getString(context),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: AppColors.onSurface,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 72,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: _themeIcons.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 12),
-                itemBuilder: (context, index) =>
-                    ThemeChip(icon: _themeIcons[index]),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 72,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _themeIcons.length,
+                  separatorBuilder: (_, _) => const SizedBox(width: 12),
+                  itemBuilder: (context, index) =>
+                      ThemeChip(icon: _themeIcons[index]),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

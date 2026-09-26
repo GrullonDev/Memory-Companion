@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/core/routes/tab_root_scope.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
@@ -21,6 +22,7 @@ import 'package:memory_companion/features/friends/widget/social_sign_in_card.dar
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
+import 'package:memory_companion/features/versus/widget/duel_game_picker.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
@@ -112,9 +114,18 @@ class FriendsScreen extends ConsumerWidget {
   }
 
   Future<void> _createRoom(BuildContext context, WidgetRef ref) async {
+    final game = await showDuelGamePicker(
+      context,
+      initial: ref.read(selectedDuelGameProvider),
+    );
+    if (game == null || !context.mounted) return;
+    ref.read(selectedDuelGameProvider.notifier).select(game);
     final room = await ref
         .read(versusControllerProvider.notifier)
-        .createRoom(languageCode: Localizations.localeOf(context).languageCode);
+        .createRoom(
+          languageCode: Localizations.localeOf(context).languageCode,
+          game: game,
+        );
     if (!context.mounted) return;
     final code = room?.roomCode;
     if (room == null || code == null) {
@@ -172,70 +183,75 @@ class FriendsScreen extends ConsumerWidget {
     final summary = ref.watch(homeSummaryProvider);
     final friends = ref.watch(friendsControllerProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        activeIndex: _tabIndex,
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
-      body: SafeArea(
-        bottom: true,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
-          children: [
-            HomeTopBar(
-              playerName: summary.playerName,
-              coins: wallet.value ?? 0,
-              onAvatarTap: () =>
-                  Navigator.of(context).pushNamed(RoutePaths.profile),
-            ),
-            const SizedBox(height: 24),
-            AsyncValueView<FriendsState>(
-              value: friends,
-              minHeight: 240,
-              onRetry: () => ref.invalidate(friendsControllerProvider),
-              data: (context, state) {
-                final code = state.friendCode;
-                if (!state.isSignedIn || code == null) {
-                  return const SocialSignInCard();
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    InviteFriendsCard(
-                      friendCode: code,
-                      onShare: () => _shareCode(context, code),
-                      onCopyCode: () => _copyCode(context, code),
-                    ),
-                    const SizedBox(height: 20),
-                    PlayRoomCard(
-                      onCreate: () => _createRoom(context, ref),
-                      onJoin: (code) => _joinRoom(context, ref, code),
-                    ),
-                    const SizedBox(height: 20),
-                    NearbyPlayersCard(
-                      state: ref.watch(nearbySearchControllerProvider),
-                      onSearch: () => ref
-                          .read(nearbySearchControllerProvider.notifier)
-                          .search(),
-                      onAdd: (code) => _add(context, ref, code),
-                      onChallenge: (friend) => _challenge(context, ref, friend),
-                    ),
-                    const SizedBox(height: 20),
-                    SocialNetworkCard(
-                      state: state,
-                      onAdd: (input) => _add(context, ref, input),
-                      onAccept: (friend) => _accept(context, ref, friend),
-                      onRemove: (friend) => _remove(context, ref, friend),
-                      onChallenge: (friend) => _challenge(context, ref, friend),
-                    ),
-                  ],
-                );
-              },
-            ),
-            const SizedBox(height: 20),
-            const LobbyBanner(),
-          ],
+    return TabRootScope(
+      isHome: false,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        bottomNavigationBar: HomeBottomNav(
+          activeIndex: _tabIndex,
+          onTap: (index) => RoutePaths.navigateToTab(context, index),
+        ),
+        body: SafeArea(
+          bottom: true,
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 24),
+            children: [
+              HomeTopBar(
+                playerName: summary.playerName,
+                coins: wallet.value ?? 0,
+                onAvatarTap: () =>
+                    Navigator.of(context).pushNamed(RoutePaths.profile),
+              ),
+              const SizedBox(height: 24),
+              AsyncValueView<FriendsState>(
+                value: friends,
+                minHeight: 240,
+                onRetry: () => ref.invalidate(friendsControllerProvider),
+                data: (context, state) {
+                  final code = state.friendCode;
+                  if (!state.isSignedIn || code == null) {
+                    return const SocialSignInCard();
+                  }
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      InviteFriendsCard(
+                        friendCode: code,
+                        onShare: () => _shareCode(context, code),
+                        onCopyCode: () => _copyCode(context, code),
+                      ),
+                      const SizedBox(height: 20),
+                      PlayRoomCard(
+                        onCreate: () => _createRoom(context, ref),
+                        onJoin: (code) => _joinRoom(context, ref, code),
+                      ),
+                      const SizedBox(height: 20),
+                      NearbyPlayersCard(
+                        state: ref.watch(nearbySearchControllerProvider),
+                        onSearch: () => ref
+                            .read(nearbySearchControllerProvider.notifier)
+                            .search(),
+                        onAdd: (code) => _add(context, ref, code),
+                        onChallenge: (friend) =>
+                            _challenge(context, ref, friend),
+                      ),
+                      const SizedBox(height: 20),
+                      SocialNetworkCard(
+                        state: state,
+                        onAdd: (input) => _add(context, ref, input),
+                        onAccept: (friend) => _accept(context, ref, friend),
+                        onRemove: (friend) => _remove(context, ref, friend),
+                        onChallenge: (friend) =>
+                            _challenge(context, ref, friend),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: 20),
+              const LobbyBanner(),
+            ],
+          ),
         ),
       ),
     );

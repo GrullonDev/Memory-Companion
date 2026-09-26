@@ -1,22 +1,29 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/friends/controller/friends_controller.dart';
 import 'package:memory_companion/features/friends/widget/friend_tile.dart';
-import 'package:memory_companion/features/game/board/board_screen.dart';
-import 'package:memory_companion/features/game/board/controller/board_controller.dart';
-import 'package:memory_companion/features/game/board/model/board_state.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
+import 'package:memory_companion/features/versus/duel_round_host.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
-import 'package:memory_companion/features/versus/widget/duel_result_overlay.dart';
+import 'package:memory_companion/features/versus/widget/duel_presence_bar.dart';
+import 'package:memory_companion/features/versus/widget/duel_series_view.dart';
+import 'package:memory_companion/features/versus/widget/opponent_mirror.dart';
 
-/// Plays one side of a [Duel], or shows its result if that side is done.
+/// A duel: the series between rounds, and each round as it is played,
+/// always under the face-off with the rival.
 ///
 /// Like the daily challenge it spends no life and offers no retry: both
-/// players get the same board, so a second attempt would be played from
-/// memory. The result follows the duel live, so the outcome appears the
-/// moment the rival finishes.
+/// players get the same rounds, so a second attempt would be played from
+/// memory. The duel follows Firestore live, so the rival's rounds, their
+/// progress and the final result appear the moment they happen.
 class DuelPage extends ConsumerStatefulWidget {
   const DuelPage({super.key, required this.duel});
 
@@ -32,13 +39,28 @@ class _DuelPageState extends ConsumerState<DuelPage> {
     versusControllerProvider.notifier,
   );
 
-  /// Set the moment this visit completes the board, before Firestore
-  /// answers.
-  DuelScore? _finished;
-  bool _submitFailed = false;
+  /// The round being played on this device, if any.
+  int? _round;
 
-  SharedBoardSetup get _setup =>
-      (board: widget.duel.board, languageCode: widget.duel.languageCode);
+  /// This player's latest report, shown in their own race lane and sent
+  /// to the rival.
+  DuelProgress? _myProgress;
+  int _seq = 0;
+  DateTime _lastSent = DateTime.fromMillisecondsSinceEpoch(0);
+
+  /// Rounds finished here, shown before Firestore echoes them back.
+  final _finished = <int, DuelScore>{};
+  bool _submitFailed = false;
+  bool _rematchBusy = false;
+
+  Timer? _progressTimer;
+
+  /// How often a plain score change is sent while a round is played.
+  static const _progressInterval = Duration(seconds: 2);
+
+  /// Hits and misses go out at once, but never closer than this: a burst
+  /// of moves becomes one write carrying the latest.
+  static const _eventGap = Duration(milliseconds: 350);
 
   @override
   void initState() {
@@ -48,19 +70,90 @@ class _DuelPageState extends ConsumerState<DuelPage> {
 
   @override
   void dispose() {
+    _progressTimer?.cancel();
     _versus.setPlaying(playing: false);
     super.dispose();
   }
 
-  Future<void> _onCompleted(BoardState board) async {
-    final score = DuelScore(
-      score: board.score,
-      seconds: board.elapsedSeconds,
-      moves: board.moves,
-    );
-    setState(() => _finished = score);
-    final sent = await _versus.submitResult(widget.duel, score);
+  void _playRound(Duel duel, int round) {
+    final start = DuelProgress(round: round, score: 0, seq: ++_seq);
+    setState(() {
+      _round = round;
+      _myProgress = start;
+    });
+    _send(duel);
+  }
+
+  /// Keeps [update] as this player's latest, and gets it to the rival:
+  /// straight away for a hit or a miss, batched for a plain score change.
+  void _onProgress(Duel duel, DuelProgress update) {
+    final round = _round;
+    if (round == null) return;
+    final urgent = update.event != DuelEvent.none;
+    setState(() {
+      _myProgress = update.copyWith(round: round, seq: urgent ? ++_seq : _seq);
+    });
+    if (urgent) {
+      _progressTimer?.cancel();
+      final wait = _eventGap - DateTime.now().difference(_lastSent);
+      if (wait <= Duration.zero) {
+        _send(duel);
+      } else {
+        _progressTimer = Timer(wait, () => _send(duel));
+      }
+    } else if (!(_progressTimer?.isActive ?? false)) {
+      _progressTimer = Timer(_progressInterval, () => _send(duel));
+    }
+  }
+
+  void _send(Duel duel) {
+    final progress = _myProgress;
+    if (!mounted || progress == null) return;
+    _lastSent = DateTime.now();
+    // Not awaited: offline, Firestore queues it and the round goes on.
+    _versus.reportProgress(duel, progress);
+  }
+
+  Future<void> _onRoundFinished(Duel duel, int round, DuelScore score) async {
+    // The last hit goes out before the round closes, so the rival sees it.
+    if (_progressTimer?.isActive ?? false) _send(duel);
+    _progressTimer?.cancel();
+    setState(() {
+      _finished[round] = score;
+      _round = null;
+    });
+    final sent = await _versus.submitResult(duel, score, round: round);
     if (!sent && mounted) setState(() => _submitFailed = true);
+  }
+
+  Future<void> _rematch(Duel duel) async {
+    setState(() => _rematchBusy = true);
+    final next = await _versus.rematch(
+      duel,
+      languageCode: Localizations.localeOf(context).languageCode,
+    );
+    if (!mounted) return;
+    setState(() => _rematchBusy = false);
+    if (next == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocale.duelCreateFailed.getString(context))),
+      );
+      return;
+    }
+    if (next.roomCode case final code?) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            AppLocale.rematchRoomCreated
+                .getString(context)
+                .replaceAll('{code}', code),
+          ),
+        ),
+      );
+    }
+    Navigator.of(
+      context,
+    ).pushReplacementNamed(RoutePaths.duel, arguments: next);
   }
 
   void _exit() => Navigator.of(context).pop();
@@ -69,66 +162,130 @@ class _DuelPageState extends ConsumerState<DuelPage> {
   Widget build(BuildContext context) {
     final uid = ref.watch(socialUidProvider).value;
     final live = ref.watch(duelProvider(widget.duel.id));
-    final duel = live.value ?? widget.duel;
-    final rivalUid = uid == null ? duel.opponentUid : duel.rivalOf(uid);
+
+    // Wait for the live duel: a round already played must not be offered
+    // again, and dealing a board starts its preview clock.
+    if (uid == null || (!live.hasValue && !live.hasError)) {
+      return const Scaffold(
+        backgroundColor: AppColors.background,
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    var duel = live.value ?? widget.duel;
+    for (final MapEntry(key: round, value: score) in _finished.entries) {
+      if (duel.scoreOf(uid, round) == null) {
+        duel = duel.withRound(uid, round, score);
+      }
+    }
+
+    final rivalUid = duel.rivalOf(uid);
+    final myName = displayNameOr(
+      context,
+      ref.watch(localPlayerProvider).value?.displayName ?? '',
+    );
     final rivalName = displayNameOr(
       context,
       ref.watch(versusControllerProvider).value?.nameOf(rivalUid, duel: duel) ??
           duel.names[rivalUid] ??
           '',
     );
+    final rivalStatus = ref
+        .watch(friendsControllerProvider)
+        .value
+        ?.friends
+        .where((friend) => friend.uid == rivalUid)
+        .firstOrNull
+        ?.status;
 
-    Widget overlay(DuelScore mine, {required bool celebrate}) =>
-        DuelResultOverlay(
-          mine: mine,
-          theirs: duel.resultOf(rivalUid),
-          rivalName: rivalName,
-          declined: duel.status == DuelStatus.declined,
-          submitFailed: _submitFailed,
-          celebrate: celebrate,
-          onExit: _exit,
-        );
-
-    final finished = _finished;
-    // Wait for the live duel before dealing: a side already played must not
-    // flash its board, and dealing starts the preview clock.
-    if (finished == null && !live.hasValue && !live.hasError) {
-      return const Scaffold(
-        backgroundColor: AppColors.background,
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-    final earlier = uid == null ? null : duel.resultOf(uid);
-    if (finished == null && earlier != null) {
+    final round = _round;
+    if (round != null) {
+      // The rival's report counts here only for this same round.
+      final report = duel.progress[rivalUid];
+      final rivalRound = report?.round == round ? report : null;
+      final rivalLive =
+          rivalRound != null &&
+          rivalRound.isLive(DateTime.now()) &&
+          duel.scoreOf(rivalUid, round) == null;
       return Scaffold(
         backgroundColor: AppColors.background,
-        body: SafeArea(child: overlay(earlier, celebrate: false)),
+        body: Column(
+          children: [
+            SafeArea(
+              bottom: false,
+              child: DuelPresenceBar(
+                duel: duel,
+                uid: uid,
+                myName: myName,
+                rivalName: rivalName,
+                rivalStatus: rivalStatus,
+                round: round,
+                myProgress: _myProgress,
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: DuelRoundHost(
+                      duel: duel,
+                      round: round,
+                      onProgress: (update) => _onProgress(duel, update),
+                      onFinished: (score) =>
+                          _onRoundFinished(duel, round, score),
+                      onExit: _exit,
+                    ),
+                  ),
+                  // Below the game's own app bar, clear of its title.
+                  Positioned(
+                    top: kToolbarHeight + 8,
+                    right: 12,
+                    child: OpponentMirror(
+                      game: duel.game,
+                      rivalName: rivalName,
+                      progress: rivalRound,
+                      live: rivalLive,
+                      finishedScore: duel.scoreOf(rivalUid, round)?.score,
+                    ),
+                  ),
+                  Positioned(
+                    top: 8,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: RivalEventBanner(
+                        progress: rivalRound,
+                        rivalName: rivalName,
+                        game: duel.game,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       );
     }
 
-    final provider = sharedBoardControllerProvider(_setup);
-    ref.listen(provider, (previous, next) {
-      if (next.isCompleted && previous?.isCompleted != true) {
-        _onCompleted(next);
-      }
-    });
-
-    final board = ref.watch(provider);
-    final controller = ref.read(provider.notifier);
-
-    return BoardScreen(
-      state: board,
-      onCardTap: controller.flipCard,
-      onTogglePause: controller.togglePause,
-      onHint: controller.useHint,
-      // Unreachable: the duel result replaces the overlay that offers it.
-      onRestart: () {},
-      onExit: _exit,
-      lives: 0,
-      isLivesUnlimited: true,
-      completionOverlay: finished == null
-          ? null
-          : overlay(finished, celebrate: true),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: DuelSeriesView(
+          duel: duel,
+          uid: uid,
+          myName: myName,
+          rivalName: rivalName,
+          rivalStatus: rivalStatus,
+          submitFailed: _submitFailed,
+          rematchBusy: _rematchBusy,
+          onPlayRound: (next) => _playRound(duel, next),
+          onRematch: () => _rematch(duel),
+          onExit: _exit,
+        ),
+      ),
     );
   }
 }

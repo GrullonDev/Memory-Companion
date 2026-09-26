@@ -62,8 +62,9 @@ class AppDatabase extends _$AppDatabase {
   ///     `display_settings`. Todo solo local.
   ///  7. `ladder_rewards` — premios ya entregados de la escalera de niveles
   ///     de cada juego.
+  ///  8. `display_settings.map_navigator_hint_seen`.
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -95,6 +96,12 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(settings, settings.contextNearby);
         }
         if (from < 7) await m.createTable(ladderRewards);
+        if (from < 8) {
+          await m.addColumn(
+            displaySettings,
+            displaySettings.mapNavigatorHintSeen,
+          );
+        }
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

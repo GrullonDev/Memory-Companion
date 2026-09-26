@@ -33,6 +33,10 @@ class DisplaySettings extends Table {
   BoolColumn get contextNearby =>
       boolean().withDefault(const Constant(false))();
 
+  /// The level map's navigator button has explained itself once.
+  BoolColumn get mapNavigatorHintSeen =>
+      boolean().withDefault(const Constant(false))();
+
   IntColumn get updatedAt => integer()();
 
   @override

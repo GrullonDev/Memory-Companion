@@ -33,8 +33,10 @@ class RoutePaths {
   // resolves.
   static const List<String> tabs = [home, versus, friends /* , shop */];
 
-  /// Switches the visible bottom-nav tab without stacking screens.
+  /// Switches the visible bottom-nav tab without stacking screens: the
+  /// tab becomes the only route, so tabs never pile up and back from one
+  /// is always handled by `TabRootScope`.
   static void navigateToTab(BuildContext context, int index) {
-    Navigator.of(context).pushReplacementNamed(tabs[index]);
+    Navigator.of(context).pushNamedAndRemoveUntil(tabs[index], (_) => false);
   }
 }

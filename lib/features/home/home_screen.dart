@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
+import 'package:memory_companion/core/routes/tab_root_scope.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/async_value_view.dart';
@@ -73,108 +74,111 @@ class HomeScreen extends ConsumerWidget {
     );
     final minigames = ref.watch(minigamesProvider);
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      bottomNavigationBar: HomeBottomNav(
-        onTap: (index) => RoutePaths.navigateToTab(context, index),
-      ),
-      body: SafeArea(
-        // The bottom navigation bar already sits inside the bottom inset;
-        // padding here as well would double it.
-        bottom: false,
-        child: Center(
-          child: ConstrainedBox(
-            // Keeps the column readable on tablets and unfolded devices
-            // instead of stretching cards to the full width.
-            constraints: const BoxConstraints(maxWidth: 560),
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(
-                AppSpacing.screenMargin,
-                AppSpacing.lg,
-                AppSpacing.screenMargin,
-                AppSpacing.xxl,
+    return TabRootScope(
+      isHome: true,
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        bottomNavigationBar: HomeBottomNav(
+          onTap: (index) => RoutePaths.navigateToTab(context, index),
+        ),
+        body: SafeArea(
+          // The bottom navigation bar already sits inside the bottom inset;
+          // padding here as well would double it.
+          bottom: false,
+          child: Center(
+            child: ConstrainedBox(
+              // Keeps the column readable on tablets and unfolded devices
+              // instead of stretching cards to the full width.
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.screenMargin,
+                  AppSpacing.lg,
+                  AppSpacing.screenMargin,
+                  AppSpacing.xxl,
+                ),
+                children: [
+                  HomeTopBar(
+                    playerName: summary.playerName,
+                    coins: wallet.value ?? 0,
+                    onAvatarTap: () =>
+                        Navigator.of(context).pushNamed(RoutePaths.profile),
+                    // Hidden while the plans shop is in development.
+                    // onCoinsTap: () =>
+                    //     Navigator.of(context).pushNamed(RoutePaths.shop),
+                    onSettingsTap: () =>
+                        Navigator.of(context).pushNamed(RoutePaths.settings),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
+                  // Dónde está guardado el progreso. Discreto a propósito: es
+                  // una confirmación, no una alarma.
+                  const Align(
+                    alignment: Alignment.centerRight,
+                    child: SaveStateBadge(),
+                  ),
+                  const SizedBox(height: AppSpacing.md),
+
+                  LevelProgressCard(
+                    summary: summary,
+                    onTap: () =>
+                        Navigator.of(context).pushNamed(RoutePaths.profile),
+                  ),
+                  const SizedBox(height: AppSpacing.xxl),
+
+                  // The single primary action.
+                  PrimaryPlayCard(
+                    onTap: () =>
+                        Navigator.of(context).pushNamed(RoutePaths.levelMap),
+                  ),
+                  const SizedBox(height: AppSpacing.gutter),
+
+                  // Aparece solo cuando el jugador ya tiene algo que perder.
+                  const SaveProgressCard(),
+
+                  DailyChallengeCard(
+                    rewardCoins: DailyChallenge.rewardCoins,
+                    completed: dailyStatus.value?.completedToday ?? false,
+                    onTap: () => Navigator.of(
+                      context,
+                    ).pushNamed(RoutePaths.dailyChallenge),
+                  ),
+                  const SizedBox(height: AppSpacing.sectionGap),
+
+                  SectionHeader(
+                    title: AppLocale.brainGamesLabel.getString(context),
+                    actionLabel: AppLocale.seeAllLabel.getString(context),
+                    onAction: () =>
+                        Navigator.of(context).pushNamed(RoutePaths.minigameHub),
+                  ),
+                  MinigameGrid(games: minigames),
+                  const SizedBox(height: AppSpacing.sectionGap),
+
+                  SectionHeader(
+                    title: AppLocale.moreModesLabel.getString(context),
+                  ),
+                  const SecondaryModeRow(),
+                  const SizedBox(height: AppSpacing.sectionGap),
+
+                  SectionHeader(
+                    title: AppLocale.lastMatchLabel.getString(context),
+                  ),
+                  AsyncValueView(
+                    value: recentMatch,
+                    minHeight: 96,
+                    onRetry: () => ref.invalidate(homeControllerProvider),
+                    data: (context, match) => match.isPlaceholder
+                        ? const RecentMatchCard.empty()
+                        : RecentMatchCard(
+                            title: match.titleKey.getString(context),
+                            score: match.score,
+                            timeAgo: match.playedAt == null
+                                ? ''
+                                : timeAgoLabel(context, match.playedAt!),
+                          ),
+                  ),
+                ],
               ),
-              children: [
-                HomeTopBar(
-                  playerName: summary.playerName,
-                  coins: wallet.value ?? 0,
-                  onAvatarTap: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.profile),
-                  // Hidden while the plans shop is in development.
-                  // onCoinsTap: () =>
-                  //     Navigator.of(context).pushNamed(RoutePaths.shop),
-                  onSettingsTap: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.settings),
-                ),
-                const SizedBox(height: AppSpacing.md),
-
-                // Dónde está guardado el progreso. Discreto a propósito: es
-                // una confirmación, no una alarma.
-                const Align(
-                  alignment: Alignment.centerRight,
-                  child: SaveStateBadge(),
-                ),
-                const SizedBox(height: AppSpacing.md),
-
-                LevelProgressCard(
-                  summary: summary,
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.profile),
-                ),
-                const SizedBox(height: AppSpacing.xxl),
-
-                // The single primary action.
-                PrimaryPlayCard(
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.levelMap),
-                ),
-                const SizedBox(height: AppSpacing.gutter),
-
-                // Aparece solo cuando el jugador ya tiene algo que perder.
-                const SaveProgressCard(),
-
-                DailyChallengeCard(
-                  rewardCoins: DailyChallenge.rewardCoins,
-                  completed: dailyStatus.value?.completedToday ?? false,
-                  onTap: () => Navigator.of(
-                    context,
-                  ).pushNamed(RoutePaths.dailyChallenge),
-                ),
-                const SizedBox(height: AppSpacing.sectionGap),
-
-                SectionHeader(
-                  title: AppLocale.brainGamesLabel.getString(context),
-                  actionLabel: AppLocale.seeAllLabel.getString(context),
-                  onAction: () =>
-                      Navigator.of(context).pushNamed(RoutePaths.minigameHub),
-                ),
-                MinigameGrid(games: minigames),
-                const SizedBox(height: AppSpacing.sectionGap),
-
-                SectionHeader(
-                  title: AppLocale.moreModesLabel.getString(context),
-                ),
-                const SecondaryModeRow(),
-                const SizedBox(height: AppSpacing.sectionGap),
-
-                SectionHeader(
-                  title: AppLocale.lastMatchLabel.getString(context),
-                ),
-                AsyncValueView(
-                  value: recentMatch,
-                  minHeight: 96,
-                  onRetry: () => ref.invalidate(homeControllerProvider),
-                  data: (context, match) => match.isPlaceholder
-                      ? const RecentMatchCard.empty()
-                      : RecentMatchCard(
-                          title: match.titleKey.getString(context),
-                          score: match.score,
-                          timeAgo: match.playedAt == null
-                              ? ''
-                              : timeAgoLabel(context, match.playedAt!),
-                        ),
-                ),
-              ],
             ),
           ),
         ),

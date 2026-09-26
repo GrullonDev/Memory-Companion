@@ -11,8 +11,12 @@ import 'package:memory_companion/features/friends/controller/friends_controller.
 import 'package:memory_companion/features/friends/model/friend_code.dart';
 import 'package:memory_companion/features/friends/repository/social_repository.dart';
 import 'package:memory_companion/features/game/board/category/game_categories.dart';
+import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
+import 'package:memory_companion/features/game_context/service/nearby_radio.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
+import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/duel_game.dart';
 import 'package:memory_companion/features/versus/repository/duel_repository.dart';
 
 void main() {
@@ -78,16 +82,20 @@ void main() {
       categoryId: GameCategories.classic.id,
       languageCode: 'es',
     );
-    await duels.submitResult(
-      duelId: duel.id,
-      uid: 'alice',
-      score: DuelScore(score: aliceWins ? 900 : 500, seconds: 30, moves: 8),
-    );
-    await duels.submitResult(
-      duelId: duel.id,
-      uid: rival,
-      score: const DuelScore(score: 700, seconds: 30, moves: 8),
-    );
+    for (var round = 0; round < 2; round++) {
+      await duels.submitRound(
+        duelId: duel.id,
+        uid: 'alice',
+        round: round,
+        score: DuelScore(score: aliceWins ? 900 : 500, seconds: 30, moves: 8),
+      );
+      await duels.submitRound(
+        duelId: duel.id,
+        uid: rival,
+        round: round,
+        score: const DuelScore(score: 700, seconds: 30, moves: 8),
+      );
+    }
     return duel;
   }
 
@@ -146,9 +154,16 @@ void main() {
     expect(state.toPlay.single.id, duel.id);
     expect(state.toPlay.single.isInvitationFor('alice'), isFalse);
 
-    await container
-        .read(versusControllerProvider.notifier)
-        .submitResult(duel, const DuelScore(score: 800, seconds: 45, moves: 9));
+    expect(duel.game, DuelGame.memory);
+    for (var round = 0; round < Duel.seriesRounds; round++) {
+      await container
+          .read(versusControllerProvider.notifier)
+          .submitResult(
+            duel,
+            const DuelScore(score: 800, seconds: 45, moves: 9),
+            round: round,
+          );
+    }
     final waiting = await waitFor(container, (s) => s.waiting.isNotEmpty);
     expect(waiting.toPlay, isEmpty);
     expect(waiting.nameOf('bob'), 'Bob');
@@ -186,6 +201,23 @@ void main() {
     // Del más viejo al más nuevo: ganó y luego perdió.
     expect(state.me.formWins, [true, false]);
     expect(state.rivalCard?.formWins, [false, true]);
+  });
+
+  test('el juego elegido llega al duelo, y la revancha lo repite', () async {
+    await befriend('bob', 'Bob');
+    final container = open();
+    await waitFor(container, (s) => s.rival != null);
+    container.read(selectedDuelGameProvider.notifier).select(DuelGame.words);
+
+    final notifier = container.read(versusControllerProvider.notifier);
+    final duel = await notifier.startDuel(languageCode: 'en');
+    expect(duel!.game, DuelGame.words);
+
+    container.read(selectedDuelGameProvider.notifier).select(DuelGame.digits);
+    final rematch = await notifier.rematch(duel, languageCode: 'en');
+    expect(rematch!.game, DuelGame.words);
+    expect(rematch.opponentUid, 'bob');
+    expect(rematch.id, isNot(duel.id));
   });
 
   group('salas', () {
@@ -269,4 +301,105 @@ void main() {
       );
     });
   });
+
+  group('jugar (emparejamiento)', () {
+    ProviderContainer openWith({
+      String? uid = 'alice',
+      bool online = true,
+      Set<String>? heard = const {},
+    }) {
+      final container = ProviderContainer(
+        overrides: [
+          appDatabaseProvider.overrideWithValue(db),
+          socialUidProvider.overrideWith((ref) async => uid),
+          socialRepositoryProvider.overrideWithValue(social),
+          duelRepositoryProvider.overrideWithValue(duels),
+          duelRandomProvider.overrideWithValue(Random(7)),
+          versusOnlineProvider.overrideWithValue(online),
+          nearbyRadioProvider.overrideWithValue(_FakeRadio(heard)),
+        ],
+      );
+      addTearDown(container.dispose);
+      container.listen(versusControllerProvider, (_, _) {});
+      return container;
+    }
+
+    Future<MatchResult> play(ProviderContainer container, PlayMode mode) async {
+      await container.read(versusControllerProvider.future);
+      return container
+          .read(versusControllerProvider.notifier)
+          .findMatch(mode: mode, languageCode: 'es');
+    }
+
+    test('en línea entra en la sala abierta de otro jugador', () async {
+      final room = await duels.createRoom(
+        hostUid: 'zoe',
+        hostName: 'Zoe',
+        roomCode: 'ABCDEF',
+        seed: 1,
+        categoryId: GameCategories.classic.id,
+        languageCode: 'es',
+      );
+      final result = await play(openWith(), PlayMode.online);
+      expect(result, isA<DuelMatch>());
+      final duel = (result as DuelMatch).duel;
+      expect(duel.id, room.id);
+      expect(duel.opponentUid, 'alice');
+    });
+
+    test('en línea sin salas reta al amigo elegido', () async {
+      await befriend('bob', 'Bob');
+      final container = openWith();
+      await waitFor(container, (s) => s.rival != null);
+      final result = await play(container, PlayMode.online);
+      expect((result as DuelMatch).duel.opponentUid, 'bob');
+    });
+
+    test('sin conexión busca por Bluetooth a un amigo cercano', () async {
+      await befriend('bob', 'Bob');
+      await befriend('carl', 'Carl');
+      final container = openWith(
+        online: false,
+        heard: {FriendCode.fromUid('carl')},
+      );
+      await waitFor(container, (s) => s.rivals.length == 2);
+      final result = await play(container, PlayMode.online);
+      expect((result as DuelMatch).duel.opponentUid, 'carl');
+    });
+
+    test('sin nadie cerca ni en línea juega contra la máquina', () async {
+      final result = await play(openWith(heard: null), PlayMode.nearby);
+      expect(result, isA<CpuMatch>());
+      expect((result as CpuMatch).level, CpuLevel.easy);
+    });
+
+    test('sin cuenta va directo a la máquina', () async {
+      final result = await play(openWith(uid: null), PlayMode.online);
+      expect(result, isA<CpuMatch>());
+    });
+
+    test('el nivel de la máquina sigue al del jugador', () {
+      expect(VersusController.cpuLevelFor(1), CpuLevel.easy);
+      expect(VersusController.cpuLevelFor(5), CpuLevel.normal);
+      expect(VersusController.cpuLevelFor(10), CpuLevel.hard);
+    });
+  });
+}
+
+class _FakeRadio implements NearbyRadio {
+  _FakeRadio(this.heard);
+
+  final Set<String>? heard;
+
+  @override
+  Future<bool> requestPermission() async => true;
+
+  @override
+  Future<Set<String>?> scan(Duration duration) async => heard;
+
+  @override
+  Future<void> startAdvertising(String friendCode) async {}
+
+  @override
+  Future<void> stopAdvertising() async {}
 }

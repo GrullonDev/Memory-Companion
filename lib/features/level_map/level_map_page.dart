@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/features/level_map/controller/level_map_controller.dart';
+import 'package:memory_companion/features/level_map/controller/map_navigator_controller.dart';
 import 'package:memory_companion/features/level_map/level_map_screen.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 import 'package:flutter_localization/flutter_localization.dart';
@@ -29,6 +30,9 @@ class LevelMapPage extends ConsumerWidget {
           regionName: AppLocale.levelMapRegionName.getString(context),
           levels: levels,
           coins: wallet.value ?? 0,
+          progress: ref.watch(mapProgressProvider),
+          showNavigatorHint: ref.watch(mapNavigatorHintProvider),
+          onNavigatorHintSeen: () => dismissMapNavigatorHint(ref),
           onSelectLevel: (level) {
             if (!level.isPlayable) return;
             // Adaptive boards always deal the player's current level, so a

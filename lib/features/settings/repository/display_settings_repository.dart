@@ -58,6 +58,12 @@ class DisplaySettingsRepository {
     return _upsert(DisplaySettingsCompanion(contextNearby: Value(enabled)));
   }
 
+  Future<void> markMapNavigatorHintSeen() {
+    return _upsert(
+      const DisplaySettingsCompanion(mapNavigatorHintSeen: Value(true)),
+    );
+  }
+
   Future<void> _upsert(DisplaySettingsCompanion changes) {
     final updatedAt = Value(_now().millisecondsSinceEpoch);
     return _db
@@ -82,6 +88,7 @@ class DisplaySettingsRepository {
       timedMatches: row.timedMatches,
       contextLocation: row.contextLocation,
       contextNearby: row.contextNearby,
+      mapNavigatorHintSeen: row.mapNavigatorHintSeen,
     );
   }
 }
