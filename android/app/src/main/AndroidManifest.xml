@@ -6,7 +6,7 @@
          Bluetooth (escanear y anunciarse) los aporta flutter_ble_peripheral. -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
-        android:label="Memory Arcade"
+        android:label="${appName}"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:memory_companion/core/database/database_enums.dart';
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/core/sync/sync_gateway.dart';
 import 'package:memory_companion/core/sync/sync_operation.dart';
 
@@ -19,7 +20,7 @@ class FirestoreSyncGateway implements SyncGateway {
 
   final FirebaseFirestore? _injected;
 
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   @override
   Future<Map<String, Object?>?> readProfile(String cloudUid) async {

@@ -178,11 +178,16 @@ def check_android(project_root: Path) -> list[dict]:
         if not gradle.exists():
             continue
         text = gradle.read_text(encoding="utf-8", errors="ignore")
-        release = re.search(r'release\s*\{(.*?)\n\s*\}', text, re.DOTALL)
-        if release and re.search(r'signingConfigs\.(?:getByName\("debug"\)|debug)', release.group(1)):
+        uses_debug = re.search(r'signingConfigs\.(?:getByName\("debug"\)|debug)', text)
+        if uses_debug and "key.properties" not in text:
             findings.append(finding(
                 f"android/app/{name}", "high",
                 "Release build is signed with the debug key - see SKILL.md C",
+            ))
+        elif "key.properties" in text and not (project_root / "android" / "key.properties").exists():
+            findings.append(finding(
+                f"android/app/{name}", "medium",
+                "No android/key.properties here: release falls back to the debug key - see SKILL.md C",
             ))
     return findings
 
