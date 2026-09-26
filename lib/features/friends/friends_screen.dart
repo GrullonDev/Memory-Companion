@@ -21,6 +21,7 @@ import 'package:memory_companion/features/friends/widget/social_sign_in_card.dar
 import 'package:memory_companion/features/home/controller/home_controller.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
+import 'package:memory_companion/features/versus/widget/duel_game_picker.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
@@ -112,9 +113,18 @@ class FriendsScreen extends ConsumerWidget {
   }
 
   Future<void> _createRoom(BuildContext context, WidgetRef ref) async {
+    final game = await showDuelGamePicker(
+      context,
+      initial: ref.read(selectedDuelGameProvider),
+    );
+    if (game == null || !context.mounted) return;
+    ref.read(selectedDuelGameProvider.notifier).select(game);
     final room = await ref
         .read(versusControllerProvider.notifier)
-        .createRoom(languageCode: Localizations.localeOf(context).languageCode);
+        .createRoom(
+          languageCode: Localizations.localeOf(context).languageCode,
+          game: game,
+        );
     if (!context.mounted) return;
     final code = room?.roomCode;
     if (room == null || code == null) {

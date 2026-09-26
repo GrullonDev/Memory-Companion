@@ -30,6 +30,8 @@ class CrosswordController extends AsyncNotifier<CrosswordState> {
 
   @override
   Future<CrosswordState> build() async {
+    final fixed = ref.read(crosswordFixedLevelProvider);
+    if (fixed != null) return _deal(fixed);
     const game = CrosswordGameModule();
     final cleared = await ref
         .read(statsRepositoryProvider)
@@ -114,10 +116,7 @@ class CrosswordController extends AsyncNotifier<CrosswordState> {
     }.toList();
     if (hidden.isEmpty) return;
 
-    final hinted = {
-      ...current.hinted,
-      hidden[_random.nextInt(hidden.length)],
-    };
+    final hinted = {...current.hinted, hidden[_random.nextInt(hidden.length)]};
     final completed = [
       for (final word in current.layout.words)
         if (!current.found.contains(word.word) &&
@@ -163,6 +162,10 @@ class CrosswordController extends AsyncNotifier<CrosswordState> {
     );
   }
 }
+
+/// A puzzle to deal instead of the player's next one. Duels override it so
+/// both sides solve the same puzzle, whatever their own progress.
+final crosswordFixedLevelProvider = Provider<int?>((ref) => null);
 
 /// One game per puzzle language, discarded when the player leaves it.
 final crosswordControllerProvider = AsyncNotifierProvider.autoDispose
