@@ -56,8 +56,22 @@ android {
         }
     }
 
+    // Desarrollo y producción son apps distintas: el build de debug y el de
+    // profile llevan el sufijo `.dev` y el nombre "Memory Arcade Dev", así
+    // que se instalan una al lado de la otra y cada una guarda sus propios
+    // datos locales y su propia sesión. Firebase las distingue por el
+    // paquete: google-services.json tiene que incluir las dos apps.
     buildTypes {
+        getByName("debug") {
+            applicationIdSuffix = ".dev"
+            manifestPlaceholders["appName"] = "Memory Arcade Dev"
+        }
+        getByName("profile") {
+            applicationIdSuffix = ".dev"
+            manifestPlaceholders["appName"] = "Memory Arcade Dev"
+        }
         release {
+            manifestPlaceholders["appName"] = "Memory Arcade"
             signingConfig = if (hasReleaseKeystore) {
                 signingConfigs.getByName("release")
             } else {

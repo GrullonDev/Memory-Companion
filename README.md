@@ -145,7 +145,18 @@ firebase deploy --only firestore:rules --project memory-compaknion
 | `(default)` | Desarrollo: builds de debug y profile |
 | `produccion` | App publicada: builds de release |
 
-La elige `lib/core/firebase/firestore_database.dart`. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
+La elige `lib/core/firebase/firestore_database.dart`.
+
+Desarrollo y producción también son apps distintas en el teléfono: debug y profile se instalan como "Memory Arcade Dev" y release como "Memory Arcade".
+
+| Plataforma | Desarrollo (debug / profile) | Producción (release) |
+|---|---|---|
+| Android | `com.grullondev.memory_arcade.dev` | `com.grullondev.memory_arcade` |
+| iOS | `com.GrullonDev.memory_arcade.dev` | `com.GrullonDev.memory_arcade` |
+
+En Android lo configura `android/app/build.gradle.kts`; en iOS, `PRODUCT_BUNDLE_IDENTIFIER` y `APP_DISPLAY_NAME` de cada configuración del target Runner. Pueden estar instaladas a la vez y cada una tiene sus propios datos locales y su propia sesión. Las dos apps Android tienen que estar registradas en el proyecto de Firebase y `android/app/google-services.json` tiene que incluir ambas; si falta la de `.dev`, el build de debug falla con *No matching client found*. Para Google Sign-In, registra además la huella SHA-1 de la clave de debug en la app `.dev`.
+
+> **iOS y Firebase:** Firebase todavía no está configurado para iOS (`firebase_options.dart` no tiene opciones de iOS y no hay `GoogleService-Info.plist`). Cuando se configure, hay que registrar las dos apps iOS (`com.GrullonDev.memory_arcade` y `.dev`) y usar el `GoogleService-Info.plist` de cada una según la configuración de Xcode. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
 
 > Si Amigos o Versus muestran "Reintentar" con `permission-denied`, casi siempre es que las reglas desplegadas están desactualizadas.
 
