@@ -22,7 +22,7 @@ compatibility: [Dart, Flutter, Firebase, Drift, Python (for audit script)]
 | **Reglas Firestore** | `firestore.rules`: lista blanca de campos, acumulados monótonos, topes por escritura (`deltaWithin`), `matches` y `sync_ops` inmutables, acceso por membresía en `friendships`/`duels`. | ✅ |
 | **Base local** | Drift sobre `sqlite3_flutter_libs`, **sin cifrar**. | ⚠️ Ver A |
 | **Copia de seguridad de Android** | `AndroidManifest.xml` no fija `allowBackup`, así que vale `true`: Auto Backup sube la base local a Google Drive, **incluidas** las tablas "solo locales" (`places`, `game_stats` con personas cercanas). | ⚠️ Ver B |
-| **Firma de release** | `android/app/build.gradle.kts` firma `release` con la clave de **debug**. | ⚠️ Ver C |
+| **Firma de release** | `android/app/build.gradle.kts` firma `release` con el keystore de `android/key.properties`; sin ese archivo cae a la clave de **debug**. | ⚠️ Ver C (falta crear el keystore) |
 | **Validación en servidor** | No hay Cloud Functions: el cliente escribe XP y monedas dentro de los topes de las reglas. | ⚠️ Ver D |
 | **App Check** | No configurado: cualquiera con la configuración pública de Firebase puede llamar a Auth/Firestore desde un script (las reglas siguen aplicando). | ⚠️ Ver E |
 | **Datos de contexto** | Ubicación agrupada y personas cercanas se guardan solo en Drift (`places`, `game_stats`); nunca pasan por la cola de sync. | ✅ (salvo B) |
@@ -80,6 +80,8 @@ Decidir con producto: excluir la base significa que el progreso local sin cuenta
 ### C. Firma de release propia (Alta — bloquea publicar)
 
 Crear un keystore de subida, referenciarlo desde `android/key.properties` (fuera del repo, en `.gitignore`) y usarlo en `buildTypes.release` de `android/app/build.gradle.kts`. Activar Play App Signing. Nunca commitear el keystore ni sus contraseñas.
+
+Hecho en código: `android/app/build.gradle.kts` lee `android/key.properties` (`storeFile`, `storePassword`, `keyAlias`, `keyPassword`) y, si no existe, firma con la clave de debug para que `flutter run --release` siga funcionando en local. Falta crear el keystore de subida y ese archivo en la máquina que publica.
 
 ### D. Validación en servidor con Cloud Functions (Alta)
 

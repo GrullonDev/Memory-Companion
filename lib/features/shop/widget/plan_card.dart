@@ -114,9 +114,7 @@ class _FeatureRow extends StatelessWidget {
           child: Text(
             feature.label,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: feature.included
-                  ? AppColors.onSurface
-                  : AppColors.outline,
+              color: feature.included ? AppColors.onSurface : AppColors.outline,
             ),
           ),
         ),
