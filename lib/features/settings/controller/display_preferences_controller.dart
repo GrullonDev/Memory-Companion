@@ -43,6 +43,12 @@ class DisplayPreferencesController extends StreamNotifier<DisplayPreferences> {
         .read(displaySettingsRepositoryProvider)
         .setContextNearby(enabled);
   }
+
+  Future<void> markMapNavigatorHintSeen() {
+    return ref
+        .read(displaySettingsRepositoryProvider)
+        .markMapNavigatorHintSeen();
+  }
 }
 
 final displayPreferencesControllerProvider =

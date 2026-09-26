@@ -12,6 +12,7 @@ class DisplayPreferences {
     this.timedMatches = true,
     this.contextLocation = false,
     this.contextNearby = false,
+    this.mapNavigatorHintSeen = false,
   });
 
   /// What a fresh install — and the first frame before the database
@@ -33,6 +34,9 @@ class DisplayPreferences {
   /// until the player turns it on and grants the Bluetooth permissions.
   final bool contextNearby;
 
+  /// Whether the level map already showed what its navigator button does.
+  final bool mapNavigatorHintSeen;
+
   bool get isAccessible => visualProfile.isAccessible;
 
   /// The shortest time a wrong pair may stay face up before flipping back.
@@ -49,12 +53,14 @@ class DisplayPreferences {
     bool? timedMatches,
     bool? contextLocation,
     bool? contextNearby,
+    bool? mapNavigatorHintSeen,
   }) {
     return DisplayPreferences(
       visualProfile: visualProfile ?? this.visualProfile,
       timedMatches: timedMatches ?? this.timedMatches,
       contextLocation: contextLocation ?? this.contextLocation,
       contextNearby: contextNearby ?? this.contextNearby,
+      mapNavigatorHintSeen: mapNavigatorHintSeen ?? this.mapNavigatorHintSeen,
     );
   }
 
@@ -64,10 +70,16 @@ class DisplayPreferences {
         other.visualProfile == visualProfile &&
         other.timedMatches == timedMatches &&
         other.contextLocation == contextLocation &&
-        other.contextNearby == contextNearby;
+        other.contextNearby == contextNearby &&
+        other.mapNavigatorHintSeen == mapNavigatorHintSeen;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(visualProfile, timedMatches, contextLocation, contextNearby);
+  int get hashCode => Object.hash(
+    visualProfile,
+    timedMatches,
+    contextLocation,
+    contextNearby,
+    mapNavigatorHintSeen,
+  );
 }
