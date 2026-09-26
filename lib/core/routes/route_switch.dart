@@ -25,6 +25,15 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 
 class RouteSwitch {
+  /// The routes the app starts with: only [initialRoute] itself.
+  ///
+  /// Flutter's default splits a name like `/splash` into `/` and `/splash`
+  /// and pushes both. This app has no `/` route, so that hidden first route
+  /// was the "not found" screen, waiting under Home for a back press.
+  static List<Route<dynamic>> onGenerateInitialRoutes(String initialRoute) => [
+    onGenerateRoute(RouteSettings(name: initialRoute)),
+  ];
+
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     // Mini-games declare their own routes; see [MinigameRegistry].
     final minigameRoute = MinigameRegistry.routeFor(settings);
@@ -32,7 +41,10 @@ class RouteSwitch {
 
     switch (settings.name) {
       case RoutePaths.splash:
-        return MaterialPageRoute(builder: (_) => const SplashPage());
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SplashPage(),
+        );
       case RoutePaths.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case RoutePaths.register:
@@ -79,13 +91,46 @@ class RouteSwitch {
         return MaterialPageRoute(builder: (_) => const SettingsScreen());
       default:
         return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            appBar: AppBar(),
-            body: Center(
-              child: Text(AppLocale.routeNotFound.getString(context)),
-            ),
-          ),
+          settings: settings,
+          builder: (context) => const _RouteNotFound(),
         );
     }
+  }
+}
+
+/// Shown for a route name nobody serves. It may be the only route left, so
+/// it always offers a way home instead of relying on back.
+class _RouteNotFound extends StatelessWidget {
+  const _RouteNotFound();
+
+  void _goHome(BuildContext context) => Navigator.of(
+    context,
+  ).pushNamedAndRemoveUntil(RoutePaths.home, (_) => false);
+
+  @override
+  Widget build(BuildContext context) {
+    final canPop = Navigator.of(context).canPop();
+    return PopScope(
+      canPop: canPop,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _goHome(context);
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(AppLocale.routeNotFound.getString(context)),
+              const SizedBox(height: 16),
+              FilledButton(
+                onPressed: () => _goHome(context),
+                child: Text(AppLocale.backToHome.getString(context)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
