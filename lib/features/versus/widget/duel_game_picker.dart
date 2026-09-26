@@ -4,6 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/versus/model/duel_game.dart';
 
 /// The games a duel can be played on, as a row of tiles in the mini-game
@@ -91,18 +92,18 @@ class _GameTile extends StatelessWidget {
       child: AnimatedScale(
         scale: selected ? 1 : 0.94,
         duration: const Duration(milliseconds: 160),
-        child: Material(
-          color: palette.background,
-          clipBehavior: Clip.antiAlias,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(
-              color: selected ? AppColors.onSurface : Colors.transparent,
-              width: 2.5,
+        child: Pressable(
+          onTap: onTap,
+          child: Material(
+            color: palette.background,
+            clipBehavior: Clip.antiAlias,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+              side: BorderSide(
+                color: selected ? AppColors.onSurface : Colors.transparent,
+                width: 2.5,
+              ),
             ),
-          ),
-          child: InkWell(
-            onTap: onTap,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
               child: Column(
