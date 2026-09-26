@@ -85,7 +85,7 @@ leaderboards/{leaderboardId}   — Rankings (solo lectura)
 
 ### `duels/{duelId}`
 
-| Operación | Regla actual | Riesgo | Mejora | Mejora |
+| Operación | Regla actual | Riesgo | Mejora |
 |---|---|---|---|
 | `read` | `isMember()` | ✅ Robusto | Ninguno |
 | `create` | Amistad aceptada verificada con `get()`, miembros correctos | ⚠️ Sin `request.time` check | Añadir freshness check |

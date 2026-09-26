@@ -4,6 +4,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/level_map/model/level_node.dart';
 
 /// A single stop on the level path: locked (gray, padlock), current
@@ -59,14 +60,13 @@ class LevelNodeTile extends StatelessWidget {
       enabled: node.isPlayable,
       label: '$levelLabel ${node.number}, ${statusKey.getString(context)}',
       excludeSemantics: true,
-      child: Material(
-        color: background,
-        shape: shape,
-        elevation: isCurrent ? 6 : 2,
-        shadowColor: const Color(0x40000000),
-        child: InkWell(
-          customBorder: shape,
-          onTap: node.isPlayable ? onTap : null,
+      child: Pressable(
+        onTap: node.isPlayable ? onTap : null,
+        child: Material(
+          color: background,
+          shape: shape,
+          elevation: isCurrent ? 6 : 2,
+          shadowColor: const Color(0x40000000),
           child: SizedBox(
             width: _size,
             height: _size,

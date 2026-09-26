@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 import 'package:memory_companion/features/friends/widget/friend_tile.dart';
 import 'package:memory_companion/features/statistics/widget/stats_format.dart';
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
@@ -194,12 +195,12 @@ class _DuelRow extends StatelessWidget {
     final subtitle = this.subtitle;
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: AppColors.surfaceContainerLow,
+      child: Pressable(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(16),
-        child: InkWell(
+        child: Material(
+          color: AppColors.surfaceContainerLow,
           borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(

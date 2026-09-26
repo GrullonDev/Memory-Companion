@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 /// The player's own friend code, with ways to share it.
 class InviteFriendsCard extends StatelessWidget {
@@ -101,12 +102,12 @@ class InviteFriendsCard extends StatelessWidget {
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
-            child: Material(
-              color: AppColors.primaryFixed,
+            child: Pressable(
+              onTap: onShare,
               borderRadius: BorderRadius.circular(16),
-              child: InkWell(
+              child: Material(
+                color: AppColors.primaryFixed,
                 borderRadius: BorderRadius.circular(16),
-                onTap: onShare,
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   decoration: BoxDecoration(
@@ -158,13 +159,12 @@ class _CornerButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Tooltip(
       message: tooltip,
-      child: Material(
-        color: AppColors.surfaceContainerLowest,
-        shape: const CircleBorder(),
-        elevation: 2,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap,
+      child: Pressable.small(
+        onTap: onTap,
+        child: Material(
+          color: AppColors.surfaceContainerLowest,
+          shape: const CircleBorder(),
+          elevation: 2,
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Icon(icon, size: 20, color: AppColors.onSurfaceVariant),

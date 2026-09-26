@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/core/widgets/pressable.dart';
 
 /// Full-width "3D lip" button used for the main call to action on the
 /// login and register screens (LOGIN / CREATE ACCOUNT).
@@ -22,12 +23,12 @@ class AuthPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      child: Material(
-        color: AppColors.primaryFixed,
+      child: Pressable(
+        onTap: isLoading ? null : onTap,
         borderRadius: BorderRadius.circular(16),
-        child: InkWell(
+        child: Material(
+          color: AppColors.primaryFixed,
           borderRadius: BorderRadius.circular(16),
-          onTap: isLoading ? null : onTap,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 18),
             alignment: Alignment.center,
