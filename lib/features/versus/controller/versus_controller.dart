@@ -15,6 +15,7 @@ import 'package:memory_companion/features/settings/controller/display_preference
 import 'package:memory_companion/features/versus/cpu/cpu_opponent.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/model/duel_game.dart';
+import 'package:memory_companion/features/versus/model/duel_reaction.dart';
 import 'package:memory_companion/features/versus/model/room_code.dart';
 import 'package:memory_companion/features/versus/model/versus_player.dart';
 import 'package:memory_companion/features/versus/repository/duel_repository.dart';
@@ -433,6 +434,20 @@ class VersusController extends AsyncNotifier<VersusState> {
       await ref
           .read(duelRepositoryProvider)
           .reportProgress(duelId: duel.id, uid: uid, progress: progress);
+    } on Exception {
+      // Ignored on purpose.
+    }
+  }
+
+  /// Throws [reaction] at the rival in [duel]. Best effort, like
+  /// [reportProgress]: a reaction lost offline is not worth an error.
+  Future<void> sendReaction(Duel duel, DuelReactionEvent reaction) async {
+    try {
+      final uid = await ref.read(socialUidProvider.future);
+      if (uid == null) return;
+      await ref
+          .read(duelRepositoryProvider)
+          .sendReaction(duelId: duel.id, uid: uid, reaction: reaction);
     } on Exception {
       // Ignored on purpose.
     }
