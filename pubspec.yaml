@@ -38,6 +38,8 @@ dependencies:
   geolocator: ^14.0.3
   flutter_blue_plus: ^2.3.13
   flutter_ble_peripheral: ^3.1.0
+  flutter_local_notifications: ^22.3.1
+  timezone: ^0.11.1
 
 dev_dependencies:
   flutter_test:
