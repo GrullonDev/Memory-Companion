@@ -4,6 +4,7 @@ import 'package:memory_companion/core/database/connection/open_connection.dart';
 import 'package:memory_companion/core/database/database_enums.dart';
 import 'package:memory_companion/core/database/tables/category_levels.dart';
 import 'package:memory_companion/core/database/tables/daily_challenges.dart';
+import 'package:memory_companion/core/database/tables/daily_rewards.dart';
 import 'package:memory_companion/core/database/tables/display_settings.dart';
 import 'package:memory_companion/core/database/tables/game_stats.dart';
 import 'package:memory_companion/core/database/tables/ladder_rewards.dart';
@@ -39,6 +40,7 @@ part 'app_database.g.dart';
     CategoryLevels,
     Places,
     LadderRewards,
+    DailyRewards,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -63,8 +65,9 @@ class AppDatabase extends _$AppDatabase {
   ///  7. `ladder_rewards` — premios ya entregados de la escalera de niveles
   ///     de cada juego.
   ///  8. `display_settings.map_navigator_hint_seen`.
+  ///  9. `daily_rewards` — el cofre diario y su racha de reclamos.
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration {
@@ -102,6 +105,7 @@ class AppDatabase extends _$AppDatabase {
             displaySettings.mapNavigatorHintSeen,
           );
         }
+        if (from < 9) await m.createTable(dailyRewards);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

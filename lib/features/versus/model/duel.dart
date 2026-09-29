@@ -9,6 +9,7 @@ import 'package:memory_companion/features/game/board/difficulty/adaptive_difficu
 import 'package:memory_companion/features/game/board/difficulty/difficulty_settings.dart';
 import 'package:memory_companion/features/game/board/model/shared_board.dart';
 import 'package:memory_companion/features/versus/model/duel_game.dart';
+import 'package:memory_companion/features/versus/model/duel_reaction.dart';
 
 /// [open] is a room nobody has joined yet: the host can already play it,
 /// and whoever enters its code becomes the opponent.
@@ -178,6 +179,7 @@ class Duel {
     this.rounds = 1,
     this.gameId,
     this.progress = const {},
+    this.reactions = const {},
     this.createdAt,
     this.roomCode,
     this.names = const {},
@@ -191,6 +193,7 @@ class Duel {
     final rawResults = data['results'];
     final rawRounds = data['roundResults'];
     final rawProgress = data['progress'];
+    final rawReactions = data['reactions'];
     final rawNames = data['names'];
 
     DuelScore? score(Object? value) => value is Map
@@ -235,6 +238,14 @@ class Duel {
           for (final entry in rawProgress.entries)
             if (entry.value is Map)
               entry.key as String: DuelProgress.fromMap(
+                Map<String, dynamic>.from(entry.value as Map),
+              ),
+      },
+      reactions: {
+        if (rawReactions is Map)
+          for (final entry in rawReactions.entries)
+            if (entry.value is Map)
+              entry.key as String: ?DuelReactionEvent.tryParse(
                 Map<String, dynamic>.from(entry.value as Map),
               ),
       },
@@ -283,6 +294,9 @@ class Duel {
 
   /// What each side last reported while playing.
   final Map<String, DuelProgress> progress;
+
+  /// Each side's latest quick reaction.
+  final Map<String, DuelReactionEvent> reactions;
   final DateTime? createdAt;
 
   /// The code others enter to join, for a duel created as a room. Null for
@@ -418,6 +432,7 @@ class Duel {
       rounds: rounds,
       gameId: gameId,
       progress: progress,
+      reactions: reactions,
       createdAt: createdAt,
       roomCode: roomCode,
       names: names,
@@ -441,6 +456,7 @@ class Duel {
     rounds: rounds,
     gameId: gameId,
     progress: progress,
+    reactions: reactions,
     createdAt: createdAt,
     roomCode: roomCode,
     names: names,

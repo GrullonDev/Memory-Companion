@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/features/level_map/model/level.dart';
 
 /// Repository for managing game levels and progression in Firestore
@@ -9,7 +10,7 @@ class LevelRepository {
 
   /// Se resuelve en el primer uso, no al construir: crear un
   /// repositorio no debe exigir que Firebase ya esté inicializado.
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   /// Get all levels for a user
   Future<List<GameLevel>> getUserLevels(String userId) async {

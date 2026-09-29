@@ -13,7 +13,9 @@ import 'package:memory_companion/features/player/controller/player_controller.da
 import 'package:memory_companion/features/versus/controller/versus_controller.dart';
 import 'package:memory_companion/features/versus/duel_round_host.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
+import 'package:memory_companion/features/versus/model/duel_reaction.dart';
 import 'package:memory_companion/features/versus/widget/duel_presence_bar.dart';
+import 'package:memory_companion/features/versus/widget/duel_reactions.dart';
 import 'package:memory_companion/features/versus/widget/duel_series_view.dart';
 import 'package:memory_companion/features/versus/widget/opponent_mirror.dart';
 
@@ -55,6 +57,15 @@ class _DuelPageState extends ConsumerState<DuelPage> {
 
   Timer? _progressTimer;
 
+  /// The player's latest reaction, floated here before Firestore echoes it.
+  DuelReactionEvent? _myReaction;
+  bool _reactionCooling = false;
+  Timer? _reactionCooldown;
+
+  /// The gap enforced between two reactions: fast enough for a volley,
+  /// slow enough that nobody can flood the rival's screen.
+  static const _reactionGap = Duration(milliseconds: 1200);
+
   /// How often a plain score change is sent while a round is played.
   static const _progressInterval = Duration(seconds: 2);
 
@@ -71,6 +82,7 @@ class _DuelPageState extends ConsumerState<DuelPage> {
   @override
   void dispose() {
     _progressTimer?.cancel();
+    _reactionCooldown?.cancel();
     _versus.setPlaying(playing: false);
     super.dispose();
   }
@@ -112,6 +124,20 @@ class _DuelPageState extends ConsumerState<DuelPage> {
     _lastSent = DateTime.now();
     // Not awaited: offline, Firestore queues it and the round goes on.
     _versus.reportProgress(duel, progress);
+  }
+
+  void _react(Duel duel, DuelReaction reaction) {
+    if (_reactionCooling) return;
+    final event = DuelReactionEvent.now(reaction);
+    setState(() {
+      _myReaction = event;
+      _reactionCooling = true;
+    });
+    _reactionCooldown = Timer(_reactionGap, () {
+      if (mounted) setState(() => _reactionCooling = false);
+    });
+    // Not awaited, like progress: the round never waits on a reaction.
+    _versus.sendReaction(duel, event);
   }
 
   Future<void> _onRoundFinished(Duel duel, int round, DuelScore score) async {
@@ -198,6 +224,11 @@ class _DuelPageState extends ConsumerState<DuelPage> {
         .firstOrNull
         ?.status;
 
+    final rivalReaction = duel.reactions[rivalUid];
+    // Reactions need someone to receive them: not an open room, and not a
+    // single-round duel from before series, which the rival plays alone.
+    final canReact = rivalUid.isNotEmpty && duel.isSeries;
+
     final round = _round;
     if (round != null) {
       // The rival's report counts here only for this same round.
@@ -242,14 +273,34 @@ class _DuelPageState extends ConsumerState<DuelPage> {
                   Positioned(
                     top: kToolbarHeight + 8,
                     right: 12,
-                    child: OpponentMirror(
-                      game: duel.game,
-                      rivalName: rivalName,
-                      progress: rivalRound,
-                      live: rivalLive,
-                      finishedScore: duel.scoreOf(rivalUid, round)?.score,
+                    child: FloatingReactions(
+                      event: rivalReaction,
+                      senderName: rivalName,
+                      alignment: Alignment.bottomCenter,
+                      child: OpponentMirror(
+                        game: duel.game,
+                        rivalName: rivalName,
+                        progress: rivalRound,
+                        live: rivalLive,
+                        finishedScore: duel.scoreOf(rivalUid, round)?.score,
+                      ),
                     ),
                   ),
+                  // Across from the mirror, so the two faces of the duel
+                  // sit level.
+                  if (canReact)
+                    Positioned(
+                      top: kToolbarHeight + 8,
+                      left: 12,
+                      child: FloatingReactions(
+                        event: _myReaction,
+                        alignment: Alignment.bottomCenter,
+                        child: ReactionPicker(
+                          coolingDown: _reactionCooling,
+                          onReact: (reaction) => _react(duel, reaction),
+                        ),
+                      ),
+                    ),
                   Positioned(
                     top: 8,
                     left: 0,
@@ -273,17 +324,31 @@ class _DuelPageState extends ConsumerState<DuelPage> {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
-        child: DuelSeriesView(
-          duel: duel,
-          uid: uid,
-          myName: myName,
-          rivalName: rivalName,
-          rivalStatus: rivalStatus,
-          submitFailed: _submitFailed,
-          rematchBusy: _rematchBusy,
-          onPlayRound: (next) => _playRound(duel, next),
-          onRematch: () => _rematch(duel),
-          onExit: _exit,
+        child: Column(
+          children: [
+            Expanded(
+              child: DuelSeriesView(
+                duel: duel,
+                uid: uid,
+                myName: myName,
+                rivalName: rivalName,
+                rivalStatus: rivalStatus,
+                submitFailed: _submitFailed,
+                rematchBusy: _rematchBusy,
+                onPlayRound: (next) => _playRound(duel, next),
+                onRematch: () => _rematch(duel),
+                onExit: _exit,
+              ),
+            ),
+            if (canReact)
+              ReactionBar(
+                rivalName: rivalName,
+                rivalReaction: rivalReaction,
+                myReaction: _myReaction,
+                coolingDown: _reactionCooling,
+                onReact: (reaction) => _react(duel, reaction),
+              ),
+          ],
         ),
       ),
     );

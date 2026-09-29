@@ -19,8 +19,7 @@ class ConnectivityBanner extends ConsumerStatefulWidget {
   final Widget child;
 
   @override
-  ConsumerState<ConnectivityBanner> createState() =>
-      _ConnectivityBannerState();
+  ConsumerState<ConnectivityBanner> createState() => _ConnectivityBannerState();
 }
 
 class _ConnectivityBannerState extends ConsumerState<ConnectivityBanner> {
@@ -98,9 +97,7 @@ class _BannerContent extends StatelessWidget {
     final isOffline = mode == _BannerMode.offline;
     final color = isOffline ? AppColors.error : AppColors.mintGreen;
     final onColor = isOffline ? AppColors.onError : AppColors.onMintGreen;
-    final icon = isOffline
-        ? Icons.cloud_off_rounded
-        : Icons.cloud_done_rounded;
+    final icon = isOffline ? Icons.cloud_off_rounded : Icons.cloud_done_rounded;
     final label = isOffline
         ? AppLocale.offlineBannerMessage.getString(context)
         : AppLocale.backOnlineBannerMessage.getString(context);

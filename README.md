@@ -138,6 +138,15 @@ Sigue [FIRESTORE_SETUP.md](FIRESTORE_SETUP.md) y [FIREBASE_COMMANDS.md](FIREBASE
 firebase deploy --only firestore:rules --project memory-compaknion
 ```
 
+`firebase.json` declara las dos bases de datos de Firestore del proyecto, así que ese comando despliega las mismas reglas e índices en ambas:
+
+| Base de datos | Uso |
+|---|---|
+| `(default)` | Desarrollo: builds de debug y profile |
+| `produccion` | App publicada: builds de release |
+
+La elige `lib/core/firebase/firestore_database.dart`. Para forzar otra al compilar: `--dart-define=FIRESTORE_DATABASE=produccion` (o `'(default)'`).
+
 > Si Amigos o Versus muestran "Reintentar" con `permission-denied`, casi siempre es que las reglas desplegadas están desactualizadas.
 
 ### 5. Permisos (contexto automático)
@@ -152,6 +161,25 @@ Ya están declarados; solo se piden cuando el jugador activa cada opción en Aju
 ```bash
 fvm flutter run
 ```
+
+### Build de release
+
+El release se firma con el keystore de `android/key.properties`, que no se sube al repositorio:
+
+```properties
+storeFile=../upload-keystore.jks
+storePassword=...
+keyAlias=upload
+keyPassword=...
+```
+
+`storeFile` es relativo a `android/`. Sin ese archivo, el release se firma con la clave de debug: sirve para probar en local, pero no se puede publicar.
+
+```bash
+bash scripts/build_release.sh            # appbundle; también: apk, ipa
+```
+
+El nombre de la versión (`1.0.1`) está en `pubspec.yaml` y se cambia a mano. El número de build lo pone el script: es el número de commits de la rama, así que sube con cada merge a `main` y cada build que llega a la tienda tiene uno mayor que el anterior. Para fijarlo a mano (por ejemplo en CI, o en un clon superficial): `BUILD_NUMBER=42 bash scripts/build_release.sh`.
 
 ### Pruebas
 

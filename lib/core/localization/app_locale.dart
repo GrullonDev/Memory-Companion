@@ -390,6 +390,32 @@ mixin AppLocale {
   static const String rivalNotStarted = 'rivalNotStarted';
   static const String rivalRoundsPlayed = 'rivalRoundsPlayed';
   static const String rivalHitPair = 'rivalHitPair';
+  static const String reminderChannelName = 'reminderChannelName';
+  static const String reminderStreakTitle = 'reminderStreakTitle';
+  static const String reminderStreakBody = 'reminderStreakBody';
+  static const String reminderInviteTitle = 'reminderInviteTitle';
+  static const String reminderInviteBody = 'reminderInviteBody';
+  static const String reminderComeBackTitle = 'reminderComeBackTitle';
+  static const String reminderComeBackBody = 'reminderComeBackBody';
+  static const String reactionsButtonLabel = 'reactionsButtonLabel';
+  static const String reactionThumbsUp = 'reactionThumbsUp';
+  static const String reactionFire = 'reactionFire';
+  static const String reactionWow = 'reactionWow';
+  static const String reactionLaugh = 'reactionLaugh';
+  static const String reactionFromRival = 'reactionFromRival';
+  static const String dailyRewardTitle = 'dailyRewardTitle';
+  static const String dailyRewardReady = 'dailyRewardReady';
+  static const String dailyRewardClaimedToday = 'dailyRewardClaimedToday';
+  static const String dailyRewardClaim = 'dailyRewardClaim';
+  static const String dailyRewardTomorrow = 'dailyRewardTomorrow';
+  static const String dailyRewardStreakDays = 'dailyRewardStreakDays';
+  static const String dailyRewardMultiplierToday = 'dailyRewardMultiplierToday';
+  static const String dailyRewardComeBack = 'dailyRewardComeBack';
+  static const String dailyRewardClose = 'dailyRewardClose';
+  static const String dailyRewardDayLabel = 'dailyRewardDayLabel';
+  static const String dailyRewardClaimedTitle = 'dailyRewardClaimedTitle';
+  static const String dailyRewardSurpriseCoins = 'dailyRewardSurpriseCoins';
+  static const String dailyRewardSurpriseXp = 'dailyRewardSurpriseXp';
   static const String rivalMissPair = 'rivalMissPair';
   static const String rivalHitAnswer = 'rivalHitAnswer';
   static const String rivalMissAnswer = 'rivalMissAnswer';
@@ -899,6 +925,32 @@ mixin AppLocale {
     rivalNotStarted: 'Aún no ha jugado',
     rivalRoundsPlayed: 'Jugó {n} de {total} rondas',
     rivalHitPair: '¡{name} encontró una pareja!',
+    reminderChannelName: 'Recordatorios de racha',
+    reminderStreakTitle: '🔥 ¡Tu racha de {n} días está en peligro!',
+    reminderStreakBody: 'Una partida antes de medianoche y sigue viva. ¡Tú puedes!',
+    reminderInviteTitle: '🧠 Tu reto diario te espera',
+    reminderInviteBody: 'Unos minutos para tu memoria hoy. ¿Juegas?',
+    reminderComeBackTitle: 'Te echamos de menos',
+    reminderComeBackBody: 'Tu mapa de niveles sigue ahí. Vuelve y empieza una nueva racha.',
+    reactionsButtonLabel: 'Enviar una reacción',
+    reactionThumbsUp: 'Pulgar arriba',
+    reactionFire: 'Fuego',
+    reactionWow: 'Asombro',
+    reactionLaugh: 'Risa',
+    reactionFromRival: '{name} reaccionó: {reaction}',
+    dailyRewardTitle: 'Cofre diario',
+    dailyRewardReady: '¡Tu premio del día {day} te espera!',
+    dailyRewardClaimedToday: 'Reclamado hoy. Vuelve mañana para no perder la racha.',
+    dailyRewardClaim: 'Reclamar',
+    dailyRewardTomorrow: 'Mañana',
+    dailyRewardStreakDays: 'Racha de {n} días',
+    dailyRewardMultiplierToday: 'Tu racha multiplica el premio de hoy {x}',
+    dailyRewardComeBack: 'Vuelve mañana: el premio sube a {x}',
+    dailyRewardClose: 'Genial',
+    dailyRewardDayLabel: 'Día {n}',
+    dailyRewardClaimedTitle: '¡Premio reclamado!',
+    dailyRewardSurpriseCoins: '¡Sorpresa del cofre! +{n} monedas extra',
+    dailyRewardSurpriseXp: '¡Sorpresa del cofre! +{n} XP extra',
     rivalMissPair: '{name} falló una pareja',
     rivalHitAnswer: '¡{name} acertó!',
     rivalMissAnswer: '{name} se equivocó',
@@ -1427,6 +1479,32 @@ mixin AppLocale {
     rivalNotStarted: 'Has not played yet',
     rivalRoundsPlayed: 'Played {n} of {total} rounds',
     rivalHitPair: '{name} found a pair!',
+    reminderChannelName: 'Streak reminders',
+    reminderStreakTitle: '🔥 Your {n}-day streak is at risk!',
+    reminderStreakBody: 'One game before midnight keeps it alive. You\'ve got this!',
+    reminderInviteTitle: '🧠 Your daily challenge is waiting',
+    reminderInviteBody: 'A few minutes for your memory today. Want to play?',
+    reminderComeBackTitle: 'We miss you',
+    reminderComeBackBody: 'Your level map is still there. Come back and start a new streak.',
+    reactionsButtonLabel: 'Send a reaction',
+    reactionThumbsUp: 'Thumbs up',
+    reactionFire: 'Fire',
+    reactionWow: 'Amazed',
+    reactionLaugh: 'Laughing',
+    reactionFromRival: '{name} reacted: {reaction}',
+    dailyRewardTitle: 'Daily chest',
+    dailyRewardReady: 'Your day {day} reward is waiting!',
+    dailyRewardClaimedToday: 'Claimed today. Come back tomorrow to keep your streak.',
+    dailyRewardClaim: 'Claim',
+    dailyRewardTomorrow: 'Tomorrow',
+    dailyRewardStreakDays: '{n}-day streak',
+    dailyRewardMultiplierToday: 'Your streak multiplies today\'s reward {x}',
+    dailyRewardComeBack: 'Come back tomorrow: the reward rises to {x}',
+    dailyRewardClose: 'Awesome',
+    dailyRewardDayLabel: 'Day {n}',
+    dailyRewardClaimedTitle: 'Reward claimed!',
+    dailyRewardSurpriseCoins: 'Chest surprise! +{n} bonus coins',
+    dailyRewardSurpriseXp: 'Chest surprise! +{n} bonus XP',
     rivalMissPair: '{name} missed a pair',
     rivalHitAnswer: '{name} got one right!',
     rivalMissAnswer: '{name} slipped up',

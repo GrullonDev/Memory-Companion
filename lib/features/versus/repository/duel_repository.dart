@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/features/versus/model/duel.dart';
 import 'package:memory_companion/features/versus/model/duel_game.dart';
+import 'package:memory_companion/features/versus/model/duel_reaction.dart';
 
 /// Versus duels, in Firestore. Like friends, they only exist in the cloud:
 /// a duel is shared between two devices by definition.
@@ -10,7 +12,7 @@ class DuelRepository {
 
   final FirebaseFirestore? _injected;
 
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   CollectionReference<Map<String, dynamic>> get _duels =>
       _firestore.collection('duels');
@@ -128,6 +130,22 @@ class DuelRepository {
     return _duels.doc(duelId).update({
       'progress.$uid': {
         ...progress.toMap(),
+        'at': FieldValue.serverTimestamp(),
+      },
+    });
+  }
+
+  /// Throws a quick reaction at the rival. Like [reportProgress], one field
+  /// overwritten on every send; the rival's listener already follows the
+  /// duel, so a reaction costs one write and no new query.
+  Future<void> sendReaction({
+    required String duelId,
+    required String uid,
+    required DuelReactionEvent reaction,
+  }) {
+    return _duels.doc(duelId).update({
+      'reactions.$uid': {
+        ...reaction.toMap(),
         'at': FieldValue.serverTimestamp(),
       },
     });

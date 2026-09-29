@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:memory_companion/core/firebase/firestore_database.dart';
 import 'package:memory_companion/features/friends/model/friendship.dart';
 import 'package:memory_companion/features/friends/model/public_player.dart';
 
@@ -25,7 +26,7 @@ class SocialRepository {
 
   /// Resolved on first use, so building the repository never requires
   /// Firebase to be initialized.
-  FirebaseFirestore get _firestore => _injected ?? FirebaseFirestore.instance;
+  FirebaseFirestore get _firestore => _injected ?? appFirestore();
 
   CollectionReference<Map<String, dynamic>> get _index =>
       _firestore.collection('user_index');

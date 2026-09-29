@@ -164,6 +164,29 @@ class PlayerRepository {
     });
   }
 
+  /// Suma XP ganado fuera de una partida —el cofre diario— y devuelve el
+  /// total resultante. Como las monedas, se encola el **delta**.
+  Future<int> earnXp({required String localId, required int amount}) {
+    return _db.transaction(() async {
+      final current = await _selectById(localId);
+      if (current == null) return 0;
+      if (amount <= 0) return current.totalXp;
+
+      final next = current.totalXp + amount;
+      await _writeProfile(
+        localId,
+        PlayerProfilesCompanion(totalXp: Value(next)),
+      );
+      await _enqueue(
+        localId,
+        type: SyncOperationType.addXp,
+        entityType: 'player',
+        payload: {'totalXp': amount},
+      );
+      return next;
+    });
+  }
+
   /// Gasta monedas. Devuelve `false` —**sin tocar nada**— si no alcanza.
   ///
   /// La comprobación y la escritura ocurren en la misma transacción, así que
