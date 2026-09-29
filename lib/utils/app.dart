@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/connectivity/widget/connectivity_banner.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/notifications/streak_reminder_controller.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/routes/route_switch.dart';
 import 'package:memory_companion/core/theme/app_theme.dart';
@@ -23,6 +24,14 @@ class MyApp extends ConsumerStatefulWidget {
 class _MyAppState extends ConsumerState<MyApp> {
   final FlutterLocalization _localization = FlutterLocalization.instance;
 
+  /// Replans the streak reminders when the app leaves the screen — so
+  /// closing it after playing always leaves tonight's plan up to date — and
+  /// when it returns, which may be on a new day.
+  late final AppLifecycleListener _lifecycle;
+
+  void _rescheduleReminders() =>
+      ref.read(streakReminderControllerProvider.notifier).reschedule();
+
   @override
   void initState() {
     super.initState();
@@ -39,6 +48,18 @@ class _MyAppState extends ConsumerState<MyApp> {
         MapLocale('en', AppLocale.en, countryCode: 'US'),
       ],
     );
+    _lifecycle = AppLifecycleListener(
+      onPause: _rescheduleReminders,
+      onResume: _rescheduleReminders,
+    );
+    // Not awaited: the first frame never waits on the notification plugin.
+    ref.read(streakReminderControllerProvider.notifier).start();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
   }
 
   @override
@@ -51,10 +72,13 @@ class _MyAppState extends ConsumerState<MyApp> {
     final tokens = ProfileTokens.forProfile(profile);
     // Advertises the player over Bluetooth while "nearby players" is on.
     ref.watch(nearbyBeaconProvider);
+    // Follows the player's streak to keep the reminders in step.
+    ref.watch(streakReminderControllerProvider);
 
     return MaterialApp(
       title: 'Memory Arcade',
       debugShowCheckedModeBanner: false,
+      navigatorKey: appNavigatorKey,
       theme: AppTheme.light(profile: profile),
       supportedLocales: _localization.supportedLocales,
       localizationsDelegates: _localization.localizationsDelegates,
