@@ -47,7 +47,19 @@ class CrosswordController extends AsyncNotifier<CrosswordState> {
       levelNumber: levelNumber,
       level: level,
       layout: CrosswordLayout.build(level.words),
-      wheel: level.letters.split('')..shuffle(_random),
+      wheel: [
+        ...level.letters.split(''),
+        for (
+          var i = 0;
+          i <
+              CrosswordLevels.decoysForLevel(
+                levelNumber,
+                puzzleCount: levels.length,
+              );
+          i++
+        )
+          crosswordDecoyPool[_random.nextInt(crosswordDecoyPool.length)],
+      ]..shuffle(_random),
     );
   }
 

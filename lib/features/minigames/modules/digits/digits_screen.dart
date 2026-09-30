@@ -42,7 +42,7 @@ class DigitsScreen extends ConsumerWidget {
                       ? AppLocale.digitsResultWon
                       : AppLocale.digitsResultLost)
                   .getString(context),
-              state.mode.targetSpan,
+              state.targetSpan,
             ),
             primaryLabel: AppLocale.playAgain.getString(context),
             onPrimary: () => controller.start(state.mode),

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -21,16 +22,23 @@ class DigitsController extends Notifier<DigitsState> {
 
   Random get _random => ref.read(minigameRandomProvider);
 
+  static const _game = DigitsGameModule();
+
   @override
   DigitsState build() {
     ref.onDispose(() => _timer?.cancel());
+    // Keeps the ladder level loading while the intro is on screen.
+    ref.listen(minigameLevelProvider(_game), (_, _) {});
     return const DigitsState.intro();
   }
 
+  /// Starts a game at the player's ladder level, which sets how long the
+  /// numbers start, how long they must get and how briefly they show.
   void start(DigitsMode mode) {
     _startedAt = ref.read(statsClockProvider)();
-    state = DigitsState(phase: DigitsPhase.intro, mode: mode);
-    _show(mode.startSpan);
+    final level = ref.read(minigameLevelProvider(_game));
+    state = DigitsState(phase: DigitsPhase.intro, mode: mode, level: level);
+    _show(state.startSpan);
   }
 
   void typeDigit(int digit) {
@@ -80,7 +88,7 @@ class DigitsController extends Notifier<DigitsState> {
       sequence: _deal(span),
       input: '',
     );
-    _schedule(digitsShowDuration(span), () {
+    _schedule(digitsShowDurationAt(span, level: state.level), () {
       state = state.copyWith(phase: DigitsPhase.input);
     });
   }
@@ -105,7 +113,7 @@ class DigitsController extends Notifier<DigitsState> {
     final reporter = ref.read(minigameResultReporterProvider);
     unawaited(
       reporter.report(
-        const DigitsGameModule(),
+        _game,
         MinigameResult(
           variantId: state.mode.variantId,
           itemCount: state.trials,
