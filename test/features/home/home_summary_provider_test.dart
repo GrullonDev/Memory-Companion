@@ -50,8 +50,7 @@ void main() {
     fail('el resumen nunca llegó al estado esperado');
   }
 
-  test('el primer arranque deja la Home lista, sin cuenta y sin red',
-      () async {
+  test('el primer arranque deja la Home lista, sin cuenta y sin red', () async {
     final profile = await container.read(localPlayerProvider.future);
     final summary = container.read(homeSummaryProvider);
 
@@ -68,9 +67,9 @@ void main() {
   test('el progreso guardado localmente llega a la cabecera', () async {
     final profile = await container.read(localPlayerProvider.future);
 
-    await (db.update(db.playerProfiles)
-          ..where((p) => p.localId.equals(profile.localId)))
-        .write(
+    await (db.update(
+      db.playerProfiles,
+    )..where((p) => p.localId.equals(profile.localId))).write(
       const PlayerProfilesCompanion(
         displayName: Value('Jorge'),
         totalXp: Value(28350),

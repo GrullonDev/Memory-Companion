@@ -101,16 +101,20 @@ void main() {
       expect(migratedTotalXp(legacyLevel: -3, legacyCurrentXp: -100), 0);
     });
 
-    test('migrar no pierde XP: el total nunca baja del que ya tenía dentro',
-        () {
-      for (var level = 1; level <= 30; level++) {
-        for (final within in [0, 1, 499, 1000]) {
-          final total =
-              migratedTotalXp(legacyLevel: level, legacyCurrentXp: within);
-          expect(total, greaterThanOrEqualTo(within));
-          expect(levelFromTotalXp(total), greaterThanOrEqualTo(level));
+    test(
+      'migrar no pierde XP: el total nunca baja del que ya tenía dentro',
+      () {
+        for (var level = 1; level <= 30; level++) {
+          for (final within in [0, 1, 499, 1000]) {
+            final total = migratedTotalXp(
+              legacyLevel: level,
+              legacyCurrentXp: within,
+            );
+            expect(total, greaterThanOrEqualTo(within));
+            expect(levelFromTotalXp(total), greaterThanOrEqualTo(level));
+          }
         }
-      }
-    });
+      },
+    );
   });
 }

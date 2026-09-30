@@ -48,7 +48,9 @@ void main() {
         // containers would deal different boards.
         boardRandomProvider.overrideWith((_) => Random()),
         gameControllerProvider.overrideWith(_FakeGameController.new),
-        displayPreferencesProvider.overrideWithValue(DisplayPreferences.defaults),
+        displayPreferencesProvider.overrideWithValue(
+          DisplayPreferences.defaults,
+        ),
       ],
     );
   }

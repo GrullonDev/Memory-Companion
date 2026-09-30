@@ -30,17 +30,19 @@ void main() {
     await db.close();
   });
 
-  test('un jugador nuevo tiene los 50 niveles y solo el primero abierto',
-      () async {
-    final levels = await repository.watchLevels(playerId).first;
+  test(
+    'un jugador nuevo tiene los 50 niveles y solo el primero abierto',
+    () async {
+      final levels = await repository.watchLevels(playerId).first;
 
-    expect(levels, hasLength(kTotalLevels));
-    expect(levels.first.levelNumber, 1);
-    expect(levels.first.isUnlocked, isTrue);
-    expect(levels.first.isCompleted, isFalse);
-    expect(levels[1].isUnlocked, isFalse);
-    expect(await repository.currentLevelNumber(playerId), 1);
-  });
+      expect(levels, hasLength(kTotalLevels));
+      expect(levels.first.levelNumber, 1);
+      expect(levels.first.isUnlocked, isTrue);
+      expect(levels.first.isCompleted, isFalse);
+      expect(levels[1].isUnlocked, isFalse);
+      expect(await repository.currentLevelNumber(playerId), 1);
+    },
+  );
 
   test('la definición del nivel no se guarda: se genera', () async {
     final levels = await repository.watchLevels(playerId).first;
@@ -73,10 +75,10 @@ void main() {
 
   test('la mejor marca se resuelve con máximo, no con el último', () async {
     Future<void> play(int score) => repository.completeLevel(
-          playerLocalId: playerId,
-          levelNumber: 1,
-          score: score,
-        );
+      playerLocalId: playerId,
+      levelNumber: 1,
+      score: score,
+    );
 
     await play(1500);
     await play(600); // una partida peor no debe borrar el récord
@@ -91,8 +93,8 @@ void main() {
       levelNumber: 1,
       score: 800,
     );
-    final firstCompletion = (await db.select(db.levelProgress).getSingle())
-        .completedAt;
+    final firstCompletion =
+        (await db.select(db.levelProgress).getSingle()).completedAt;
 
     now = now.add(const Duration(days: 3));
     await repository.completeLevel(

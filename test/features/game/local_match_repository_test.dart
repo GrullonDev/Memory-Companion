@@ -69,22 +69,24 @@ void main() {
     );
   }
 
-  test('una victoria queda registrada y pagada en la misma operación',
-      () async {
-    expect(await record('match-1'), isTrue);
+  test(
+    'una victoria queda registrada y pagada en la misma operación',
+    () async {
+      expect(await record('match-1'), isTrue);
 
-    final match = await db.select(db.matches).getSingle();
-    expect(match.id, 'match-1');
-    expect(match.won, isTrue);
-    expect(match.coinsEarned, 125);
-    expect(match.syncStatus, SyncStatus.pending, reason: 'espera a subir');
+      final match = await db.select(db.matches).getSingle();
+      expect(match.id, 'match-1');
+      expect(match.won, isTrue);
+      expect(match.coinsEarned, 125);
+      expect(match.syncStatus, SyncStatus.pending, reason: 'espera a subir');
 
-    final profile = await playerRepository.readLocalProfile();
-    expect(profile!.totalCoins, 125);
-    expect(profile.totalXp, 201);
-    expect(profile.totalMoves, 12);
-    expect(profile.gamesWon, 1);
-  });
+      final profile = await playerRepository.readLocalProfile();
+      expect(profile!.totalCoins, 125);
+      expect(profile.totalXp, 201);
+      expect(profile.totalMoves, 12);
+      expect(profile.gamesWon, 1);
+    },
+  );
 
   test('registrar la misma partida dos veces no paga dos veces', () async {
     expect(await record('match-1'), isTrue);
@@ -131,30 +133,32 @@ void main() {
     expect(profile.totalMoves, 49);
   });
 
-  test('watchLastMatch devuelve la más reciente, no la última escrita',
-      () async {
-    await record(
-      'vieja',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(1000),
-      score: 100,
-    );
-    await record(
-      'reciente',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(9000),
-      score: 999,
-    );
-    // Escrita al final, pero jugada en medio.
-    await record(
-      'intermedia',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(5000),
-      score: 500,
-    );
+  test(
+    'watchLastMatch devuelve la más reciente, no la última escrita',
+    () async {
+      await record(
+        'vieja',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(1000),
+        score: 100,
+      );
+      await record(
+        'reciente',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(9000),
+        score: 999,
+      );
+      // Escrita al final, pero jugada en medio.
+      await record(
+        'intermedia',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(5000),
+        score: 500,
+      );
 
-    final last = await matchRepository.watchLastMatch(player.localId).first;
-    expect(last, isNotNull);
-    expect(last!.id, 'reciente');
-    expect(last.score, 999);
-  });
+      final last = await matchRepository.watchLastMatch(player.localId).first;
+      expect(last, isNotNull);
+      expect(last!.id, 'reciente');
+      expect(last.score, 999);
+    },
+  );
 
   test('sin partidas, la última es null', () async {
     expect(await matchRepository.watchLastMatch(player.localId).first, isNull);
@@ -188,8 +192,9 @@ void main() {
     await record('b', playedAt: DateTime.fromMillisecondsSinceEpoch(3000));
     await record('c', playedAt: DateTime.fromMillisecondsSinceEpoch(2000));
 
-    final history =
-        await matchRepository.watchRecentMatches(player.localId).first;
+    final history = await matchRepository
+        .watchRecentMatches(player.localId)
+        .first;
     expect(history.map((m) => m.id), ['b', 'c', 'a']);
   });
 }

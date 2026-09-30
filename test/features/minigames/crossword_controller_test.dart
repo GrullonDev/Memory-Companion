@@ -50,15 +50,18 @@ void main() {
     database: db,
   ).countWins(const CrosswordGameModule().statsKeyFor('es'));
 
-  test('un jugador nuevo empieza en el nivel 1 con sus letras mezcladas', () async {
-    final c = await open();
-    final state = stateOf(c);
-    expect(state.levelNumber, 1);
-    expect(state.level, CrosswordLevels.forLanguage('es').first);
-    expect([...state.wheel]..sort(), [...'SOL'.split('')]..sort());
-    expect(state.found, isEmpty);
-    expect(state.revealed, isEmpty);
-  });
+  test(
+    'un jugador nuevo empieza en el nivel 1 con sus letras mezcladas',
+    () async {
+      final c = await open();
+      final state = stateOf(c);
+      expect(state.levelNumber, 1);
+      expect(state.level, CrosswordLevels.forLanguage('es').first);
+      expect([...state.wheel]..sort(), [...'SOL'.split('')]..sort());
+      expect(state.found, isEmpty);
+      expect(state.revealed, isEmpty);
+    },
+  );
 
   test('distingue palabras encontradas, repetidas e inválidas', () async {
     final c = await open();
@@ -66,7 +69,10 @@ void main() {
     controllerOf(c).submit('los');
     expect(stateOf(c).found, {'LOS'});
     expect(stateOf(c).feedback, CrosswordFeedback.found);
-    expect(stateOf(c).revealed, containsAll(stateOf(c).layout.wordOf('LOS').cells));
+    expect(
+      stateOf(c).revealed,
+      containsAll(stateOf(c).layout.wordOf('LOS').cells),
+    );
 
     controllerOf(c).submit('LOS');
     expect(stateOf(c).feedback, CrosswordFeedback.repeated);
@@ -83,24 +89,27 @@ void main() {
     expect(stateOf(c).attempts, 2);
   });
 
-  test('resolver registra la partida y la próxima vez abre el nivel 2', () async {
-    final c = await open();
-    controllerOf(c)
-      ..submit('SOL')
-      ..submit('LOS');
-    expect(stateOf(c).solved, isTrue);
-    await pumpEventQueue();
-    expect(await wins(), 1);
+  test(
+    'resolver registra la partida y la próxima vez abre el nivel 2',
+    () async {
+      final c = await open();
+      controllerOf(c)
+        ..submit('SOL')
+        ..submit('LOS');
+      expect(stateOf(c).solved, isTrue);
+      await pumpEventQueue();
+      expect(await wins(), 1);
 
-    // Tras resolver, ya no se aceptan palabras.
-    controllerOf(c).submit('XYZ');
-    expect(stateOf(c).errors, 0);
+      // Tras resolver, ya no se aceptan palabras.
+      controllerOf(c).submit('XYZ');
+      expect(stateOf(c).errors, 0);
 
-    c.dispose();
-    final reopened = await open();
-    expect(stateOf(reopened).levelNumber, 2);
-    expect(stateOf(reopened).level.letters, 'CASA');
-  });
+      c.dispose();
+      final reopened = await open();
+      expect(stateOf(reopened).levelNumber, 2);
+      expect(stateOf(reopened).level.letters, 'CASA');
+    },
+  );
 
   test('"siguiente nivel" solo avanza con el crucigrama resuelto', () async {
     final c = await open();

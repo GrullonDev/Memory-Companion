@@ -43,7 +43,8 @@ void main() {
     expect(
       ratio,
       greaterThanOrEqualTo(4.5),
-      reason: '$label alcanza ${ratio.toStringAsFixed(2)}:1, '
+      reason:
+          '$label alcanza ${ratio.toStringAsFixed(2)}:1, '
           'por debajo del mínimo AA de 4.5:1 para texto',
     );
   }
@@ -97,8 +98,11 @@ void main() {
     });
 
     test('el texto secundario y los metadatos pasan AA', () {
-      expectAA('surface / onSurfaceVariant', AppColors.surface,
-          AppColors.onSurfaceVariant);
+      expectAA(
+        'surface / onSurfaceVariant',
+        AppColors.surface,
+        AppColors.onSurfaceVariant,
+      );
       // `outline` se usa en textos de 12px, donde AA no da margen: por eso
       // reemplazó al tono oliva anterior, que se quedaba justo en 4.5:1.
       expectAA(

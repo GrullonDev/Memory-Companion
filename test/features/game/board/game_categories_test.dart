@@ -104,22 +104,26 @@ void main() {
   });
 
   group('asociación', () {
-    test('cada entrada está en todos los idiomas y ninguna palabra se repite',
-        () {
-      for (final language in ['es', 'en']) {
-        final words = <String>[];
-        for (final entry in associationDeck) {
-          final faces = entry.faces[language];
-          expect(faces, isNotNull, reason: '${entry.id} sin "$language"');
-          words
-            ..add(faces!.$1)
-            ..add(faces.$2);
+    test(
+      'cada entrada está en todos los idiomas y ninguna palabra se repite',
+      () {
+        for (final language in ['es', 'en']) {
+          final words = <String>[];
+          for (final entry in associationDeck) {
+            final faces = entry.faces[language];
+            expect(faces, isNotNull, reason: '${entry.id} sin "$language"');
+            words
+              ..add(faces!.$1)
+              ..add(faces.$2);
+          }
+          expect(words.toSet(), hasLength(words.length), reason: language);
         }
-        expect(words.toSet(), hasLength(words.length), reason: language);
-      }
-      expect(associationDeck.map((e) => e.id).toSet(),
-          hasLength(associationDeck.length));
-    });
+        expect(
+          associationDeck.map((e) => e.id).toSet(),
+          hasLength(associationDeck.length),
+        );
+      },
+    );
 
     test('las palabras siguen el idioma de la app', () {
       final request = DeckRequest(
@@ -128,9 +132,7 @@ void main() {
         languageCode: 'en',
         random: Random(1),
       );
-      final english = {
-        for (final e in associationDeck) e.faces['en']!.$2,
-      };
+      final english = {for (final e in associationDeck) e.faces['en']!.$2};
       for (final pair in GameCategories.association.buildPairs(request)) {
         expect(english, contains((pair.second as TextFace).text));
       }

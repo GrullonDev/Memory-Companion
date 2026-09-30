@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -53,6 +54,7 @@ void main() {
       ProviderScope(
         overrides: [
           minigameRandomProvider.overrideWithValue(Random(1)),
+          minigameLevelOverrideProvider.overrideWithValue(1),
           minigameResultReporterProvider.overrideWithValue(reporter),
         ],
         child: MaterialApp(
@@ -83,10 +85,7 @@ void main() {
     final answer = container.read(digitsControllerProvider).expectedAnswer;
     for (final digit in answer.split('')) {
       await tester.tap(
-        find.descendant(
-          of: find.byType(GridView),
-          matching: find.text(digit),
-        ),
+        find.descendant(of: find.byType(GridView), matching: find.text(digit)),
       );
       await tester.pump();
     }

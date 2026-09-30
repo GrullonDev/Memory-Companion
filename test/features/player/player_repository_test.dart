@@ -48,18 +48,20 @@ void main() {
     expect(profile.createdAt, now);
   });
 
-  test('llamarlo de nuevo devuelve la misma identidad, no una segunda',
-      () async {
-    final repository = buildRepository();
+  test(
+    'llamarlo de nuevo devuelve la misma identidad, no una segunda',
+    () async {
+      final repository = buildRepository();
 
-    final first = await repository.ensureLocalProfile();
-    now = now.add(const Duration(days: 30));
-    final second = await repository.ensureLocalProfile();
+      final first = await repository.ensureLocalProfile();
+      now = now.add(const Duration(days: 30));
+      final second = await repository.ensureLocalProfile();
 
-    expect(second.localId, first.localId);
-    expect(idCounter, 1, reason: 'no se generó un UUID nuevo');
-    expect(await db.select(db.playerProfiles).get(), hasLength(1));
-  });
+      expect(second.localId, first.localId);
+      expect(idCounter, 1, reason: 'no se generó un UUID nuevo');
+      expect(await db.select(db.playerProfiles).get(), hasLength(1));
+    },
+  );
 
   test('dos arranques concurrentes no producen dos identidades', () async {
     final repository = buildRepository();
@@ -74,15 +76,14 @@ void main() {
     expect(await db.select(db.playerProfiles).get(), hasLength(1));
   });
 
-  test('vincular una cuenta conserva el localId y todo el progreso',
-      () async {
+  test('vincular una cuenta conserva el localId y todo el progreso', () async {
     final repository = buildRepository();
     final local = await repository.ensureLocalProfile();
 
     // 30 días de juego sin cuenta.
-    await (db.update(db.playerProfiles)
-          ..where((p) => p.localId.equals(local.localId)))
-        .write(
+    await (db.update(
+      db.playerProfiles,
+    )..where((p) => p.localId.equals(local.localId))).write(
       const PlayerProfilesCompanion(
         totalXp: Value(8400),
         totalCoins: Value(1250),
@@ -114,22 +115,24 @@ void main() {
     expect(await db.select(db.playerProfiles).get(), hasLength(1));
   });
 
-  test('cambiar identidad sube la versión para poder resolver conflictos',
-      () async {
-    final repository = buildRepository();
-    final profile = await repository.ensureLocalProfile();
+  test(
+    'cambiar identidad sube la versión para poder resolver conflictos',
+    () async {
+      final repository = buildRepository();
+      final profile = await repository.ensureLocalProfile();
 
-    await repository.updateIdentity(
-      localId: profile.localId,
-      displayName: 'Jorge',
-    );
-    await repository.updateIdentity(localId: profile.localId, avatarSeed: 7);
+      await repository.updateIdentity(
+        localId: profile.localId,
+        displayName: 'Jorge',
+      );
+      await repository.updateIdentity(localId: profile.localId, avatarSeed: 7);
 
-    final updated = await repository.readLocalProfile();
-    expect(updated!.displayName, 'Jorge');
-    expect(updated.avatarSeed, 7);
-    expect(updated.version, 2);
-  });
+      final updated = await repository.readLocalProfile();
+      expect(updated!.displayName, 'Jorge');
+      expect(updated.avatarSeed, 7);
+      expect(updated.version, 2);
+    },
+  );
 
   test('una actualización vacía no gasta una versión', () async {
     final repository = buildRepository();
@@ -151,8 +154,7 @@ void main() {
     expect((await repository.readLocalProfile())!.totalCoins, 300);
   });
 
-  test('dos gastos simultáneos no pueden dejar el saldo en negativo',
-      () async {
+  test('dos gastos simultáneos no pueden dejar el saldo en negativo', () async {
     final repository = buildRepository();
     final profile = await repository.ensureLocalProfile();
     final id = profile.localId;

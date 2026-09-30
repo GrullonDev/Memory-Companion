@@ -84,9 +84,9 @@ void main() {
 
     expect(enqueued, greaterThan(0));
 
-    final operations = await (db.select(db.syncOperations)
-          ..where((o) => o.opId.like('migration:%')))
-        .get();
+    final operations = await (db.select(
+      db.syncOperations,
+    )..where((o) => o.opId.like('migration:%'))).get();
     final types = operations.map((o) => o.type).toSet();
 
     expect(types, contains(SyncOperationType.upsertProfile));
@@ -116,10 +116,11 @@ void main() {
 
     await migration.enqueueFullState(playerId);
 
-    final xpOp = await (db.select(db.syncOperations)
-          ..where((o) => o.type.equalsValue(SyncOperationType.addXp))
-          ..where((o) => o.opId.like('migration:%')))
-        .getSingle();
+    final xpOp =
+        await (db.select(db.syncOperations)
+              ..where((o) => o.type.equalsValue(SyncOperationType.addXp))
+              ..where((o) => o.opId.like('migration:%')))
+            .getSingle();
 
     // Sumar sobre un documento vacío da el total: es correcto precisamente
     // porque la adopción solo ocurre cuando la nube está a cero.
@@ -138,11 +139,12 @@ void main() {
     await migration.enqueueFullState(playerId);
     final second = await db.select(db.syncOperations).get();
 
-    expect(second, hasLength(first.length), reason: 'mismos opId, sin duplicar');
     expect(
-      second.map((o) => o.opId).toSet(),
-      first.map((o) => o.opId).toSet(),
+      second,
+      hasLength(first.length),
+      reason: 'mismos opId, sin duplicar',
     );
+    expect(second.map((o) => o.opId).toSet(), first.map((o) => o.opId).toSet());
   });
 
   test('quedarse con el progreso de la cuenta sustituye el local', () async {
@@ -173,18 +175,20 @@ void main() {
     expect(await queue.pendingCount(playerId), 0);
   });
 
-  test('quedarse con la nube no borra el historial local de partidas',
-      () async {
-    await playForAMonth();
+  test(
+    'quedarse con la nube no borra el historial local de partidas',
+    () async {
+      await playForAMonth();
 
-    await migration.adoptCloudProfile(
-      playerLocalId: playerId,
-      cloudProfile: const {'totalXp': 99000},
-    );
+      await migration.adoptCloudProfile(
+        playerLocalId: playerId,
+        cloudProfile: const {'totalXp': 99000},
+      );
 
-    // Las partidas jugadas ocurrieron: no se reescribe la historia.
-    expect(await db.select(db.matches).get(), hasLength(3));
-  });
+      // Las partidas jugadas ocurrieron: no se reescribe la historia.
+      expect(await db.select(db.matches).get(), hasLength(3));
+    },
+  );
 
   test('un perfil sin progreso encola lo mínimo', () async {
     final enqueued = await migration.enqueueFullState(playerId);

@@ -51,10 +51,9 @@ void main() {
   });
 
   test('un documento sin datos de progreso arranca en cero', () {
-    final user = AppUser.fromFirestore(
-      <String, dynamic>{'email': 'nuevo@example.com'},
-      'uid-4',
-    );
+    final user = AppUser.fromFirestore(<String, dynamic>{
+      'email': 'nuevo@example.com',
+    }, 'uid-4');
 
     expect(user.totalXp, 0);
     expect(user.level, 1);
