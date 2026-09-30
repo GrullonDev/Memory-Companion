@@ -1,6 +1,5 @@
-import 'package:memory_companion/core/routes/route_paths.dart';
-
-/// What a reminder says, which decides its text and where a tap leads.
+/// What a reminder says, which decides its text. A tap always opens the
+/// Home, whatever the kind.
 enum ReminderKind {
   /// The streak is alive and today is the last day to keep it.
   streakAtRisk,
@@ -9,13 +8,7 @@ enum ReminderKind {
   dailyInvite,
 
   /// Days without playing: a gentler nudge back to the map.
-  comeBack;
-
-  /// The screen a tap opens, on top of the Home.
-  String get route => switch (this) {
-    streakAtRisk || dailyInvite => RoutePaths.dailyChallenge,
-    comeBack => RoutePaths.levelMap,
-  };
+  comeBack,
 }
 
 /// One local notification to schedule.
@@ -40,55 +33,90 @@ class PlannedReminder {
   String toString() => 'PlannedReminder($id, $at, ${kind.name}, $streak)';
 }
 
-/// The reminders for the next few evenings, given when the player last
-/// played.
+/// The next few reminders, given when the player last played.
+///
+/// The first comes [idleDelay] after the last game, while the streak can
+/// still be saved; the following ones fire at [reminderHour] on the days
+/// after. With no game on record the player only gets the daily ones.
 ///
 /// The whole plan is recomputed and rescheduled on every trigger — app
 /// start, a finished match, the app going to the background — so nothing
-/// has to be cancelled selectively: playing today simply produces a plan
-/// that skips tonight.
+/// has to be cancelled selectively: playing again simply moves the 24-hour
+/// reminder forward.
 ///
-/// Several evenings are planned at once because a device that is never
-/// opened again cannot reschedule anything: tonight's reminder is about the
-/// streak, the following ones invite the player back, and then it stops.
-/// A reminder the player ignores for [horizonDays] days is not one more
-/// reminder away from working.
+/// Several reminders are planned at once because a device that is never
+/// opened again cannot reschedule anything: the first is about the streak,
+/// the following ones invite the player back, and then it stops. A reminder
+/// the player ignores for [horizonDays] days is not one more reminder away
+/// from working.
 abstract final class StreakReminderPlanner {
-  /// The evening reminder: late enough to follow the day's routine, early
-  /// enough to still play before midnight.
-  static const reminderHour = 20;
+  /// Inactivity before the first reminder.
+  static const idleDelay = Duration(hours: 24);
 
-  /// Evenings planned ahead.
+  /// The daily reminder after that one: late afternoon, early enough to
+  /// still play before midnight.
+  static const reminderHour = 18;
+
+  /// Reminders planned ahead.
   static const horizonDays = 3;
 
   /// Ids 1..[horizonDays]: always the same, so rescheduling replaces.
   static const firstId = 1;
 
+  /// [lastPlayedDate] is the streak's `YYYY-MM-DD`; [lastGameAt] the exact
+  /// time of the last recorded match, used when it falls on that day. A
+  /// streak kept without a recorded match (a claimed reward) counts as
+  /// played at [reminderHour].
   static List<PlannedReminder> plan({
     required String? lastPlayedDate,
+    required DateTime? lastGameAt,
     required int currentStreak,
     required DateTime now,
   }) {
     final lastPlayed = DateTime.tryParse(lastPlayedDate ?? '');
     final today = DateTime(now.year, now.month, now.day);
+    final times = <DateTime>[];
+    var firstDaily = today;
+
+    if (lastPlayed != null) {
+      // A last date in the future (a clock moved back): stay quiet.
+      if (_dayNumber(lastPlayed) > _dayNumber(today)) return const [];
+      final playedAt =
+          lastGameAt != null && _dayNumber(lastGameAt) == _dayNumber(lastPlayed)
+          ? lastGameAt
+          : DateTime(
+              lastPlayed.year,
+              lastPlayed.month,
+              lastPlayed.day,
+              reminderHour,
+            );
+      times.add(playedAt.add(idleDelay));
+      // Daily reminders start the day after the 24-hour one.
+      final dayAfter = DateTime(
+        lastPlayed.year,
+        lastPlayed.month,
+        lastPlayed.day + 2,
+      );
+      if (dayAfter.isAfter(firstDaily)) firstDaily = dayAfter;
+    }
+
+    // One day more than the horizon, since the first ones may be past.
+    for (var offset = 0; offset <= horizonDays; offset++) {
+      times.add(
+        DateTime(
+          firstDaily.year,
+          firstDaily.month,
+          firstDaily.day + offset,
+          reminderHour,
+        ),
+      );
+    }
+
     final reminders = <PlannedReminder>[];
-
-    // One evening more than the horizon, since tonight may be skipped. A
-    // bound rather than "until full": a last date in the future (a clock
-    // moved back) would otherwise skip evening after evening.
-    for (
-      var offset = 0;
-      offset <= horizonDays && reminders.length < horizonDays;
-      offset++
-    ) {
-      final day = DateTime(today.year, today.month, today.day + offset);
-      final at = DateTime(day.year, day.month, day.day, reminderHour);
+    for (final at in times) {
+      if (reminders.length == horizonDays) break;
       if (!at.isAfter(now)) continue;
-
-      final kind = _kindFor(day, lastPlayed, currentStreak);
-      // Already played that day (today): nothing to remind.
-      if (kind == null) continue;
-
+      final kind = _kindFor(at, lastPlayed, currentStreak);
       reminders.add(
         PlannedReminder(
           id: firstId + reminders.length,
@@ -101,17 +129,15 @@ abstract final class StreakReminderPlanner {
     return reminders;
   }
 
-  static ReminderKind? _kindFor(
+  static ReminderKind _kindFor(
     DateTime day,
     DateTime? lastPlayed,
     int currentStreak,
   ) {
     if (lastPlayed == null) return ReminderKind.dailyInvite;
     final gap = _dayNumber(day) - _dayNumber(lastPlayed);
-    // Played that day, or the clock went back: stay quiet.
-    if (gap <= 0) return null;
     // Played the day before: the streak ends at that midnight.
-    if (gap == 1 && currentStreak > 0) return ReminderKind.streakAtRisk;
+    if (gap <= 1 && currentStreak > 0) return ReminderKind.streakAtRisk;
     // A day or two off is still a regular; beyond that, someone drifting.
     return gap < 3 ? ReminderKind.dailyInvite : ReminderKind.comeBack;
   }

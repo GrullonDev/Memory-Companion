@@ -15,17 +15,25 @@ import 'package:memory_companion/features/player/repository/player_repository.da
 
 void main() {
   group('StreakReminderPlanner', () {
-    List<PlannedReminder> plan(String? last, int streak, DateTime now) =>
-        StreakReminderPlanner.plan(
-          lastPlayedDate: last,
-          currentStreak: streak,
-          now: now,
-        );
+    List<PlannedReminder> plan(
+      String? last,
+      int streak,
+      DateTime now, {
+      DateTime? lastGameAt,
+    }) => StreakReminderPlanner.plan(
+      lastPlayedDate: last,
+      lastGameAt: lastGameAt,
+      currentStreak: streak,
+      now: now,
+    );
 
-    test('sin haber jugado nunca: invitaciones desde esta noche', () {
+    test('sin haber jugado nunca: invitaciones a las 18:00', () {
       final reminders = plan(null, 0, DateTime(2026, 9, 29, 10));
-      expect(reminders, hasLength(3));
-      expect(reminders.first.at, DateTime(2026, 9, 29, 20));
+      expect(reminders.map((r) => r.at), [
+        DateTime(2026, 9, 29, 18),
+        DateTime(2026, 9, 30, 18),
+        DateTime(2026, 10, 1, 18),
+      ]);
       expect(
         reminders.map((r) => r.kind),
         everyElement(ReminderKind.dailyInvite),
@@ -33,37 +41,62 @@ void main() {
       expect(reminders.map((r) => r.id), [1, 2, 3]);
     });
 
-    test('jugó ayer: esta noche la racha está en peligro', () {
-      final reminders = plan('2026-09-28', 5, DateTime(2026, 9, 29, 10));
+    test('la primera llega 24 horas después de la última partida', () {
+      final reminders = plan(
+        '2026-09-29',
+        5,
+        DateTime(2026, 9, 29, 10, 30),
+        lastGameAt: DateTime(2026, 9, 29, 10, 15),
+      );
+      expect(reminders.first.at, DateTime(2026, 9, 30, 10, 15));
       expect(reminders.first.kind, ReminderKind.streakAtRisk);
       expect(reminders.first.streak, 5);
-      expect(reminders.first.at, DateTime(2026, 9, 29, 20));
-      expect(reminders.first.kind.route, RoutePaths.dailyChallenge);
-    });
-
-    test('jugó hoy: esta noche no hay nada, mañana sí', () {
-      final reminders = plan('2026-09-29', 5, DateTime(2026, 9, 29, 10));
-      expect(reminders.first.at, DateTime(2026, 9, 30, 20));
-      expect(reminders.first.kind, ReminderKind.streakAtRisk);
-      expect(reminders.first.streak, 5);
-      // Pasado mañana la racha ya se rompió: solo una invitación.
+      // Después, a las 18:00; la racha ya se rompió: invitaciones.
+      expect(reminders[1].at, DateTime(2026, 10, 1, 18));
       expect(reminders[1].kind, ReminderKind.dailyInvite);
+      expect(reminders[2].at, DateTime(2026, 10, 2, 18));
     });
 
-    test('pasadas las 20:00 la primera es mañana', () {
-      final reminders = plan('2026-09-28', 5, DateTime(2026, 9, 29, 21));
-      expect(reminders.first.at, DateTime(2026, 9, 30, 20));
+    test('jugó ayer: la de 24 horas aún avisa de la racha', () {
+      final reminders = plan(
+        '2026-09-28',
+        5,
+        DateTime(2026, 9, 29, 10),
+        lastGameAt: DateTime(2026, 9, 28, 21),
+      );
+      expect(reminders.first.at, DateTime(2026, 9, 29, 21));
+      expect(reminders.first.kind, ReminderKind.streakAtRisk);
+    });
+
+    test('sin partida registrada ese día cuenta como jugado a las 18:00', () {
+      final reminders = plan(
+        '2026-09-28',
+        5,
+        DateTime(2026, 9, 29, 10),
+        lastGameAt: DateTime(2026, 9, 20, 9),
+      );
+      expect(reminders.first.at, DateTime(2026, 9, 29, 18));
+    });
+
+    test('pasadas las 24 horas siguen las diarias', () {
+      final reminders = plan(
+        '2026-09-28',
+        5,
+        DateTime(2026, 9, 29, 22),
+        lastGameAt: DateTime(2026, 9, 28, 21),
+      );
+      expect(reminders.first.at, DateTime(2026, 9, 30, 18));
       expect(
         reminders.first.kind,
         ReminderKind.dailyInvite,
-        reason: 'si no juega hoy, mañana la racha ya estará rota',
+        reason: 'la racha ya se rompió a medianoche',
       );
     });
 
-    test('tras varios días sin jugar, el mensaje invita a volver al mapa', () {
+    test('tras varios días sin jugar, el mensaje invita a volver', () {
       final reminders = plan('2026-09-20', 0, DateTime(2026, 9, 29, 10));
+      expect(reminders.first.at, DateTime(2026, 9, 29, 18));
       expect(reminders.map((r) => r.kind), everyElement(ReminderKind.comeBack));
-      expect(reminders.first.kind.route, RoutePaths.levelMap);
     });
 
     test('con el reloj hacia atrás no programa nada y termina', () {
@@ -122,26 +155,28 @@ void main() {
 
         final first = await nextSchedule(1);
         expect(first.first.title, '🧠 Your daily challenge is waiting');
-        expect(first.first.payload, RoutePaths.dailyChallenge);
+        expect(first.map((m) => m.payload), everyElement(RoutePaths.home));
         expect(
           container.read(pendingNotificationRouteProvider),
-          RoutePaths.levelMap,
+          isNull,
+          reason: 'un aviso antiguo que apuntaba al mapa ya no navega',
         );
       },
     );
 
-    test('jugar hoy reprograma: esta noche se cancela', () async {
+    test('jugar hoy reprograma: se avisa 24 horas después', () async {
       final player = await container.read(localPlayerProvider.future);
       await container.read(streakReminderControllerProvider.notifier).start();
       final before = await nextSchedule(1);
-      expect(before.first.at, DateTime(2026, 9, 29, 20));
+      expect(before.first.at, DateTime(2026, 9, 29, 18));
 
       await container
           .read(playerRepositoryProvider)
           .registerPlayedToday(localId: player.localId);
 
       final after = await nextSchedule(2);
-      expect(after.first.at, DateTime(2026, 9, 30, 20));
+      // Sin partida registrada, el día jugado cuenta desde las 18:00.
+      expect(after.first.at, DateTime(2026, 9, 30, 18));
       expect(after.first.title, '🔥 Your 1-day streak is at risk!');
     });
 
@@ -153,10 +188,10 @@ void main() {
       expect(container.read(pendingNotificationRouteProvider), isNull);
 
       notifier.onTap!(RoutePaths.dailyChallenge);
-      expect(
-        container.read(pendingNotificationRouteProvider),
-        RoutePaths.dailyChallenge,
-      );
+      expect(container.read(pendingNotificationRouteProvider), isNull);
+
+      notifier.onTap!(RoutePaths.home);
+      expect(container.read(pendingNotificationRouteProvider), RoutePaths.home);
     });
   });
 }

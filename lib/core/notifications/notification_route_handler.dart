@@ -6,8 +6,8 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 
 /// Sits in the Home and does two things the first time it shows:
 ///
-///  * opens the screen a tapped reminder asked for, on top of the Home, so
-///    back returns to it and the streak is one tap away;
+///  * takes the route a tapped reminder asked for; reminders only ever ask
+///    for the Home, so today the Home simply stays on screen;
 ///  * asks for notification permission, once the player has seen the app
 ///    rather than on a bare splash.
 class NotificationRouteHandler extends ConsumerStatefulWidget {
