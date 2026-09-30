@@ -107,7 +107,7 @@ class DuelRoundHost extends StatelessWidget {
           SeededRandom(duel.seedFor(round)),
         ),
         // Both sides face the first level's difficulty, whatever their own.
-        minigameLevelOverrideProvider.overrideWithValue(1),
+        minigameLevelProvider.overrideWith((ref, game) => 1),
         crosswordFixedLevelProvider.overrideWithValue(
           _crosswordLevel(Localizations.localeOf(context).languageCode),
         ),
