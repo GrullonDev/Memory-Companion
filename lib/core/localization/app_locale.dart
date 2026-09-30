@@ -570,6 +570,82 @@ mixin AppLocale {
   static const String completeProfileMessage = 'completeProfileMessage';
   static const String displayNameRequired = 'displayNameRequired';
 
+  static const String minigameLevelLabel = 'minigameLevelLabel';
+  static const String minigameWrongLabel = 'minigameWrongLabel';
+  static const String minigameCoinsEarnedLabel = 'minigameCoinsEarnedLabel';
+  static const String minigameSudokuTitle = 'minigameSudokuTitle';
+  static const String minigameSudokuDescription = 'minigameSudokuDescription';
+  static const String sudokuIntro = 'sudokuIntro';
+  static const String sudokuCellsLabel = 'sudokuCellsLabel';
+  static const String sudokuMistakesLabel = 'sudokuMistakesLabel';
+  static const String sudokuHintLabel = 'sudokuHintLabel';
+  static const String sudokuNoHints = 'sudokuNoHints';
+  static const String sudokuResultWon = 'sudokuResultWon';
+  static const String sudokuResultLost = 'sudokuResultLost';
+  static const String minigameSequenceTitle = 'minigameSequenceTitle';
+  static const String minigameSequenceDescription = 'minigameSequenceDescription';
+  static const String sequenceIntro = 'sequenceIntro';
+  static const String sequenceWatchLabel = 'sequenceWatchLabel';
+  static const String sequenceYourTurnLabel = 'sequenceYourTurnLabel';
+  static const String sequenceLengthLabel = 'sequenceLengthLabel';
+  static const String sequenceBestLabel = 'sequenceBestLabel';
+  static const String sequenceResultWon = 'sequenceResultWon';
+  static const String sequenceResultLost = 'sequenceResultLost';
+  static const String minigamePatternTitle = 'minigamePatternTitle';
+  static const String minigamePatternDescription = 'minigamePatternDescription';
+  static const String patternIntro = 'patternIntro';
+  static const String patternMemorizeLabel = 'patternMemorizeLabel';
+  static const String patternTapLabel = 'patternTapLabel';
+  static const String patternFoundLabel = 'patternFoundLabel';
+  static const String patternResultWon = 'patternResultWon';
+  static const String patternResultLost = 'patternResultLost';
+  static const String minigameMathTitle = 'minigameMathTitle';
+  static const String minigameMathDescription = 'minigameMathDescription';
+  static const String mathIntro = 'mathIntro';
+  static const String mathCorrectLabel = 'mathCorrectLabel';
+  static const String mathResultWon = 'mathResultWon';
+  static const String mathResultLost = 'mathResultLost';
+  static const String minigameColorsTitle = 'minigameColorsTitle';
+  static const String minigameColorsDescription = 'minigameColorsDescription';
+  static const String colorsIntro = 'colorsIntro';
+  static const String colorsQuestion = 'colorsQuestion';
+  static const String colorsResultWon = 'colorsResultWon';
+  static const String colorsResultLost = 'colorsResultLost';
+  static const String colorRed = 'colorRed';
+  static const String colorBlue = 'colorBlue';
+  static const String colorGreen = 'colorGreen';
+  static const String colorYellow = 'colorYellow';
+  static const String colorPurple = 'colorPurple';
+  static const String colorOrange = 'colorOrange';
+  static const String minigameSlideTitle = 'minigameSlideTitle';
+  static const String minigameSlideDescription = 'minigameSlideDescription';
+  static const String slideIntro = 'slideIntro';
+  static const String slideMovesLabel = 'slideMovesLabel';
+  static const String slideResultWon = 'slideResultWon';
+  static const String streakCountLabel = 'streakCountLabel';
+  static const String streakStartBonusLabel = 'streakStartBonusLabel';
+  static const String streakSafeLabel = 'streakSafeLabel';
+  static const String streakAtRiskLabel = 'streakAtRiskLabel';
+  static const String streakNextMilestoneLabel = 'streakNextMilestoneLabel';
+  static const String streakDayTitle = 'streakDayTitle';
+  static const String streakMilestoneTitle = 'streakMilestoneTitle';
+  static const String streakFreezeUsedLabel = 'streakFreezeUsedLabel';
+  static const String storeTitle = 'storeTitle';
+  static const String storeSubtitle = 'storeSubtitle';
+  static const String storeStreakFreezeTitle = 'storeStreakFreezeTitle';
+  static const String storeStreakFreezeDescription = 'storeStreakFreezeDescription';
+  static const String storeHintPackTitle = 'storeHintPackTitle';
+  static const String storeHintPackDescription = 'storeHintPackDescription';
+  static const String storeLivesRefillTitle = 'storeLivesRefillTitle';
+  static const String storeLivesRefillDescription = 'storeLivesRefillDescription';
+  static const String storeOwnedLabel = 'storeOwnedLabel';
+  static const String storeOwnedOfLabel = 'storeOwnedOfLabel';
+  static const String storeBuyForLabel = 'storeBuyForLabel';
+  static const String storePurchasedMessage = 'storePurchasedMessage';
+  static const String storeNotEnoughCoins = 'storeNotEnoughCoins';
+  static const String storeLimitReached = 'storeLimitReached';
+  static const String storeNotNeeded = 'storeNotNeeded';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -1155,6 +1231,81 @@ mixin AppLocale {
     completeProfileMessage:
         'Es el nombre que verán tus amigos y rivales. Puedes cambiarlo después en tu perfil.',
     displayNameRequired: 'Escribe un nombre de al menos 2 letras',
+    minigameLevelLabel: 'Nivel {n}',
+    minigameWrongLabel: '¡Fallo!',
+    minigameCoinsEarnedLabel: '+{n} monedas',
+    minigameSudokuTitle: 'Sudoku',
+    minigameSudokuDescription: 'Cada fila, columna y caja con todos los números. Entrena la lógica.',
+    sudokuIntro: 'Completa la cuadrícula: cada número debe aparecer una sola vez en cada fila, columna y caja. Empiezas con 4 × 4; cada nivel quita pistas y agranda el tablero.',
+    sudokuCellsLabel: 'casillas resueltas',
+    sudokuMistakesLabel: 'Errores {n}/{total}',
+    sudokuHintLabel: 'Pista',
+    sudokuNoHints: 'No te quedan pistas. Consigue más en la tienda.',
+    sudokuResultWon: '¡Sudoku resuelto! El siguiente tendrá menos pistas.',
+    sudokuResultLost: 'Demasiados errores. Tómate tu tiempo: no hay reloj.',
+    minigameSequenceTitle: 'Secuencia',
+    minigameSequenceDescription: 'Repite el orden en que se iluminan. Entrena la memoria visual.',
+    sequenceIntro: 'Mira qué casillas se iluminan y tócalas en el mismo orden. Cada acierto alarga la secuencia; dos fallos seguidos terminan la ronda.',
+    sequenceWatchLabel: 'Observa…',
+    sequenceYourTurnLabel: '¡Tu turno!',
+    sequenceLengthLabel: 'Secuencia de {n} · meta {total}',
+    sequenceBestLabel: 'secuencia más larga',
+    sequenceResultWon: '¡Llegaste a la meta de {n}!',
+    sequenceResultLost: 'La meta era {n}. ¡Otra vez!',
+    minigamePatternTitle: 'Patrones',
+    minigamePatternDescription: 'Recuerda qué casillas se encendieron. Entrena la memoria espacial.',
+    patternIntro: 'Algunas casillas se iluminarán un momento. Cuando se apaguen, toca dónde estaban.',
+    patternMemorizeLabel: 'Memoriza las casillas',
+    patternTapLabel: 'Faltan {n} · errores permitidos: {total}',
+    patternFoundLabel: 'casillas encontradas',
+    patternResultWon: '¡Patrón completo! El siguiente será más grande.',
+    patternResultLost: 'Se te escaparon algunas. ¡Inténtalo de nuevo!',
+    minigameMathTitle: 'Cálculo',
+    minigameMathDescription: 'Operaciones contra el reloj. Entrena la agilidad mental.',
+    mathIntro: 'Resuelve {total} operaciones antes de que se acabe el tiempo de cada una. Acierta {n} para pasar de nivel.',
+    mathCorrectLabel: 'aciertos',
+    mathResultWon: '¡Nivel superado! Llegan números más grandes.',
+    mathResultLost: 'Necesitas {n} aciertos. ¡Vuelve a intentarlo!',
+    minigameColorsTitle: 'Colores',
+    minigameColorsDescription: 'Toca el color de la tinta, no la palabra. Entrena la atención.',
+    colorsIntro: 'Verás el nombre de un color escrito en otro color. Toca el color de la tinta, no el que dice la palabra.',
+    colorsQuestion: '¿De qué color está escrita?',
+    colorsResultWon: '¡Gran concentración! Acertaste {n} o más.',
+    colorsResultLost: 'Necesitas {n} aciertos. ¡Fíjate en la tinta!',
+    colorRed: 'rojo',
+    colorBlue: 'azul',
+    colorGreen: 'verde',
+    colorYellow: 'amarillo',
+    colorPurple: 'morado',
+    colorOrange: 'naranja',
+    minigameSlideTitle: 'Deslizar',
+    minigameSlideDescription: 'Ordena las fichas deslizándolas. Entrena la planificación.',
+    slideIntro: 'Toca una ficha junto al hueco para deslizarla. Ordénalas del 1 al último, con el hueco al final.',
+    slideMovesLabel: 'movimientos',
+    slideResultWon: '¡Resuelto! El siguiente vendrá más revuelto.',
+    streakCountLabel: '{n} días de racha',
+    streakStartBonusLabel: 'Juega hoy para empezar tu racha: +{n} monedas',
+    streakSafeLabel: '¡Hoy ya cuenta! Mañana te esperan +{n} monedas',
+    streakAtRiskLabel: 'Juega una partida hoy para no perderla: +{n} monedas',
+    streakNextMilestoneLabel: 'Próximo hito: día {n} (+{coins} monedas)',
+    streakDayTitle: '¡Día {n} de racha!',
+    streakMilestoneTitle: '¡Hito! {n} días seguidos',
+    streakFreezeUsedLabel: 'Un protector de racha cubrió los días que faltaste.',
+    storeTitle: 'Tienda',
+    storeSubtitle: 'Gasta las monedas que ganas jugando.',
+    storeStreakFreezeTitle: 'Protector de racha',
+    storeStreakFreezeDescription: 'Si un día no juegas, tu racha no se rompe.',
+    storeHintPackTitle: 'Pack de 3 pistas',
+    storeHintPackDescription: 'Pistas extra para el sudoku.',
+    storeLivesRefillTitle: 'Recargar vidas',
+    storeLivesRefillDescription: 'Todas tus vidas, ahora mismo.',
+    storeOwnedLabel: 'Tienes {n}',
+    storeOwnedOfLabel: 'Tienes {n} de {total}',
+    storeBuyForLabel: 'Comprar por {n} monedas',
+    storePurchasedMessage: '¡{n} comprado!',
+    storeNotEnoughCoins: 'No tienes monedas suficientes. ¡Juega para ganar más!',
+    storeLimitReached: 'Ya tienes el máximo de este artículo.',
+    storeNotNeeded: 'Ahora mismo no lo necesitas.',
   };
 
   static const Map<String, dynamic> en = {
@@ -1736,5 +1887,80 @@ mixin AppLocale {
     completeProfileMessage:
         "It's the name your friends and rivals will see. You can change it later in your profile.",
     displayNameRequired: 'Enter a name of at least 2 letters',
+    minigameLevelLabel: 'Level {n}',
+    minigameWrongLabel: 'Wrong!',
+    minigameCoinsEarnedLabel: '+{n} coins',
+    minigameSudokuTitle: 'Sudoku',
+    minigameSudokuDescription: 'Every row, column and box holds each number. Trains logic.',
+    sudokuIntro: 'Fill the grid so each number appears once in every row, column and box. You start on 4 × 4; every level removes clues and grows the board.',
+    sudokuCellsLabel: 'cells solved',
+    sudokuMistakesLabel: 'Mistakes {n}/{total}',
+    sudokuHintLabel: 'Hint',
+    sudokuNoHints: 'No hints left. Get more in the store.',
+    sudokuResultWon: 'Sudoku solved! The next one has fewer clues.',
+    sudokuResultLost: 'Too many mistakes. Take your time: there is no clock.',
+    minigameSequenceTitle: 'Sequence',
+    minigameSequenceDescription: 'Repeat the order they light up in. Trains visual memory.',
+    sequenceIntro: 'Watch which pads light up and tap them in the same order. Each success makes the sequence longer; two misses in a row end the round.',
+    sequenceWatchLabel: 'Watch…',
+    sequenceYourTurnLabel: 'Your turn!',
+    sequenceLengthLabel: 'Sequence of {n} · goal {total}',
+    sequenceBestLabel: 'longest sequence',
+    sequenceResultWon: 'You reached the goal of {n}!',
+    sequenceResultLost: 'The goal was {n}. Try again!',
+    minigamePatternTitle: 'Patterns',
+    minigamePatternDescription: 'Remember which cells lit up. Trains spatial memory.',
+    patternIntro: 'Some cells will light up for a moment. When they go dark, tap where they were.',
+    patternMemorizeLabel: 'Memorize the cells',
+    patternTapLabel: '{n} to go · mistakes left: {total}',
+    patternFoundLabel: 'cells found',
+    patternResultWon: 'Pattern complete! The next one is bigger.',
+    patternResultLost: 'A few got away. Try again!',
+    minigameMathTitle: 'Quick math',
+    minigameMathDescription: 'Sums against the clock. Trains mental speed.',
+    mathIntro: 'Solve {total} problems, each before its time runs out. Get {n} right to level up.',
+    mathCorrectLabel: 'correct',
+    mathResultWon: 'Level cleared! Bigger numbers are coming.',
+    mathResultLost: 'You need {n} right. Try again!',
+    minigameColorsTitle: 'Colors',
+    minigameColorsDescription: 'Tap the ink, not the word. Trains attention.',
+    colorsIntro: 'You will see a colour name written in another colour. Tap the colour of the ink, not the one the word says.',
+    colorsQuestion: 'What colour is the ink?',
+    colorsResultWon: 'Great focus! You got {n} or more.',
+    colorsResultLost: 'You need {n} right. Watch the ink!',
+    colorRed: 'red',
+    colorBlue: 'blue',
+    colorGreen: 'green',
+    colorYellow: 'yellow',
+    colorPurple: 'purple',
+    colorOrange: 'orange',
+    minigameSlideTitle: 'Slide',
+    minigameSlideDescription: 'Slide the tiles back in order. Trains planning.',
+    slideIntro: 'Tap a tile next to the gap to slide it. Put them in order, with the gap last.',
+    slideMovesLabel: 'moves',
+    slideResultWon: 'Solved! The next one will be more scrambled.',
+    streakCountLabel: '{n}-day streak',
+    streakStartBonusLabel: 'Play today to start your streak: +{n} coins',
+    streakSafeLabel: 'Today counts! Tomorrow brings +{n} coins',
+    streakAtRiskLabel: 'Play a round today to keep it: +{n} coins',
+    streakNextMilestoneLabel: 'Next milestone: day {n} (+{coins} coins)',
+    streakDayTitle: 'Day {n} of your streak!',
+    streakMilestoneTitle: 'Milestone! {n} days in a row',
+    streakFreezeUsedLabel: 'A streak freeze covered the days you missed.',
+    storeTitle: 'Store',
+    storeSubtitle: 'Spend the coins you earn by playing.',
+    storeStreakFreezeTitle: 'Streak freeze',
+    storeStreakFreezeDescription: 'Miss a day and your streak survives.',
+    storeHintPackTitle: '3-hint pack',
+    storeHintPackDescription: 'Extra hints for sudoku.',
+    storeLivesRefillTitle: 'Refill lives',
+    storeLivesRefillDescription: 'All your lives, right now.',
+    storeOwnedLabel: 'You have {n}',
+    storeOwnedOfLabel: 'You have {n} of {total}',
+    storeBuyForLabel: 'Buy for {n} coins',
+    storePurchasedMessage: '{n} purchased!',
+    storeNotEnoughCoins: 'Not enough coins. Play to earn more!',
+    storeLimitReached: 'You already hold the most of this item.',
+    storeNotNeeded: 'You don\'t need that right now.',
   };
 }
