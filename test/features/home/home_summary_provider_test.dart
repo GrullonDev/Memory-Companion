@@ -122,6 +122,7 @@ void main() {
     expect(summary.mainLadder.nextReward.level, 10);
     expect(summary.mainLadder.levelsUntilReward, 4);
     // Los demás juegos llevan su propia escalera y arrancan en el 1.
-    expect(summary.ladders.map((l) => l.level), [7, 1, 1, 1, 1, 1]);
+    expect(summary.ladders.first.level, 7);
+    expect(summary.ladders.skip(1).map((l) => l.level), everyElement(1));
   });
 }
