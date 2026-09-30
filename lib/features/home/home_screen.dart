@@ -99,9 +99,8 @@ class HomeScreen extends ConsumerWidget {
                       coins: wallet.value ?? 0,
                       onAvatarTap: () =>
                           Navigator.of(context).pushNamed(RoutePaths.profile),
-                      // Hidden while the plans shop is in development.
-                      // onCoinsTap: () =>
-                      //     Navigator.of(context).pushNamed(RoutePaths.shop),
+                      onCoinsTap: () =>
+                          Navigator.of(context).pushNamed(RoutePaths.store),
                       onSettingsTap: () =>
                           Navigator.of(context).pushNamed(RoutePaths.settings),
                     ),

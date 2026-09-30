@@ -3,6 +3,7 @@ import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/core/localization/app_locale.dart';
+import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/features/minigames/hub/widget/minigame_grid.dart';
@@ -26,6 +27,13 @@ class MinigameHubScreen extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: AppColors.background,
         title: Text(AppLocale.minigameHubTitle.getString(context)),
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pushNamed(RoutePaths.store),
+            tooltip: AppLocale.storeTitle.getString(context),
+            icon: const Icon(Icons.storefront_rounded),
+          ),
+        ],
       ),
       body: SafeArea(
         top: false,

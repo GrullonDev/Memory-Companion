@@ -201,6 +201,8 @@ class FriendsScreen extends ConsumerWidget {
                 coins: wallet.value ?? 0,
                 onAvatarTap: () =>
                     Navigator.of(context).pushNamed(RoutePaths.profile),
+                onCoinsTap: () =>
+                    Navigator.of(context).pushNamed(RoutePaths.store),
               ),
               const SizedBox(height: 24),
               AsyncValueView<FriendsState>(
