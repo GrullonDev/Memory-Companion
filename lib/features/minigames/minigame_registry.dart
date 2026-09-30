@@ -2,9 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/minigames/modules/colors/colors_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/crossword_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/digits/digits_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/math/math_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/memory/memory_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/pattern/pattern_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/sequence/sequence_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/slide/slide_game_module.dart';
+import 'package:memory_companion/features/minigames/modules/sudoku/sudoku_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/words/words_game_module.dart';
 
 /// Every mini-game the platform offers, in hub order.
@@ -18,6 +24,12 @@ abstract final class MinigameRegistry {
     DigitsGameModule(),
     WordsGameModule(),
     CrosswordGameModule(),
+    SudokuGameModule(),
+    SequenceGameModule(),
+    PatternGameModule(),
+    MathGameModule(),
+    ColorsGameModule(),
+    SlideGameModule(),
   ];
 
   static BaseMinigame? byId(String id) =>
