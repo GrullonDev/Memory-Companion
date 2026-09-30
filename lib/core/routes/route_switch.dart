@@ -14,6 +14,7 @@ import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/profile/profile_screen.dart';
 import 'package:memory_companion/features/settings/settings_screen.dart';
 import 'package:memory_companion/features/shop/shop_screen.dart';
+import 'package:memory_companion/features/shop/store_screen.dart';
 import 'package:memory_companion/features/history_search/history_search_screen.dart';
 import 'package:memory_companion/features/statistics/statistics_screen.dart';
 import 'package:memory_companion/features/versus/cpu/cpu_duel_page.dart';
@@ -75,6 +76,8 @@ class RouteSwitch {
         return MaterialPageRoute(builder: (_) => const FriendsScreen());
       case RoutePaths.shop:
         return MaterialPageRoute(builder: (_) => const ShopScreen());
+      case RoutePaths.store:
+        return MaterialPageRoute(builder: (_) => const StoreScreen());
       case RoutePaths.levelMap:
         return MaterialPageRoute(builder: (_) => const LevelMapPage());
       case RoutePaths.minigameHub:

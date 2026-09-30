@@ -16,7 +16,10 @@ import 'package:memory_companion/features/wallet/controller/wallet_controller.da
 /// price, how many the player holds and a buy button that is only live
 /// when the purchase can go through.
 class StoreSection extends ConsumerStatefulWidget {
-  const StoreSection({super.key});
+  const StoreSection({super.key, this.showTitle = true});
+
+  /// False when the page's app bar already names the store.
+  final bool showTitle;
 
   @override
   ConsumerState<StoreSection> createState() => _StoreSectionState();
@@ -58,13 +61,14 @@ class _StoreSectionState extends ConsumerState<StoreSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(
-          AppLocale.storeTitle.getString(context),
-          style: textTheme.titleMedium?.copyWith(
-            color: AppColors.onSurface,
-            fontWeight: FontWeight.w700,
+        if (widget.showTitle)
+          Text(
+            AppLocale.storeTitle.getString(context),
+            style: textTheme.titleMedium?.copyWith(
+              color: AppColors.onSurface,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
         const SizedBox(height: AppSpacing.xxs),
         Text(
           AppLocale.storeSubtitle.getString(context),
@@ -151,7 +155,10 @@ class _StoreItemCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: AppSpacing.xxs),
                     child: Text(
                       max == null
-                          ? fill(AppLocale.storeOwnedLabel.getString(context), owned!)
+                          ? fill(
+                              AppLocale.storeOwnedLabel.getString(context),
+                              owned!,
+                            )
                           : fill(
                               AppLocale.storeOwnedOfLabel.getString(context),
                               owned!,
