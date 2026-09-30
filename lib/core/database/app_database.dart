@@ -7,6 +7,7 @@ import 'package:memory_companion/core/database/tables/daily_challenges.dart';
 import 'package:memory_companion/core/database/tables/daily_rewards.dart';
 import 'package:memory_companion/core/database/tables/display_settings.dart';
 import 'package:memory_companion/core/database/tables/game_stats.dart';
+import 'package:memory_companion/core/database/tables/inventory_items.dart';
 import 'package:memory_companion/core/database/tables/ladder_rewards.dart';
 import 'package:memory_companion/core/database/tables/level_progress.dart';
 import 'package:memory_companion/core/database/tables/lives_states.dart';
@@ -41,6 +42,7 @@ part 'app_database.g.dart';
     Places,
     LadderRewards,
     DailyRewards,
+    InventoryItems,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -66,8 +68,9 @@ class AppDatabase extends _$AppDatabase {
   ///     de cada juego.
   ///  8. `display_settings.map_navigator_hint_seen`.
   ///  9. `daily_rewards` — el cofre diario y su racha de reclamos.
+  /// 10. `inventory_items` — lo comprado en la tienda con monedas.
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {
@@ -106,6 +109,7 @@ class AppDatabase extends _$AppDatabase {
           );
         }
         if (from < 9) await m.createTable(dailyRewards);
+        if (from < 10) await m.createTable(inventoryItems);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,
