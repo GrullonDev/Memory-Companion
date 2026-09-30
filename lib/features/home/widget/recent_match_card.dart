@@ -22,10 +22,10 @@ class RecentMatchCard extends StatelessWidget {
   }) : isEmpty = false;
 
   const RecentMatchCard.empty({super.key})
-      : title = '',
-        score = '',
-        timeAgo = '',
-        isEmpty = true;
+    : title = '',
+      score = '',
+      timeAgo = '',
+      isEmpty = true;
 
   final String title;
   final String score;

@@ -101,7 +101,10 @@ class _CpuDuelPageState extends ConsumerState<CpuDuelPage> {
               theirs: _cpu,
               rivalName: AppLocale.cpuName
                   .getString(context)
-                  .replaceAll('{level}', widget.level.labelKey.getString(context)),
+                  .replaceAll(
+                    '{level}',
+                    widget.level.labelKey.getString(context),
+                  ),
               celebrate: true,
               onExit: _exit,
             ),

@@ -24,9 +24,9 @@ class GameIcon extends StatelessWidget {
     required this.icon,
     required this.color,
     this.background,
-  })  : size = AppSize.wellSm,
-        iconSize = AppSize.iconSm,
-        radius = AppRadius.sm;
+  }) : size = AppSize.wellSm,
+       iconSize = AppSize.iconSm,
+       radius = AppRadius.sm;
 
   /// Hero variant for the primary action card.
   const GameIcon.large({
@@ -34,9 +34,9 @@ class GameIcon extends StatelessWidget {
     required this.icon,
     required this.color,
     this.background,
-  })  : size = AppSize.wellLg,
-        iconSize = AppSize.iconXl,
-        radius = AppRadius.lg;
+  }) : size = AppSize.wellLg,
+       iconSize = AppSize.iconXl,
+       radius = AppRadius.lg;
 
   final IconData icon;
 
@@ -61,11 +61,7 @@ class GameIcon extends StatelessWidget {
         borderRadius: BorderRadius.circular(radius ?? AppRadius.md),
       ),
       alignment: Alignment.center,
-      child: Icon(
-        icon,
-        color: color,
-        size: iconSize ?? size * 0.5,
-      ),
+      child: Icon(icon, color: color, size: iconSize ?? size * 0.5),
     );
   }
 }

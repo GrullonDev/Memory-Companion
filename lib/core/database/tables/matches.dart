@@ -16,8 +16,7 @@ import 'package:memory_companion/core/database/tables/player_profiles.dart';
 @TableIndex(name: 'idx_matches_sync_status', columns: {#syncStatus})
 class Matches extends Table {
   TextColumn get id => text()();
-  TextColumn get playerLocalId =>
-      text().references(PlayerProfiles, #localId)();
+  TextColumn get playerLocalId => text().references(PlayerProfiles, #localId)();
 
   /// `solo`, `versus`, `daily_challenge`.
   TextColumn get gameMode => text()();

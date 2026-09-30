@@ -23,9 +23,9 @@ final userLevelsProvider = StreamProvider<List<GameLevel>>((ref) async* {
 /// El nivel que le toca jugar.
 final currentLevelProvider = FutureProvider<int>((ref) async {
   final player = await ref.watch(localPlayerProvider.future);
-  return ref.watch(localLevelRepositoryProvider).currentLevelNumber(
-        player.localId,
-      );
+  return ref
+      .watch(localLevelRepositoryProvider)
+      .currentLevelNumber(player.localId);
 });
 
 /// El nivel que el jugador acaba de elegir en el mapa.
@@ -60,7 +60,9 @@ class LevelController extends AsyncNotifier<void> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       final player = await ref.read(localPlayerProvider.future);
-      await ref.read(localLevelRepositoryProvider).completeLevel(
+      await ref
+          .read(localLevelRepositoryProvider)
+          .completeLevel(
             playerLocalId: player.localId,
             levelNumber: levelNumber,
             score: score,

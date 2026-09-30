@@ -22,9 +22,9 @@ class HomeSummary {
   });
 
   const HomeSummary.empty({this.isLoading = false, this.ladders = const []})
-      : playerName = '',
-        totalXp = 0,
-        streakDays = 0;
+    : playerName = '',
+      totalXp = 0,
+      streakDays = 0;
 
   /// Nombre visible, o cadena vacía mientras el perfil no ha cargado.
   final String playerName;

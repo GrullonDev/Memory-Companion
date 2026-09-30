@@ -11,6 +11,8 @@ import 'package:memory_companion/features/ladder/game_ladder.dart';
 import 'package:memory_companion/features/ladder/ladder_controller.dart';
 import 'package:memory_companion/features/ladder/widget/level_reward_card.dart';
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/player/widget/streak_bonus_banner.dart';
+import 'package:memory_companion/features/statistics/widget/stats_format.dart';
 
 /// End-of-round summary shared by the mini-game modules: one headline
 /// figure, what it means, a sentence of feedback and the next actions.
@@ -108,16 +110,27 @@ class MinigameResultView extends ConsumerWidget {
             ),
           ),
         ],
+        if ((notice?.coinsEarned ?? 0) > 0) ...[
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            fill(
+              AppLocale.minigameCoinsEarnedLabel.getString(context),
+              notice!.coinsEarned,
+            ),
+            textAlign: TextAlign.center,
+            style: textTheme.titleSmall?.copyWith(color: AppColors.sunStrong),
+          ),
+        ],
+        if (notice?.streak case final streak? when streak.bonusCoins > 0) ...[
+          const SizedBox(height: AppSpacing.md),
+          StreakBonusBanner(streak: streak),
+        ],
         for (final reward in notice?.rewards ?? const []) ...[
           const SizedBox(height: AppSpacing.md),
           LevelRewardCard(reward: reward),
         ],
         const SizedBox(height: AppSpacing.lg),
-        Text(
-          message,
-          textAlign: TextAlign.center,
-          style: textTheme.bodyLarge,
-        ),
+        Text(message, textAlign: TextAlign.center, style: textTheme.bodyLarge),
         const SizedBox(height: AppSpacing.xxl),
         AdaptiveButton(
           label: primaryLabel,

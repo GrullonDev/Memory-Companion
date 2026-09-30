@@ -23,9 +23,9 @@ class AccountMigration {
     required AppDatabase database,
     required SyncQueue syncQueue,
     DateTime Function()? clock,
-  })  : _db = database,
-        _syncQueue = syncQueue,
-        _now = clock ?? DateTime.now;
+  }) : _db = database,
+       _syncQueue = syncQueue,
+       _now = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final SyncQueue _syncQueue;
@@ -48,9 +48,9 @@ class AccountMigration {
   /// Encola el estado completo del jugador. Devuelve cuántas operaciones creó.
   Future<int> enqueueFullState(String playerLocalId) {
     return _db.transaction(() async {
-      final profile = await (_db.select(_db.playerProfiles)
-            ..where((p) => p.localId.equals(playerLocalId)))
-          .getSingleOrNull();
+      final profile = await (_db.select(
+        _db.playerProfiles,
+      )..where((p) => p.localId.equals(playerLocalId))).getSingleOrNull();
       if (profile == null) return 0;
 
       var enqueued = 0;
@@ -100,10 +100,11 @@ class AccountMigration {
 
       // 3. Historial. Cada partida conserva el id que ya tenía, así que
       //    subirla dos veces sobrescribe el mismo documento.
-      final matches = await (_db.select(_db.matches)
-            ..where((m) => m.playerLocalId.equals(playerLocalId))
-            ..orderBy([(m) => OrderingTerm.asc(m.playedAt)]))
-          .get();
+      final matches =
+          await (_db.select(_db.matches)
+                ..where((m) => m.playerLocalId.equals(playerLocalId))
+                ..orderBy([(m) => OrderingTerm.asc(m.playedAt)]))
+              .get();
       for (final match in matches) {
         await add(SyncOperationType.createMatch, 'match', match.id, {
           'match': {
@@ -123,19 +124,17 @@ class AccountMigration {
       }
 
       // 4. Progreso de niveles.
-      final levels = await (_db.select(_db.levelProgress)
-            ..where((l) => l.playerLocalId.equals(playerLocalId))
-            ..where((l) => l.isCompleted.equals(true)))
-          .get();
+      final levels =
+          await (_db.select(_db.levelProgress)
+                ..where((l) => l.playerLocalId.equals(playerLocalId))
+                ..where((l) => l.isCompleted.equals(true)))
+              .get();
       for (final level in levels) {
         await add(
           SyncOperationType.completeLevel,
           'level',
           '${level.levelNumber}',
-          {
-            'levelNumber': level.levelNumber,
-            'bestScore': level.bestScore,
-          },
+          {'levelNumber': level.levelNumber, 'bestScore': level.bestScore},
         );
       }
 
@@ -159,9 +158,9 @@ class AccountMigration {
         return value is int ? value : 0;
       }
 
-      await (_db.update(_db.playerProfiles)
-            ..where((p) => p.localId.equals(playerLocalId)))
-          .write(
+      await (_db.update(
+        _db.playerProfiles,
+      )..where((p) => p.localId.equals(playerLocalId))).write(
         PlayerProfilesCompanion(
           displayName: Value(
             cloudProfile['displayName'] is String

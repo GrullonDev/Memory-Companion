@@ -29,10 +29,7 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Semantics(
               header: true,
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+              child: Text(title, style: Theme.of(context).textTheme.titleLarge),
             ),
           ),
           if (actionLabel != null && onAction != null) ...[
@@ -46,9 +43,9 @@ class SectionHeader extends StatelessWidget {
                 ),
                 child: Text(
                   actionLabel!,
-                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: AppColors.skyStrong,
-                      ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelLarge?.copyWith(color: AppColors.skyStrong),
                 ),
               ),
             ),

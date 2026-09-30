@@ -18,16 +18,20 @@ import 'package:memory_companion/features/player/model/player_streak.dart';
 /// Deliberadamente **no** usa `signInAnonymously()` de Firebase: eso exigiría
 /// red justo en el arranque inicial —el momento que más queremos blindar— y
 /// ataría la identidad local a un servicio que debe ser opcional.
+/// `inventory_items.item_id` of the streak freeze (`InventoryKind.streakFreeze`).
+/// Spelled out here so the player layer does not depend on the shop.
+const streakFreezeItemId = 'streakFreeze';
+
 class PlayerRepository {
   PlayerRepository({
     required AppDatabase database,
     required SyncQueue syncQueue,
     String Function()? idGenerator,
     DateTime Function()? clock,
-  })  : _db = database,
-        _syncQueue = syncQueue,
-        _newId = idGenerator ?? _defaultIdGenerator,
-        _now = clock ?? DateTime.now;
+  }) : _db = database,
+       _syncQueue = syncQueue,
+       _newId = idGenerator ?? _defaultIdGenerator,
+       _now = clock ?? DateTime.now;
 
   static String _defaultIdGenerator() => const Uuid().v4();
 
@@ -47,7 +51,9 @@ class PlayerRepository {
       if (existing != null) return PlayerProfile.fromRow(existing);
 
       final createdAt = _now().millisecondsSinceEpoch;
-      final row = await _db.into(_db.playerProfiles).insertReturning(
+      final row = await _db
+          .into(_db.playerProfiles)
+          .insertReturning(
             PlayerProfilesCompanion.insert(
               localId: _newId(),
               createdAt: createdAt,
@@ -69,9 +75,9 @@ class PlayerRepository {
   /// Es la fuente que observará la Home: un stream de SQLite, sin red de por
   /// medio, que se actualiza solo cuando algo escribe en la tabla.
   Stream<PlayerProfile?> watchLocalProfile() {
-    return (_db.select(_db.playerProfiles)..limit(1))
-        .watchSingleOrNull()
-        .map((row) => row == null ? null : PlayerProfile.fromRow(row));
+    return (_db.select(_db.playerProfiles)..limit(1)).watchSingleOrNull().map(
+      (row) => row == null ? null : PlayerProfile.fromRow(row),
+    );
   }
 
   /// Vincula el perfil local a una cuenta de Firebase.
@@ -82,9 +88,9 @@ class PlayerRepository {
     required String localId,
     required String cloudUid,
   }) async {
-    await (_db.update(_db.playerProfiles)
-          ..where((p) => p.localId.equals(localId)))
-        .write(
+    await (_db.update(
+      _db.playerProfiles,
+    )..where((p) => p.localId.equals(localId))).write(
       PlayerProfilesCompanion(
         cloudUid: Value(cloudUid),
         updatedAt: Value(_now().millisecondsSinceEpoch),
@@ -109,15 +115,16 @@ class PlayerRepository {
       final current = await _selectById(localId);
       if (current == null) return;
 
-      await (_db.update(_db.playerProfiles)
-            ..where((p) => p.localId.equals(localId)))
-          .write(
+      await (_db.update(
+        _db.playerProfiles,
+      )..where((p) => p.localId.equals(localId))).write(
         PlayerProfilesCompanion(
           displayName: displayName == null
               ? const Value.absent()
               : Value(displayName),
-          avatarSeed:
-              avatarSeed == null ? const Value.absent() : Value(avatarSeed),
+          avatarSeed: avatarSeed == null
+              ? const Value.absent()
+              : Value(avatarSeed),
           updatedAt: Value(_now().millisecondsSinceEpoch),
           version: Value(current.version + 1),
         ),
@@ -191,10 +198,7 @@ class PlayerRepository {
   ///
   /// La comprobación y la escritura ocurren en la misma transacción, así que
   /// dos compras simultáneas no pueden dejar el saldo en negativo.
-  Future<bool> spendCoins({
-    required String localId,
-    required int amount,
-  }) {
+  Future<bool> spendCoins({required String localId, required int amount}) {
     return _db.transaction(() async {
       if (amount < 0) return false;
       if (amount == 0) return true;
@@ -238,12 +242,7 @@ class PlayerRepository {
 
       // Jugar una partida es lo que sostiene la racha. Se resuelve aquí, en
       // la misma escritura que los acumulados, para que no puedan divergir.
-      final streak = advanceStreak(
-        lastPlayedDate: current.lastPlayedDate,
-        currentStreak: current.currentStreak,
-        longestStreak: current.longestStreak,
-        now: _now(),
-      );
+      final streak = await _advanceStreak(current);
 
       await _writeProfile(
         localId,
@@ -251,10 +250,14 @@ class PlayerRepository {
           // Los acumulados son monótonos: un valor negativo se ignora en vez
           // de restar, porque nada en el juego debe poder quitarte XP.
           totalXp: Value(current.totalXp + (xpEarned < 0 ? 0 : xpEarned)),
-          totalCoins:
-              Value(current.totalCoins + (coinsEarned < 0 ? 0 : coinsEarned)),
-          totalMoves:
-              Value(current.totalMoves + (movesUsed < 0 ? 0 : movesUsed)),
+          totalCoins: Value(
+            current.totalCoins +
+                (coinsEarned < 0 ? 0 : coinsEarned) +
+                streak.bonusCoins,
+          ),
+          totalMoves: Value(
+            current.totalMoves + (movesUsed < 0 ? 0 : movesUsed),
+          ),
           gamesWon: Value(current.gamesWon + (won ? 1 : 0)),
           currentStreak: Value(streak.currentStreak),
           longestStreak: Value(streak.longestStreak),
@@ -264,26 +267,21 @@ class PlayerRepository {
     });
   }
 
-  /// Registra actividad del día sin que medie una partida.
-  ///
-  /// La usará el reto diario, que cuenta para la racha aunque no genere una
-  /// fila en `matches`.
+  /// Registra actividad del día sin que medie una partida: los minijuegos y
+  /// el reto diario, que cuentan para la racha aunque no generen una fila en
+  /// `matches`.
   Future<StreakUpdate?> registerPlayedToday({required String localId}) {
     return _db.transaction(() async {
       final current = await _selectById(localId);
       if (current == null) return null;
 
-      final streak = advanceStreak(
-        lastPlayedDate: current.lastPlayedDate,
-        currentStreak: current.currentStreak,
-        longestStreak: current.longestStreak,
-        now: _now(),
-      );
+      final streak = await _advanceStreak(current);
       if (!streak.changed) return streak;
 
       await _writeProfile(
         localId,
         PlayerProfilesCompanion(
+          totalCoins: Value(current.totalCoins + streak.bonusCoins),
           currentStreak: Value(streak.currentStreak),
           longestStreak: Value(streak.longestStreak),
           lastPlayedDate: Value(streak.lastPlayedDate),
@@ -301,6 +299,58 @@ class PlayerRepository {
       );
       return streak;
     });
+  }
+
+  /// Avanza la racha de [current] a hoy, dentro de la transacción en curso.
+  ///
+  /// Si hay días perdidos y protectores de racha comprados para cubrirlos,
+  /// los gasta. El primer juego de cada día paga [streakDayCoins], y ese
+  /// ingreso se encola como cualquier otro, en incremento.
+  Future<StreakUpdate> _advanceStreak(PlayerProfileRow current) async {
+    final freezeRow = await _selectFreezes(current.localId).getSingleOrNull();
+    final freezes = freezeRow?.quantity ?? 0;
+
+    final streak = advanceStreak(
+      lastPlayedDate: current.lastPlayedDate,
+      currentStreak: current.currentStreak,
+      longestStreak: current.longestStreak,
+      now: _now(),
+      availableFreezes: freezes,
+    );
+
+    if (streak.freezesUsed > 0) {
+      await (_db.update(_db.inventoryItems)..where(
+            (i) =>
+                i.playerLocalId.equals(current.localId) &
+                i.itemId.equals(streakFreezeItemId),
+          ))
+          .write(
+            InventoryItemsCompanion(
+              quantity: Value(freezes - streak.freezesUsed),
+              updatedAt: Value(_now().millisecondsSinceEpoch),
+            ),
+          );
+    }
+
+    if (!streak.isNewDay(current.lastPlayedDate)) return streak;
+    final bonus = streakDayCoins(streak.currentStreak);
+    if (bonus > 0) {
+      await _enqueue(
+        current.localId,
+        type: SyncOperationType.earnCoins,
+        entityType: 'player',
+        payload: {'totalCoins': bonus},
+      );
+    }
+    return streak.withBonus(bonus);
+  }
+
+  SimpleSelectStatement<$InventoryItemsTable, InventoryItemRow> _selectFreezes(
+    String localId,
+  ) {
+    return _db.select(_db.inventoryItems)..where(
+      (i) => i.playerLocalId.equals(localId) & i.itemId.equals(streakFreezeItemId),
+    );
   }
 
   /// Encola una operación dentro de la transacción en curso.
@@ -328,9 +378,9 @@ class PlayerRepository {
     String localId,
     PlayerProfilesCompanion companion,
   ) {
-    return (_db.update(_db.playerProfiles)
-          ..where((p) => p.localId.equals(localId)))
-        .write(
+    return (_db.update(
+      _db.playerProfiles,
+    )..where((p) => p.localId.equals(localId))).write(
       companion.copyWith(updatedAt: Value(_now().millisecondsSinceEpoch)),
     );
   }
@@ -340,8 +390,8 @@ class PlayerRepository {
   }
 
   Future<PlayerProfileRow?> _selectById(String localId) {
-    return (_db.select(_db.playerProfiles)
-          ..where((p) => p.localId.equals(localId)))
-        .getSingleOrNull();
+    return (_db.select(
+      _db.playerProfiles,
+    )..where((p) => p.localId.equals(localId))).getSingleOrNull();
   }
 }

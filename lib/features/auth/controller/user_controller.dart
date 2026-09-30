@@ -12,13 +12,15 @@ final userRepositoryProvider = Provider<UserRepository>((ref) {
 final currentUserProvider = StreamProvider<AppUser?>((ref) {
   final userRepository = ref.watch(userRepositoryProvider);
 
-  return ref.watch(authStateChangesProvider).maybeWhen(
-    data: (firebaseUser) {
-      if (firebaseUser == null) return Stream.value(null);
-      return userRepository.watchUser(firebaseUser.uid);
-    },
-    orElse: () => Stream.value(null),
-  );
+  return ref
+      .watch(authStateChangesProvider)
+      .maybeWhen(
+        data: (firebaseUser) {
+          if (firebaseUser == null) return Stream.value(null);
+          return userRepository.watchUser(firebaseUser.uid);
+        },
+        orElse: () => Stream.value(null),
+      );
 });
 
 /// Controller for user operations

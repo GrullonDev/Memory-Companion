@@ -28,12 +28,12 @@ class LocalMatchRepository {
     required SyncQueue syncQueue,
     String Function()? idGenerator,
     DateTime Function()? clock,
-  })  : _db = database,
-        _playerRepository = playerRepository,
-        _levelRepository = levelRepository,
-        _syncQueue = syncQueue,
-        _newId = idGenerator ?? _defaultIdGenerator,
-        _now = clock ?? DateTime.now;
+  }) : _db = database,
+       _playerRepository = playerRepository,
+       _levelRepository = levelRepository,
+       _syncQueue = syncQueue,
+       _newId = idGenerator ?? _defaultIdGenerator,
+       _now = clock ?? DateTime.now;
 
   static String _defaultIdGenerator() => const Uuid().v4();
 
@@ -62,12 +62,14 @@ class LocalMatchRepository {
     DateTime? playedAt,
   }) {
     return _db.transaction(() async {
-      final existing = await (_db.select(_db.matches)
-            ..where((m) => m.id.equals(matchId)))
-          .getSingleOrNull();
+      final existing = await (_db.select(
+        _db.matches,
+      )..where((m) => m.id.equals(matchId))).getSingleOrNull();
       if (existing != null) return false;
 
-      await _db.into(_db.matches).insert(
+      await _db
+          .into(_db.matches)
+          .insert(
             MatchesCompanion.insert(
               id: matchId,
               playerLocalId: playerLocalId,

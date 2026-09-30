@@ -22,8 +22,8 @@ class LocalLevelRepository {
   LocalLevelRepository({
     required AppDatabase database,
     DateTime Function()? clock,
-  })  : _db = database,
-        _now = clock ?? DateTime.now;
+  }) : _db = database,
+       _now = clock ?? DateTime.now;
 
   final AppDatabase _db;
   final DateTime Function() _now;
@@ -38,9 +38,9 @@ class LocalLevelRepository {
 
   /// El nivel que le toca jugar: el primero sin completar.
   Future<int> currentLevelNumber(String playerLocalId) async {
-    final rows = await (_db.select(_db.levelProgress)
-          ..where((l) => l.playerLocalId.equals(playerLocalId)))
-        .get();
+    final rows = await (_db.select(
+      _db.levelProgress,
+    )..where((l) => l.playerLocalId.equals(playerLocalId))).get();
     return _nextLevelAfter(rows);
   }
 
@@ -57,16 +57,19 @@ class LocalLevelRepository {
     return _db.transaction(() async {
       if (levelNumber < 1 || levelNumber > kTotalLevels) return;
 
-      final existing = await (_db.select(_db.levelProgress)
-            ..where((l) => l.playerLocalId.equals(playerLocalId))
-            ..where((l) => l.levelNumber.equals(levelNumber)))
-          .getSingleOrNull();
+      final existing =
+          await (_db.select(_db.levelProgress)
+                ..where((l) => l.playerLocalId.equals(playerLocalId))
+                ..where((l) => l.levelNumber.equals(levelNumber)))
+              .getSingleOrNull();
 
       final best = existing == null || score > existing.bestScore
           ? score
           : existing.bestScore;
 
-      await _db.into(_db.levelProgress).insert(
+      await _db
+          .into(_db.levelProgress)
+          .insert(
             LevelProgressCompanion.insert(
               playerLocalId: playerLocalId,
               levelNumber: levelNumber,

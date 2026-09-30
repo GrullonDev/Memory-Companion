@@ -132,9 +132,9 @@ class _PlayCta extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                    color: Colors.white,
-                    letterSpacing: 0.6,
-                  ),
+                color: Colors.white,
+                letterSpacing: 0.6,
+              ),
             ),
           ),
         ],

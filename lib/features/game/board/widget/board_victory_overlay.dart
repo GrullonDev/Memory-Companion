@@ -270,9 +270,7 @@ class StarRatingWidget extends StatelessWidget {
               ),
               child: _Star(
                 filled: i < earned,
-                size: tokens.isAccessible
-                    ? 56
-                    : (i == 1 ? 60 : 48),
+                size: tokens.isAccessible ? 56 : (i == 1 ? 60 : 48),
                 delay: animate && i < earned ? _popStagger * i : null,
               ),
             ),

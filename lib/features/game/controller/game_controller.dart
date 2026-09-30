@@ -33,9 +33,7 @@ final localMatchRepositoryProvider = Provider<LocalMatchRepository>((ref) {
 final lastLocalMatchProvider = StreamProvider<MatchRow?>((ref) async* {
   ref.keepAlive();
   final player = await ref.watch(localPlayerProvider.future);
-  yield* ref
-      .watch(localMatchRepositoryProvider)
-      .watchLastMatch(player.localId);
+  yield* ref.watch(localMatchRepositoryProvider).watchLastMatch(player.localId);
 });
 
 /// Historial de partidas en la nube.
@@ -45,13 +43,15 @@ final lastLocalMatchProvider = StreamProvider<MatchRow?>((ref) async* {
 final userMatchHistoryProvider = StreamProvider<List<Match>>((ref) {
   final matchRepository = ref.watch(matchRepositoryProvider);
 
-  return ref.watch(authStateChangesProvider).maybeWhen(
-    data: (firebaseUser) {
-      if (firebaseUser == null) return Stream.value([]);
-      return matchRepository.getUserMatches(firebaseUser.uid);
-    },
-    orElse: () => Stream.value([]),
-  );
+  return ref
+      .watch(authStateChangesProvider)
+      .maybeWhen(
+        data: (firebaseUser) {
+          if (firebaseUser == null) return Stream.value([]);
+          return matchRepository.getUserMatches(firebaseUser.uid);
+        },
+        orElse: () => Stream.value([]),
+      );
 });
 
 /// Operaciones de partida.
@@ -84,7 +84,9 @@ class GameController extends AsyncNotifier<void> {
     state = await AsyncValue.guard(() async {
       final player = await ref.read(localPlayerProvider.future);
 
-      await ref.read(localMatchRepositoryProvider).recordMatch(
+      await ref
+          .read(localMatchRepositoryProvider)
+          .recordMatch(
             matchId: matchId,
             playerLocalId: player.localId,
             gameMode: 'solo',

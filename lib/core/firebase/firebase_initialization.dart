@@ -15,7 +15,5 @@ import 'package:memory_companion/firebase_options.dart';
 /// empaquetada), así que no necesita red y resuelve rápido incluso en avión.
 /// Lo que quitamos no es tiempo de espera, es una dependencia estructural.
 final firebaseInitializationProvider = FutureProvider<void>((ref) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 });

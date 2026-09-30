@@ -10,8 +10,7 @@ import 'package:memory_companion/core/database/tables/player_profiles.dart';
 /// al arrancar en vez de depender de que la app siga viva.
 @DataClassName('LivesStateRow')
 class LivesStates extends Table {
-  TextColumn get playerLocalId =>
-      text().references(PlayerProfiles, #localId)();
+  TextColumn get playerLocalId => text().references(PlayerProfiles, #localId)();
 
   IntColumn get currentLives => integer()();
 
