@@ -31,10 +31,18 @@ import 'package:memory_companion/features/home/model/home_summary.dart';
 /// The streak badge is an invitation when the streak is zero and a thing
 /// worth protecting once it isn't. It never scolds.
 class LevelProgressCard extends StatelessWidget {
-  const LevelProgressCard({super.key, required this.summary, this.onTap});
+  const LevelProgressCard({
+    super.key,
+    required this.summary,
+    this.onTap,
+    this.showAllLadders = true,
+  });
 
   final HomeSummary summary;
   final VoidCallback? onTap;
+
+  /// Lists every game's ladder as chips under the main one.
+  final bool showAllLadders;
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +169,7 @@ class LevelProgressCard extends StatelessWidget {
               ),
             ],
           ),
-          if (summary.ladders.length > 1) ...[
+          if (showAllLadders && summary.ladders.length > 1) ...[
             const SizedBox(height: AppSpacing.md),
             // Each game climbs its own ladder.
             Wrap(

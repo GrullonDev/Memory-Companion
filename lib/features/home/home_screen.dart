@@ -8,7 +8,6 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/routes/tab_root_scope.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
-import 'package:memory_companion/core/widgets/async_value_view.dart';
 import 'package:memory_companion/core/widgets/section_header.dart';
 import 'package:memory_companion/features/account/controller/account_link_controller.dart';
 import 'package:memory_companion/features/account/widget/link_conflict_dialog.dart';
@@ -16,30 +15,22 @@ import 'package:memory_companion/features/account/widget/save_progress_card.dart
 import 'package:memory_companion/features/daily_challenge/controller/daily_challenge_controller.dart';
 import 'package:memory_companion/features/daily_challenge/model/daily_challenge.dart';
 import 'package:memory_companion/features/daily_reward/controller/daily_reward_controller.dart';
-import 'package:memory_companion/features/daily_reward/widget/daily_reward_card.dart';
 import 'package:memory_companion/features/daily_reward/widget/daily_reward_dialog.dart';
 import 'package:memory_companion/features/home/controller/home_controller.dart';
-import 'package:memory_companion/features/home/widget/daily_challenge_card.dart';
+import 'package:memory_companion/features/home/widget/daily_row.dart';
 import 'package:memory_companion/features/home/widget/home_bottom_nav.dart';
 import 'package:memory_companion/features/home/widget/home_top_bar.dart';
 import 'package:memory_companion/features/home/widget/level_progress_card.dart';
 import 'package:memory_companion/features/home/widget/primary_play_card.dart';
-import 'package:memory_companion/features/home/widget/recent_match_card.dart';
-import 'package:memory_companion/features/home/widget/save_state_badge.dart';
-import 'package:memory_companion/features/home/widget/secondary_mode_row.dart';
-import 'package:memory_companion/features/minigames/hub/widget/minigame_grid.dart';
+import 'package:memory_companion/features/minigames/hub/widget/minigame_carousel.dart';
 import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
-import 'package:memory_companion/core/localization/time_ago.dart';
 
 /// The Home, rebuilt around a single clear hierarchy.
 ///
-/// Reading down the screen: who you are and what you own → how far along you
-/// are → the one thing to do now → the one thing that brings you back
-/// tomorrow → everything else → how you did last time. The previous version
-/// gave four modes identical weight in a 2x2 grid while a banner above them
-/// offered a fifth, competing call to action pointing at the same route as
-/// one of the tiles.
+/// Five blocks, top to bottom: who you are → how far along you are → the one
+/// thing to do now → today's rewards → the other games. Versus and Friends
+/// live in the bottom nav, so they are not repeated here.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
@@ -72,7 +63,6 @@ class HomeScreen extends ConsumerWidget {
 
     final wallet = ref.watch(walletControllerProvider);
     final summary = ref.watch(homeSummaryProvider);
-    final recentMatch = ref.watch(homeControllerProvider);
     final dailyStatus = ref.watch(
       dailyStatusProvider(ref.watch(todayChallengeProvider)),
     );
@@ -115,22 +105,16 @@ class HomeScreen extends ConsumerWidget {
                       onSettingsTap: () =>
                           Navigator.of(context).pushNamed(RoutePaths.settings),
                     ),
-                    const SizedBox(height: AppSpacing.md),
+                    const SizedBox(height: AppSpacing.xl),
 
-                    // Dónde está guardado el progreso. Discreto a propósito: es
-                    // una confirmación, no una alarma.
-                    const Align(
-                      alignment: Alignment.centerRight,
-                      child: SaveStateBadge(),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-
+                    // Main ladder only; every game's ladder is on the Profile.
                     LevelProgressCard(
                       summary: summary,
+                      showAllLadders: false,
                       onTap: () =>
                           Navigator.of(context).pushNamed(RoutePaths.profile),
                     ),
-                    const SizedBox(height: AppSpacing.xxl),
+                    const SizedBox(height: AppSpacing.xl),
 
                     // The single primary action.
                     PrimaryPlayCard(
@@ -142,19 +126,14 @@ class HomeScreen extends ConsumerWidget {
                     // Aparece solo cuando el jugador ya tiene algo que perder.
                     const SaveProgressCard(),
 
-                    // The reason to open the app every day, right above the
-                    // reason to play every day.
-                    if (dailyReward != null) ...[
-                      DailyRewardCard(
-                        status: dailyReward,
-                        onTap: () => showDailyRewardDialog(context),
-                      ),
-                      const SizedBox(height: AppSpacing.gutter),
-                    ],
-                    DailyChallengeCard(
-                      rewardCoins: DailyChallenge.rewardCoins,
-                      completed: dailyStatus.value?.completedToday ?? false,
-                      onTap: () => Navigator.of(
+                    // Today's reasons to come back, one compact row.
+                    DailyRow(
+                      reward: dailyReward,
+                      challengeCompleted:
+                          dailyStatus.value?.completedToday ?? false,
+                      challengeCoins: DailyChallenge.rewardCoins,
+                      onRewardTap: () => showDailyRewardDialog(context),
+                      onChallengeTap: () => Navigator.of(
                         context,
                       ).pushNamed(RoutePaths.dailyChallenge),
                     ),
@@ -167,32 +146,7 @@ class HomeScreen extends ConsumerWidget {
                         context,
                       ).pushNamed(RoutePaths.minigameHub),
                     ),
-                    MinigameGrid(games: minigames),
-                    const SizedBox(height: AppSpacing.sectionGap),
-
-                    SectionHeader(
-                      title: AppLocale.moreModesLabel.getString(context),
-                    ),
-                    const SecondaryModeRow(),
-                    const SizedBox(height: AppSpacing.sectionGap),
-
-                    SectionHeader(
-                      title: AppLocale.lastMatchLabel.getString(context),
-                    ),
-                    AsyncValueView(
-                      value: recentMatch,
-                      minHeight: 96,
-                      onRetry: () => ref.invalidate(homeControllerProvider),
-                      data: (context, match) => match.isPlaceholder
-                          ? const RecentMatchCard.empty()
-                          : RecentMatchCard(
-                              title: match.titleKey.getString(context),
-                              score: match.score,
-                              timeAgo: match.playedAt == null
-                                  ? ''
-                                  : timeAgoLabel(context, match.playedAt!),
-                            ),
-                    ),
+                    MinigameCarousel(games: minigames),
                   ],
                 ),
               ),
