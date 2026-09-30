@@ -16,6 +16,8 @@ class StreakUpdate {
     required this.longestStreak,
     required this.lastPlayedDate,
     required this.changed,
+    this.freezesUsed = 0,
+    this.bonusCoins = 0,
   });
 
   final int currentStreak;
@@ -26,6 +28,25 @@ class StreakUpdate {
 
   /// Si esta llamada movió algo. Falso cuando ya se había jugado hoy.
   final bool changed;
+
+  /// Protectores de racha gastados para tapar días sin jugar.
+  final int freezesUsed;
+
+  /// Monedas pagadas por este día de racha ([streakDayCoins]). Las fija el
+  /// repositorio al cobrarlas; la función pura siempre devuelve 0.
+  final int bonusCoins;
+
+  /// Si esta llamada estrenó un día de juego (y no solo corrigió datos).
+  bool isNewDay(String? previousDate) => changed && lastPlayedDate != previousDate;
+
+  StreakUpdate withBonus(int coins) => StreakUpdate(
+    currentStreak: currentStreak,
+    longestStreak: longestStreak,
+    lastPlayedDate: lastPlayedDate,
+    changed: changed,
+    freezesUsed: freezesUsed,
+    bonusCoins: coins,
+  );
 
   @override
   String toString() =>
@@ -64,7 +85,9 @@ int? _dayNumberOf(String? dateKey) {
 ///  * **Primer día** — nunca había jugado: la racha arranca en 1.
 ///  * **Mismo día** — ya jugó hoy: no se mueve nada.
 ///  * **Día consecutivo** — jugó ayer: suma uno.
-///  * **Día perdido** — han pasado dos días o más: vuelve a 1, sin drama.
+///  * **Día perdido** — han pasado dos días o más: vuelve a 1, sin drama…
+///    salvo que haya [availableFreezes] para cubrir cada día perdido: entonces
+///    se gastan y la racha sigue como si no hubiera faltado.
 ///  * **Varios días sin conexión** — da igual: solo cuentan las fechas.
 ///  * **Reloj hacia atrás** — la última fecha está en el futuro: no se toca
 ///    nada, ni siquiera [lastPlayedDate]. Retroceder el reloj no puede
@@ -74,6 +97,7 @@ StreakUpdate advanceStreak({
   required int currentStreak,
   required int longestStreak,
   required DateTime now,
+  int availableFreezes = 0,
 }) {
   final todayKey = localDateKey(now);
   final today = _dayNumber(now.year, now.month, now.day);
@@ -105,18 +129,85 @@ StreakUpdate advanceStreak({
   if (gap == 0) {
     return StreakUpdate(
       currentStreak: currentStreak < 1 ? 1 : currentStreak,
-      longestStreak: longestStreak < currentStreak ? currentStreak : longestStreak,
+      longestStreak: longestStreak < currentStreak
+          ? currentStreak
+          : longestStreak,
       lastPlayedDate: todayKey,
       changed: currentStreak < 1,
     );
   }
 
-  final next = gap == 1 ? currentStreak + 1 : 1;
+  final missed = gap - 1;
+  final frozen = missed > 0 && currentStreak > 0 && missed <= availableFreezes;
+  final next = gap == 1 || frozen ? currentStreak + 1 : 1;
 
   return StreakUpdate(
     currentStreak: next,
     longestStreak: longestStreak < next ? next : longestStreak,
     lastPlayedDate: todayKey,
     changed: true,
+    freezesUsed: frozen ? missed : 0,
   );
+}
+
+/// Días de racha que dan un premio extra. Tras el último, uno cada 50 días:
+/// la racha no tiene techo y los premios tampoco.
+const streakMilestones = [3, 7, 14, 30, 60, 100];
+
+/// El siguiente hito por encima de [streak].
+int nextStreakMilestone(int streak) {
+  for (final milestone in streakMilestones) {
+    if (milestone > streak) return milestone;
+  }
+  return (streak ~/ 50 + 1) * 50;
+}
+
+bool isStreakMilestone(int streak) =>
+    streakMilestones.contains(streak) ||
+    (streak > streakMilestones.last && streak % 50 == 0);
+
+/// Monedas por jugar el día [streak] de una racha: 10 por día seguido, hasta
+/// 70 a partir de la semana, más un premio grande en cada hito. Es lo que
+/// hace que volver mañana valga más que volver pasado mañana.
+int streakDayCoins(int streak) {
+  if (streak < 1) return 0;
+  final daily = 10 * (streak > 7 ? 7 : streak);
+  final milestone = isStreakMilestone(streak) ? 20 * streak : 0;
+  return daily + milestone;
+}
+
+/// Cómo está la racha vista desde un momento dado, sin tocar nada.
+enum StreakStatus {
+  /// Nunca ha jugado, o la racha se rompió y no hay protectores que la
+  /// cubran.
+  none,
+
+  /// Ya jugó hoy.
+  safe,
+
+  /// Jugó ayer, o los protectores cubren los días perdidos: si juega hoy,
+  /// la racha sigue.
+  atRisk,
+}
+
+/// La racha que verá el jugador en [now]: la guardada, o 0 si ya se rompió.
+///
+/// Solo para pintar: la racha guardada no se corrige hasta la próxima
+/// partida, que es cuando [advanceStreak] decide de verdad.
+({StreakStatus status, int days}) streakStatusAt({
+  required String? lastPlayedDate,
+  required int currentStreak,
+  required DateTime now,
+  int availableFreezes = 0,
+}) {
+  final last = _dayNumberOf(lastPlayedDate);
+  if (last == null || currentStreak < 1) {
+    return (status: StreakStatus.none, days: 0);
+  }
+  final gap = _dayNumber(now.year, now.month, now.day) - last;
+  if (gap <= 0) return (status: StreakStatus.safe, days: currentStreak);
+  if (gap - 1 <= availableFreezes) {
+    return (status: StreakStatus.atRisk, days: currentStreak);
+  }
+  return (status: StreakStatus.none, days: 0);
 }
