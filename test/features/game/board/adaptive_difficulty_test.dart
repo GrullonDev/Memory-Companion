@@ -97,12 +97,7 @@ void main() {
     });
 
     test('jugar bien de forma sostenida llega al tablero más grande', () {
-      final state = _play(
-        classic,
-        _engine.initialState(classic),
-        _perfect,
-        40,
-      );
+      final state = _play(classic, _engine.initialState(classic), _perfect, 40);
       expect(state.pairCount, classic.maxPairs);
       expect(_engine.settingsFor(classic, state).tier, ContentTier.challenging);
     });

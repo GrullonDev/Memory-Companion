@@ -13,8 +13,18 @@ class CrosswordLevel {
 /// Shortest word the game accepts.
 const crosswordMinWordLength = 3;
 
+/// Most letters that are not part of any word the wheel ever shows.
+const crosswordMaxDecoys = 3;
+
+/// Letters the decoys are drawn from: common in both languages, so a decoy
+/// looks as plausible as the real ones.
+const crosswordDecoyPool = 'AEIORSNLTCDMP';
+
 /// The puzzles per language, easiest first. After the last one the player
-/// starts over from the first, with the level number still counting up.
+/// starts over from the first, with the level number still counting up —
+/// and every time round, the wheel gets one more decoy letter (up to
+/// [crosswordMaxDecoys]) that belongs to no word, so the levels never stop
+/// getting harder. See [decoysForLevel].
 abstract final class CrosswordLevels {
   static const Map<String, List<CrosswordLevel>> _byLanguage = {
     'es': [
@@ -52,4 +62,12 @@ abstract final class CrosswordLevels {
       _byLanguage[languageCode] ?? _byLanguage['es']!;
 
   static Iterable<String> get languages => _byLanguage.keys;
+
+  /// Decoy letters on the wheel at [levelNumber]: none the first time
+  /// through the puzzles, one more on each pass after.
+  static int decoysForLevel(int levelNumber, {required int puzzleCount}) {
+    if (levelNumber < 1 || puzzleCount < 1) return 0;
+    final pass = (levelNumber - 1) ~/ puzzleCount;
+    return pass > crosswordMaxDecoys ? crosswordMaxDecoys : pass;
+  }
 }

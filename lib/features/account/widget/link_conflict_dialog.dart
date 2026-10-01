@@ -89,13 +89,11 @@ class _LinkConflictDialog extends StatelessWidget {
       actionsOverflowButtonSpacing: AppSpacing.sm,
       actions: [
         TextButton(
-          onPressed: () =>
-              Navigator.of(context).pop(LinkChoice.keepCloud),
+          onPressed: () => Navigator.of(context).pop(LinkChoice.keepCloud),
           child: Text(AppLocale.linkKeepCloud.getString(context)),
         ),
         FilledButton(
-          onPressed: () =>
-              Navigator.of(context).pop(LinkChoice.keepLocal),
+          onPressed: () => Navigator.of(context).pop(LinkChoice.keepLocal),
           child: Text(AppLocale.linkKeepLocal.getString(context)),
         ),
       ],
@@ -129,16 +127,16 @@ class _ProgressRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: foreground,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.labelSmall?.copyWith(color: foreground),
           ),
           const SizedBox(height: AppSpacing.xxs),
           Text(
             value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: foreground,
-                ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium?.copyWith(color: foreground),
           ),
         ],
       ),

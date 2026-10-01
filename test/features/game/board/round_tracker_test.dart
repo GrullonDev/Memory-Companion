@@ -11,9 +11,12 @@ MemoryCard _card(int id, String pair) =>
 void main() {
   // a0 a1 b2 b3 c4 c5
   final board = [
-    _card(0, 'a'), _card(1, 'a'),
-    _card(2, 'b'), _card(3, 'b'),
-    _card(4, 'c'), _card(5, 'c'),
+    _card(0, 'a'),
+    _card(1, 'a'),
+    _card(2, 'b'),
+    _card(3, 'b'),
+    _card(4, 'c'),
+    _card(5, 'c'),
   ];
 
   test('la regla por pairId empareja caras distintas del mismo par', () {

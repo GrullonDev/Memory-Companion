@@ -18,11 +18,13 @@ import 'package:memory_companion/core/database/tables/player_profiles.dart';
   name: 'idx_sync_ops_status_next_attempt',
   columns: {#status, #nextAttemptAt},
 )
-@TableIndex(name: 'idx_sync_ops_player_created', columns: {#playerLocalId, #createdAt})
+@TableIndex(
+  name: 'idx_sync_ops_player_created',
+  columns: {#playerLocalId, #createdAt},
+)
 class SyncOperations extends Table {
   TextColumn get opId => text()();
-  TextColumn get playerLocalId =>
-      text().references(PlayerProfiles, #localId)();
+  TextColumn get playerLocalId => text().references(PlayerProfiles, #localId)();
 
   TextColumn get type => textEnum<SyncOperationType>()();
 

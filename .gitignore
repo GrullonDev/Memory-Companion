@@ -44,14 +44,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/.kotlin/
 
 # FVM Version Cache
 .fvm/
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
 
 # iOS will place build artifacts here
 /ios/Runner.xcworkspace
@@ -64,3 +60,16 @@ skills-lock.json
 
 # macOS ephemeral build artifacts
 macos/Flutter/ephemeral/
+
+# Linux platform build artifacts
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+linux/flutter/generated_plugins.cmake
+
+# Windows platform build artifacts
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugin_registrant.h
+windows/flutter/generated_plugins.cmake
+
+# macOS platform build artifacts
+macos/Flutter/GeneratedPluginRegistrant.swift

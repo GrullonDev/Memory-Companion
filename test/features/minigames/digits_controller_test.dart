@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -33,10 +34,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           minigameRandomProvider.overrideWithValue(Random(3)),
+          minigameLevelOverrideProvider.overrideWithValue(1),
           minigameResultReporterProvider.overrideWithValue(reporter),
-          statsClockProvider.overrideWithValue(
-            () => start.add(async.elapsed),
-          ),
+          statsClockProvider.overrideWithValue(() => start.add(async.elapsed)),
         ],
       );
       // Mantiene vivo el controlador autoDispose durante la prueba.

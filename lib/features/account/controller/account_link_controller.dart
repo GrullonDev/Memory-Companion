@@ -65,10 +65,7 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
       return const AccountLinkState(status: LinkStatus.settled);
     }
     if (player.cloudUid == firebaseUser.uid) {
-      return AccountLinkState(
-        status: LinkStatus.settled,
-        localProfile: player,
-      );
+      return AccountLinkState(status: LinkStatus.settled, localProfile: player);
     }
 
     final cloudProfile = await _readCloudProfile(firebaseUser.uid);
@@ -76,19 +73,13 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
     // La cuenta está vacía: se adopta el progreso local tal cual.
     if (cloudProfile == null || _isEmptyProgress(cloudProfile)) {
       await _link(player, firebaseUser.uid);
-      return AccountLinkState(
-        status: LinkStatus.adopted,
-        localProfile: player,
-      );
+      return AccountLinkState(status: LinkStatus.adopted, localProfile: player);
     }
 
     // Progreso local irrelevante: nada que perder, se toma el de la cuenta.
     if (!_hasLocalProgress(player)) {
       await _keepCloud(player, firebaseUser.uid, cloudProfile);
-      return AccountLinkState(
-        status: LinkStatus.adopted,
-        localProfile: player,
-      );
+      return AccountLinkState(status: LinkStatus.adopted, localProfile: player);
     }
 
     return AccountLinkState(
@@ -108,10 +99,7 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await _link(player, firebaseUser.uid);
-      return AccountLinkState(
-        status: LinkStatus.adopted,
-        localProfile: player,
-      );
+      return AccountLinkState(status: LinkStatus.adopted, localProfile: player);
     });
   }
 
@@ -126,10 +114,7 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
     state = const AsyncLoading();
     state = await AsyncValue.guard(() async {
       await _keepCloud(player, firebaseUser.uid, cloudProfile);
-      return AccountLinkState(
-        status: LinkStatus.adopted,
-        localProfile: player,
-      );
+      return AccountLinkState(status: LinkStatus.adopted, localProfile: player);
     });
   }
 
@@ -144,10 +129,9 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
   }
 
   Future<void> _link(PlayerProfile player, String cloudUid) async {
-    await ref.read(playerRepositoryProvider).linkToCloud(
-          localId: player.localId,
-          cloudUid: cloudUid,
-        );
+    await ref
+        .read(playerRepositoryProvider)
+        .linkToCloud(localId: player.localId, cloudUid: cloudUid);
     await ref.read(accountMigrationProvider).enqueueFullState(player.localId);
     unawaited(ref.read(syncControllerProvider.notifier).syncNow());
   }
@@ -157,11 +141,12 @@ class AccountLinkController extends AsyncNotifier<AccountLinkState> {
     String cloudUid,
     Map<String, Object?> cloudProfile,
   ) async {
-    await ref.read(playerRepositoryProvider).linkToCloud(
-          localId: player.localId,
-          cloudUid: cloudUid,
-        );
-    await ref.read(accountMigrationProvider).adoptCloudProfile(
+    await ref
+        .read(playerRepositoryProvider)
+        .linkToCloud(localId: player.localId, cloudUid: cloudUid);
+    await ref
+        .read(accountMigrationProvider)
+        .adoptCloudProfile(
           playerLocalId: player.localId,
           cloudProfile: cloudProfile,
         );

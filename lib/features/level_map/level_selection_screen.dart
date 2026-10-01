@@ -46,14 +46,16 @@ class LevelSelectionScreen extends ConsumerWidget {
                   child: Center(
                     child: Row(
                       children: [
-                        const Icon(Icons.monetization_on_rounded,
-                            color: AppColors.secondary, size: 20),
+                        const Icon(
+                          Icons.monetization_on_rounded,
+                          color: AppColors.secondary,
+                          size: 20,
+                        ),
                         const SizedBox(width: 8),
                         walletAsync.maybeWhen(
                           data: (coins) => Text(
                             '$coins',
-                            style: Theme.of(context)
-                                .textTheme.titleMedium
+                            style: Theme.of(context).textTheme.titleMedium
                                 ?.copyWith(
                                   color: AppColors.onSurface,
                                   fontWeight: FontWeight.w700,
@@ -77,18 +79,15 @@ class LevelSelectionScreen extends ConsumerWidget {
                   return SliverGrid(
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 16,
-                      crossAxisSpacing: 16,
-                      childAspectRatio: 1,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        final level = levels[index];
-                        return _LevelCard(level: level);
-                      },
-                      childCount: levels.length,
-                    ),
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                          childAspectRatio: 1,
+                        ),
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final level = levels[index];
+                      return _LevelCard(level: level);
+                    }, childCount: levels.length),
                   );
                 },
               ),
@@ -138,22 +137,19 @@ class _LevelCard extends ConsumerWidget {
                   ],
                 )
               : isCompleted
-                  ? LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.primaryFixed,
-                        AppColors.primaryFixedDim,
-                      ],
-                    )
-                  : LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.secondaryFixed,
-                        AppColors.secondaryFixedDim,
-                      ],
-                    ),
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [AppColors.primaryFixed, AppColors.primaryFixedDim],
+                )
+              : LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    AppColors.secondaryFixed,
+                    AppColors.secondaryFixedDim,
+                  ],
+                ),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isCompleted ? AppColors.primary : AppColors.secondary,
@@ -164,7 +160,7 @@ class _LevelCard extends ConsumerWidget {
               color: isLocked
                   ? Colors.transparent
                   : (isCompleted ? AppColors.primary : AppColors.secondary)
-                      .withValues(alpha: 0.3),
+                        .withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -184,8 +180,8 @@ class _LevelCard extends ConsumerWidget {
                       color: isLocked
                           ? AppColors.outlineVariant
                           : isCompleted
-                              ? AppColors.onPrimaryFixed
-                              : AppColors.onSecondaryFixed,
+                          ? AppColors.onPrimaryFixed
+                          : AppColors.onSecondaryFixed,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -199,7 +195,9 @@ class _LevelCard extends ConsumerWidget {
                           style: TextStyle(
                             fontSize: 12,
                             color: isLocked
-                                ? AppColors.outlineVariant.withValues(alpha: 0.5)
+                                ? AppColors.outlineVariant.withValues(
+                                    alpha: 0.5,
+                                  )
                                 : null,
                           ),
                         ),
@@ -254,7 +252,10 @@ class _LevelCard extends ConsumerWidget {
                 left: 8,
                 right: 8,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.background.withValues(alpha: 0.9),
                     borderRadius: BorderRadius.circular(6),

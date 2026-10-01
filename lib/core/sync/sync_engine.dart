@@ -3,11 +3,7 @@ import 'package:memory_companion/core/sync/sync_queue.dart';
 
 /// Resultado de una pasada del motor.
 class SyncRunResult {
-  const SyncRunResult({
-    this.applied = 0,
-    this.failed = 0,
-    this.skippedReason,
-  });
+  const SyncRunResult({this.applied = 0, this.failed = 0, this.skippedReason});
 
   /// No se intentó nada, y por qué.
   const SyncRunResult.skipped(String reason) : this(skippedReason: reason);
@@ -40,10 +36,10 @@ class SyncEngine {
     required SyncGateway gateway,
     DateTime Function()? clock,
     Duration Function(int attempt)? backoff,
-  })  : _queue = queue,
-        _gateway = gateway,
-        _now = clock ?? DateTime.now,
-        _backoff = backoff ?? defaultBackoff;
+  }) : _queue = queue,
+       _gateway = gateway,
+       _now = clock ?? DateTime.now,
+       _backoff = backoff ?? defaultBackoff;
 
   /// Espera entre reintentos. Ocho intentos cubren algo más de una hora.
   ///
@@ -106,8 +102,12 @@ class SyncEngine {
         applied++;
       } on SyncFailure catch (failure) {
         failed++;
-        await _recordFailure(operation.opId, operation.retryCount,
-            failure.message, permanent: failure.permanent);
+        await _recordFailure(
+          operation.opId,
+          operation.retryCount,
+          failure.message,
+          permanent: failure.permanent,
+        );
 
         // Un fallo transitorio casi siempre es la red: seguir martillando las
         // 24 operaciones restantes solo gasta batería y las condena a todas.

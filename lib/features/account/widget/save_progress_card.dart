@@ -25,9 +25,7 @@ class AccountPromptDismissed extends Notifier<bool> {
 }
 
 final accountPromptDismissedProvider =
-    NotifierProvider<AccountPromptDismissed, bool>(
-      AccountPromptDismissed.new,
-    );
+    NotifierProvider<AccountPromptDismissed, bool>(AccountPromptDismissed.new);
 
 /// «Guarda tu progreso»: la propuesta de crear cuenta.
 ///
@@ -145,8 +143,9 @@ class SaveProgressCard extends ConsumerWidget {
                     onTap: () =>
                         Navigator.of(context).pushNamed(RoutePaths.register),
                     borderRadius: BorderRadius.circular(AppRadius.pill),
-                    semanticLabel:
-                        AppLocale.createAccountLabel.getString(context),
+                    semanticLabel: AppLocale.createAccountLabel.getString(
+                      context,
+                    ),
                     child: Container(
                       constraints: const BoxConstraints(
                         minHeight: AppSize.touchMin,

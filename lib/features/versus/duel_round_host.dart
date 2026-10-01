@@ -5,6 +5,7 @@ import 'package:memory_companion/features/daily_challenge/model/daily_seed.dart'
 import 'package:memory_companion/features/game/board/board_screen.dart';
 import 'package:memory_companion/features/game/board/controller/board_controller.dart';
 import 'package:memory_companion/features/game/board/model/board_state.dart';
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/controller/crossword_controller.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/crossword_screen.dart';
@@ -105,6 +106,8 @@ class DuelRoundHost extends StatelessWidget {
         minigameRandomProvider.overrideWithValue(
           SeededRandom(duel.seedFor(round)),
         ),
+        // Both sides face the first level's difficulty, whatever their own.
+        minigameLevelProvider.overrideWith((ref, game) => 1),
         crosswordFixedLevelProvider.overrideWithValue(
           _crosswordLevel(Localizations.localeOf(context).languageCode),
         ),
@@ -251,7 +254,7 @@ class _MinigameRoundState extends ConsumerState<_MinigameRound> {
               score: next.score,
               // Numbers to recall on the way to the target length.
               solved: next.correct,
-              total: next.mode.targetSpan - next.mode.startSpan + 1,
+              total: next.targetSpan - next.startSpan + 1,
               event: next.lastCorrect ? DuelEvent.hit : DuelEvent.miss,
             );
           }

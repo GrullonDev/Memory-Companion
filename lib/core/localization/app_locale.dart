@@ -139,7 +139,8 @@ mixin AppLocale {
   static const String playSoloSubtitle = 'playSoloSubtitle';
   static const String continueLabel = 'continueLabel';
   static const String dailyChallengeSubtitle = 'dailyChallengeSubtitle';
-  static const String dailyChallengeAvailableLabel = 'dailyChallengeAvailableLabel';
+  static const String dailyChallengeAvailableLabel =
+      'dailyChallengeAvailableLabel';
   static const String dailyChallengeDoneLabel = 'dailyChallengeDoneLabel';
   static const String rewardLabel = 'rewardLabel';
   static const String multiplayerSubtitle = 'multiplayerSubtitle';
@@ -160,7 +161,8 @@ mixin AppLocale {
   static const String profileVibrantName = 'profileVibrantName';
   static const String profileVibrantDescription = 'profileVibrantDescription';
   static const String profileAccessibleName = 'profileAccessibleName';
-  static const String profileAccessibleDescription = 'profileAccessibleDescription';
+  static const String profileAccessibleDescription =
+      'profileAccessibleDescription';
   static const String profileSelectedLabel = 'profileSelectedLabel';
   static const String gameplaySectionTitle = 'gameplaySectionTitle';
   static const String timedMatchesTitle = 'timedMatchesTitle';
@@ -177,7 +179,8 @@ mixin AppLocale {
   static const String categoryNumericName = 'categoryNumericName';
   static const String categoryNumericDescription = 'categoryNumericDescription';
   static const String categoryAssociationName = 'categoryAssociationName';
-  static const String categoryAssociationDescription = 'categoryAssociationDescription';
+  static const String categoryAssociationDescription =
+      'categoryAssociationDescription';
   static const String dailyChallengeNumberLabel = 'dailyChallengeNumberLabel';
   static const String dailyMovesUnit = 'dailyMovesUnit';
   static const String dailyShareCta = 'dailyShareCta';
@@ -277,7 +280,8 @@ mixin AppLocale {
   static const String wordsResultLost = 'wordsResultLost';
 
   static const String minigameCrosswordTitle = 'minigameCrosswordTitle';
-  static const String minigameCrosswordDescription = 'minigameCrosswordDescription';
+  static const String minigameCrosswordDescription =
+      'minigameCrosswordDescription';
   static const String crosswordLevelLabel = 'crosswordLevelLabel';
   static const String crosswordProgressLabel = 'crosswordProgressLabel';
   static const String crosswordInstructions = 'crosswordInstructions';
@@ -390,6 +394,32 @@ mixin AppLocale {
   static const String rivalNotStarted = 'rivalNotStarted';
   static const String rivalRoundsPlayed = 'rivalRoundsPlayed';
   static const String rivalHitPair = 'rivalHitPair';
+  static const String reminderChannelName = 'reminderChannelName';
+  static const String reminderStreakTitle = 'reminderStreakTitle';
+  static const String reminderStreakBody = 'reminderStreakBody';
+  static const String reminderInviteTitle = 'reminderInviteTitle';
+  static const String reminderInviteBody = 'reminderInviteBody';
+  static const String reminderComeBackTitle = 'reminderComeBackTitle';
+  static const String reminderComeBackBody = 'reminderComeBackBody';
+  static const String reactionsButtonLabel = 'reactionsButtonLabel';
+  static const String reactionThumbsUp = 'reactionThumbsUp';
+  static const String reactionFire = 'reactionFire';
+  static const String reactionWow = 'reactionWow';
+  static const String reactionLaugh = 'reactionLaugh';
+  static const String reactionFromRival = 'reactionFromRival';
+  static const String dailyRewardTitle = 'dailyRewardTitle';
+  static const String dailyRewardReady = 'dailyRewardReady';
+  static const String dailyRewardClaimedToday = 'dailyRewardClaimedToday';
+  static const String dailyRewardClaim = 'dailyRewardClaim';
+  static const String dailyRewardTomorrow = 'dailyRewardTomorrow';
+  static const String dailyRewardStreakDays = 'dailyRewardStreakDays';
+  static const String dailyRewardMultiplierToday = 'dailyRewardMultiplierToday';
+  static const String dailyRewardComeBack = 'dailyRewardComeBack';
+  static const String dailyRewardClose = 'dailyRewardClose';
+  static const String dailyRewardDayLabel = 'dailyRewardDayLabel';
+  static const String dailyRewardClaimedTitle = 'dailyRewardClaimedTitle';
+  static const String dailyRewardSurpriseCoins = 'dailyRewardSurpriseCoins';
+  static const String dailyRewardSurpriseXp = 'dailyRewardSurpriseXp';
   static const String rivalMissPair = 'rivalMissPair';
   static const String rivalHitAnswer = 'rivalHitAnswer';
   static const String rivalMissAnswer = 'rivalMissAnswer';
@@ -540,6 +570,82 @@ mixin AppLocale {
   static const String completeProfileMessage = 'completeProfileMessage';
   static const String displayNameRequired = 'displayNameRequired';
 
+  static const String minigameLevelLabel = 'minigameLevelLabel';
+  static const String minigameWrongLabel = 'minigameWrongLabel';
+  static const String minigameCoinsEarnedLabel = 'minigameCoinsEarnedLabel';
+  static const String minigameSudokuTitle = 'minigameSudokuTitle';
+  static const String minigameSudokuDescription = 'minigameSudokuDescription';
+  static const String sudokuIntro = 'sudokuIntro';
+  static const String sudokuCellsLabel = 'sudokuCellsLabel';
+  static const String sudokuMistakesLabel = 'sudokuMistakesLabel';
+  static const String sudokuHintLabel = 'sudokuHintLabel';
+  static const String sudokuNoHints = 'sudokuNoHints';
+  static const String sudokuResultWon = 'sudokuResultWon';
+  static const String sudokuResultLost = 'sudokuResultLost';
+  static const String minigameSequenceTitle = 'minigameSequenceTitle';
+  static const String minigameSequenceDescription = 'minigameSequenceDescription';
+  static const String sequenceIntro = 'sequenceIntro';
+  static const String sequenceWatchLabel = 'sequenceWatchLabel';
+  static const String sequenceYourTurnLabel = 'sequenceYourTurnLabel';
+  static const String sequenceLengthLabel = 'sequenceLengthLabel';
+  static const String sequenceBestLabel = 'sequenceBestLabel';
+  static const String sequenceResultWon = 'sequenceResultWon';
+  static const String sequenceResultLost = 'sequenceResultLost';
+  static const String minigamePatternTitle = 'minigamePatternTitle';
+  static const String minigamePatternDescription = 'minigamePatternDescription';
+  static const String patternIntro = 'patternIntro';
+  static const String patternMemorizeLabel = 'patternMemorizeLabel';
+  static const String patternTapLabel = 'patternTapLabel';
+  static const String patternFoundLabel = 'patternFoundLabel';
+  static const String patternResultWon = 'patternResultWon';
+  static const String patternResultLost = 'patternResultLost';
+  static const String minigameMathTitle = 'minigameMathTitle';
+  static const String minigameMathDescription = 'minigameMathDescription';
+  static const String mathIntro = 'mathIntro';
+  static const String mathCorrectLabel = 'mathCorrectLabel';
+  static const String mathResultWon = 'mathResultWon';
+  static const String mathResultLost = 'mathResultLost';
+  static const String minigameColorsTitle = 'minigameColorsTitle';
+  static const String minigameColorsDescription = 'minigameColorsDescription';
+  static const String colorsIntro = 'colorsIntro';
+  static const String colorsQuestion = 'colorsQuestion';
+  static const String colorsResultWon = 'colorsResultWon';
+  static const String colorsResultLost = 'colorsResultLost';
+  static const String colorRed = 'colorRed';
+  static const String colorBlue = 'colorBlue';
+  static const String colorGreen = 'colorGreen';
+  static const String colorYellow = 'colorYellow';
+  static const String colorPurple = 'colorPurple';
+  static const String colorOrange = 'colorOrange';
+  static const String minigameSlideTitle = 'minigameSlideTitle';
+  static const String minigameSlideDescription = 'minigameSlideDescription';
+  static const String slideIntro = 'slideIntro';
+  static const String slideMovesLabel = 'slideMovesLabel';
+  static const String slideResultWon = 'slideResultWon';
+  static const String streakCountLabel = 'streakCountLabel';
+  static const String streakStartBonusLabel = 'streakStartBonusLabel';
+  static const String streakSafeLabel = 'streakSafeLabel';
+  static const String streakAtRiskLabel = 'streakAtRiskLabel';
+  static const String streakNextMilestoneLabel = 'streakNextMilestoneLabel';
+  static const String streakDayTitle = 'streakDayTitle';
+  static const String streakMilestoneTitle = 'streakMilestoneTitle';
+  static const String streakFreezeUsedLabel = 'streakFreezeUsedLabel';
+  static const String storeTitle = 'storeTitle';
+  static const String storeSubtitle = 'storeSubtitle';
+  static const String storeStreakFreezeTitle = 'storeStreakFreezeTitle';
+  static const String storeStreakFreezeDescription = 'storeStreakFreezeDescription';
+  static const String storeHintPackTitle = 'storeHintPackTitle';
+  static const String storeHintPackDescription = 'storeHintPackDescription';
+  static const String storeLivesRefillTitle = 'storeLivesRefillTitle';
+  static const String storeLivesRefillDescription = 'storeLivesRefillDescription';
+  static const String storeOwnedLabel = 'storeOwnedLabel';
+  static const String storeOwnedOfLabel = 'storeOwnedOfLabel';
+  static const String storeBuyForLabel = 'storeBuyForLabel';
+  static const String storePurchasedMessage = 'storePurchasedMessage';
+  static const String storeNotEnoughCoins = 'storeNotEnoughCoins';
+  static const String storeLimitReached = 'storeLimitReached';
+  static const String storeNotNeeded = 'storeNotNeeded';
+
   static const Map<String, dynamic> es = {
     appTitle: 'Memory Arcade',
     homeGreeting: '¡Hola de nuevo!',
@@ -647,8 +753,7 @@ mixin AppLocale {
     backOnlineBannerMessage: 'Conexión restaurada. Sincronizando...',
     livesLabel: 'Vidas',
     noLivesTitle: '¡Sin vidas!',
-    noLivesMessage:
-        'Espera a que se recarguen tus vidas para seguir jugando.',
+    noLivesMessage: 'Espera a que se recarguen tus vidas para seguir jugando.',
     nextLifeInLabel: 'Próxima vida en',
     goToShopLabel: 'Ir a la Tienda',
     notNowLabel: 'Ahora no',
@@ -696,11 +801,13 @@ mixin AppLocale {
     coinsSemanticLabel: 'Monedas',
     streakSemanticLabel: 'Racha diaria',
     appearanceSectionTitle: 'Apariencia',
-    appearanceSectionSubtitle: 'Elige cómo quieres ver el juego. Puedes cambiarlo cuando quieras.',
+    appearanceSectionSubtitle:
+        'Elige cómo quieres ver el juego. Puedes cambiarlo cuando quieras.',
     profileVibrantName: 'Dinámico',
     profileVibrantDescription: 'Animaciones, confeti y colores vivos',
     profileAccessibleName: 'Vista clara',
-    profileAccessibleDescription: 'Letra grande, alto contraste, botones amplios y sin prisas',
+    profileAccessibleDescription:
+        'Letra grande, alto contraste, botones amplios y sin prisas',
     profileSelectedLabel: 'Seleccionado',
     gameplaySectionTitle: 'Partida',
     timedMatchesTitle: 'Jugar contra el reloj',
@@ -742,7 +849,8 @@ mixin AppLocale {
     statsTrendImproving: '¡Tu memoria está en forma!',
     statsTrendSteady: 'Mantienes un ritmo constante',
     statsTrendDeclining: 'Una semana más exigente. Jugar a diario ayuda.',
-    statsTrendNotEnough: 'Juega al menos 2 partidas esta semana y la anterior para ver tu evolución.',
+    statsTrendNotEnough:
+        'Juega al menos 2 partidas esta semana y la anterior para ver tu evolución.',
     statsSpeedLabel: 'Velocidad',
     statsAccuracyLabel: 'Precisión',
     statsErrorsLabel: 'Errores de memoria',
@@ -766,8 +874,10 @@ mixin AppLocale {
     statsHistoryTitle: 'Historial de partidas',
     statsLoadMore: 'Ver más',
     statsEmptyTitle: 'Aún no hay partidas',
-    statsEmptySubtitle: 'Termina tu primera partida y aquí verás cómo evoluciona tu memoria.',
-    statsPrivacyNote: 'Tus estadísticas se guardan solo en este dispositivo. Son una guía de práctica, no una evaluación médica.',
+    statsEmptySubtitle:
+        'Termina tu primera partida y aquí verás cómo evoluciona tu memoria.',
+    statsPrivacyNote:
+        'Tus estadísticas se guardan solo en este dispositivo. Son una guía de práctica, no una evaluación médica.',
     statsWonLabel: 'Completada',
     statsLostLabel: 'Tiempo agotado',
     statsNotCompletedLabel: 'Sin superar',
@@ -786,10 +896,12 @@ mixin AppLocale {
     minigameStartLabel: 'Empezar',
     minigameResultTitle: '¡Buen entrenamiento!',
     minigameCorrectLabel: '¡Correcto!',
-    digitsIntro: 'Verás un número unos segundos. Memorízalo y escríbelo cuando desaparezca. Cada acierto suma un dígito; dos fallos seguidos terminan la partida.',
+    digitsIntro:
+        'Verás un número unos segundos. Memorízalo y escríbelo cuando desaparezca. Cada acierto suma un dígito; dos fallos seguidos terminan la partida.',
     digitsModeForward: 'En orden',
     digitsModeReverse: 'Al revés',
-    digitsModeReverseHint: 'Al revés: escribe los dígitos del último al primero.',
+    digitsModeReverseHint:
+        'Al revés: escribe los dígitos del último al primero.',
     digitsMemorizeLabel: 'Memoriza',
     digitsTypeForward: 'Escribe el número',
     digitsTypeReverse: 'Escríbelo al revés',
@@ -800,7 +912,8 @@ mixin AppLocale {
     digitsBestSpanLabel: 'Tu mejor marca',
     digitsResultWon: '¡Superaste la meta de {n} dígitos!',
     digitsResultLost: 'La meta son {n} dígitos. ¡Sigue practicando!',
-    wordsIntro: 'Memoriza una lista de palabras. Después verás palabras una a una: dinos si estaban en la lista.',
+    wordsIntro:
+        'Memoriza una lista de palabras. Después verás palabras una a una: dinos si estaban en la lista.',
     wordsStudyTitle: 'Memoriza estas palabras',
     wordsReadyLabel: 'Ya las memoricé',
     wordsQuestion: '¿Estaba en la lista?',
@@ -815,7 +928,8 @@ mixin AppLocale {
     minigameCrosswordDescription: 'Forma palabras con pocas letras.',
     crosswordLevelLabel: 'Nivel {n}',
     crosswordProgressLabel: '{n} de {total} palabras',
-    crosswordInstructions: 'Desliza el dedo sobre las letras, o tócalas una a una, para formar palabras.',
+    crosswordInstructions:
+        'Desliza el dedo sobre las letras, o tócalas una a una, para formar palabras.',
     crosswordFoundFeedback: '¡{n}!',
     crosswordRepeatedFeedback: '{n} ya está en el crucigrama',
     crosswordInvalidFeedback: '{n} no está en este crucigrama',
@@ -834,19 +948,22 @@ mixin AppLocale {
     resultMessageStars2a: '¡Muy bien! La tercera estrella está al alcance.',
     resultMessageStars2b: '¡Qué buena memoria! Sigue así.',
     resultMessageStars1a: '¡Lo lograste! Cada partida entrena tu memoria.',
-    resultMessageStars1b: '¡Tablero completo! Con menos movimientos ganarás más estrellas.',
+    resultMessageStars1b:
+        '¡Tablero completo! Con menos movimientos ganarás más estrellas.',
     resultMessageTimeUp: '¡Casi lo logras! Respira y vuelve a intentarlo.',
     levelNodeCompleted: 'completado',
     levelNodeCurrent: 'nivel actual, toca para jugar',
     levelNodeLocked: 'bloqueado',
     friendsModeSubtitle: 'Agrega y reta a tus amigos',
     yourFriendCodeLabel: 'Tu código de amigo',
-    friendInviteShareText: '¡Juega conmigo en Memory Arcade! Agrégame con mi código de amigo: {code}',
+    friendInviteShareText:
+        '¡Juega conmigo en Memory Arcade! Agrégame con mi código de amigo: {code}',
     addFriendLabel: 'Agregar',
     friendRequestsTitle: 'Solicitudes',
     sentRequestsTitle: 'Enviadas',
     pendingLabel: 'Pendiente',
-    noFriendsYet: 'Aún no tienes amigos. Comparte tu código o escribe el de alguien.',
+    noFriendsYet:
+        'Aún no tienes amigos. Comparte tu código o escribe el de alguien.',
     acceptLabel: 'Aceptar',
     declineLabel: 'Rechazar',
     cancelRequestLabel: 'Cancelar solicitud',
@@ -863,7 +980,8 @@ mixin AppLocale {
     alreadyPendingMessage: 'Ya le enviaste una solicitud',
     socialActionFailed: 'No se pudo completar. Revisa tu conexión.',
     socialSignInTitle: 'Juega con amigos',
-    socialSignInMessage: 'Crea una cuenta para agregar amigos y retarlos a duelos.',
+    socialSignInMessage:
+        'Crea una cuenta para agregar amigos y retarlos a duelos.',
     rankRookie: 'Novato',
     rankApprentice: 'Aprendiz',
     rankExpert: 'Experto',
@@ -879,7 +997,8 @@ mixin AppLocale {
     playLocalMessage: 'Busca jugadores a tu alrededor, incluso sin internet.',
     searchingOnlineLabel: 'Buscando oponente...',
     searchingNearbyLabel: 'Buscando jugadores cerca...',
-    matchCpuFallback: 'No hay nadie disponible: juegas contra la máquina ({level}).',
+    matchCpuFallback:
+        'No hay nadie disponible: juegas contra la máquina ({level}).',
     chooseGameLabel: 'Elige el juego',
     bestOfThreeLabel: 'Al mejor de 3 rondas: gana quien se lleve 2.',
     roundOfLabel: 'Ronda {n} de {total}',
@@ -899,6 +1018,35 @@ mixin AppLocale {
     rivalNotStarted: 'Aún no ha jugado',
     rivalRoundsPlayed: 'Jugó {n} de {total} rondas',
     rivalHitPair: '¡{name} encontró una pareja!',
+    reminderChannelName: 'Recordatorios de racha',
+    reminderStreakTitle: '🔥 ¡Tu racha de {n} días está en peligro!',
+    reminderStreakBody:
+        'Una partida antes de medianoche y sigue viva. ¡Tú puedes!',
+    reminderInviteTitle: '🧠 Tu reto diario te espera',
+    reminderInviteBody: 'Unos minutos para tu memoria hoy. ¿Juegas?',
+    reminderComeBackTitle: 'Te echamos de menos',
+    reminderComeBackBody:
+        'Tu mapa de niveles sigue ahí. Vuelve y empieza una nueva racha.',
+    reactionsButtonLabel: 'Enviar una reacción',
+    reactionThumbsUp: 'Pulgar arriba',
+    reactionFire: 'Fuego',
+    reactionWow: 'Asombro',
+    reactionLaugh: 'Risa',
+    reactionFromRival: '{name} reaccionó: {reaction}',
+    dailyRewardTitle: 'Cofre diario',
+    dailyRewardReady: '¡Tu premio del día {day} te espera!',
+    dailyRewardClaimedToday:
+        'Reclamado hoy. Vuelve mañana para no perder la racha.',
+    dailyRewardClaim: 'Reclamar',
+    dailyRewardTomorrow: 'Mañana',
+    dailyRewardStreakDays: 'Racha de {n} días',
+    dailyRewardMultiplierToday: 'Tu racha multiplica el premio de hoy {x}',
+    dailyRewardComeBack: 'Vuelve mañana: el premio sube a {x}',
+    dailyRewardClose: 'Genial',
+    dailyRewardDayLabel: 'Día {n}',
+    dailyRewardClaimedTitle: '¡Premio reclamado!',
+    dailyRewardSurpriseCoins: '¡Sorpresa del cofre! +{n} monedas extra',
+    dailyRewardSurpriseXp: '¡Sorpresa del cofre! +{n} XP extra',
     rivalMissPair: '{name} falló una pareja',
     rivalHitAnswer: '¡{name} acertó!',
     rivalMissAnswer: '{name} se equivocó',
@@ -910,7 +1058,8 @@ mixin AppLocale {
     roundNotNeededLabel: 'No hizo falta',
     roundTiedLabel: 'Empate',
     totalPointsLabel: 'Puntos totales',
-    versusHowItWorks: 'Los dos juegan el mismo tablero, cada uno cuando pueda. Gana la mejor puntuación.',
+    versusHowItWorks:
+        'Los dos juegan el mismo tablero, cada uno cuando pueda. Gana la mejor puntuación.',
     duelsToPlayTitle: 'Tu turno',
     duelsWaitingTitle: 'Esperando al rival',
     duelsFinishedTitle: 'Resultados',
@@ -925,13 +1074,15 @@ mixin AppLocale {
     duelVsLabel: 'contra {name}',
     duelCreateFailed: 'No se pudo crear el duelo. Revisa tu conexión.',
     duelYouLabel: 'Tú',
-    duelResultSaved: 'Tu resultado quedó guardado. Vuelve a Versus para ver quién ganó cuando {name} juegue.',
+    duelResultSaved:
+        'Tu resultado quedó guardado. Vuelve a Versus para ver quién ganó cuando {name} juegue.',
     duelSubmitFailed: 'No se pudo enviar tu resultado. Revisa tu conexión.',
     duelPointsLabel: '{n} pts',
     searchTitle: 'Pregúntale a tu historial',
     searchHint: 'Ej.: ¿Cuál fue mi mejor partida del viernes?',
     searchEntry: 'Pregúntale a tu historial…',
-    searchPrivacyNote: 'La búsqueda se hace en este dispositivo: tus preguntas y tu historial no salen de él.',
+    searchPrivacyNote:
+        'La búsqueda se hace en este dispositivo: tus preguntas y tu historial no salen de él.',
     searchExampleBestFriday: '¿Cuál fue mi mejor partida del viernes?',
     searchExampleImproved: '¿En qué categoría mejoré más este mes?',
     searchExampleWhoPark: '¿Contra quién jugué la semana pasada en el parque?',
@@ -940,7 +1091,8 @@ mixin AppLocale {
     searchBestGameTitle: 'Tu mejor partida',
     searchWorstGameTitle: 'Tu partida más floja',
     searchImprovedTitle: 'Mejoraste más en {category}',
-    searchNotImprovedTitle: 'Ninguna categoría mejoró; la que mejor se mantuvo fue {category}',
+    searchNotImprovedTitle:
+        'Ninguna categoría mejoró; la que mejor se mantuvo fue {category}',
     searchImprovedDetail: 'Precisión: {before} antes → {after} ahora',
     searchPeopleTitle: 'Jugaste cerca de:',
     searchNobodyNearby: 'No había nadie cerca en esas partidas.',
@@ -952,10 +1104,13 @@ mixin AppLocale {
     searchCountTitle: '{n} partidas, {wins} ganadas',
     searchGamesTitle: 'Las partidas que más se parecen',
     searchNoGames: 'No encontré partidas con esos filtros.',
-    searchNoNearby: 'Aún no hay registro de personas cercanas. Actívalo en Ajustes › Contexto automático.',
-    searchNoPlaces: 'Aún no hay lugares registrados. Activa la ubicación en Ajustes › Contexto automático.',
+    searchNoNearby:
+        'Aún no hay registro de personas cercanas. Actívalo en Ajustes › Contexto automático.',
+    searchNoPlaces:
+        'Aún no hay lugares registrados. Activa la ubicación en Ajustes › Contexto automático.',
     searchNoComparison: 'Aún no hay partidas suficientes para comparar.',
-    searchUnmatchedPlace: 'No tienes ningún lugar llamado "{place}". Ponles nombre a tus lugares en Ajustes.',
+    searchUnmatchedPlace:
+        'No tienes ningún lugar llamado "{place}". Ponles nombre a tus lugares en Ajustes.',
     searchFailed: 'No se pudo buscar. Inténtalo de nuevo.',
     searchUnderstood: 'Entendí: {filters}',
     searchEveryWeekday: 'todos los {day}',
@@ -965,20 +1120,26 @@ mixin AppLocale {
     slotNight: 'de madrugada',
     placeUnnamed: 'Lugar {n}',
     contextSectionTitle: 'Contexto automático',
-    contextSectionSubtitle: 'Opcional y apagado por defecto. Lo que se guarda no sale de este dispositivo.',
+    contextSectionSubtitle:
+        'Opcional y apagado por defecto. Lo que se guarda no sale de este dispositivo.',
     contextLocationTitle: 'Guardar dónde juegas',
-    contextLocationSubtitle: 'Agrupa tus partidas por lugar para ver dónde te concentras mejor.',
+    contextLocationSubtitle:
+        'Agrupa tus partidas por lugar para ver dónde te concentras mejor.',
     contextNearbyTitle: 'Personas cercanas',
-    contextNearbySubtitle: 'Por Bluetooth: te anuncias con tu código de amigo y registras quién jugaba cerca. Requiere cuenta.',
-    contextPermissionDenied: 'Sin el permiso no se puede activar. Puedes concederlo en los ajustes del sistema.',
+    contextNearbySubtitle:
+        'Por Bluetooth: te anuncias con tu código de amigo y registras quién jugaba cerca. Requiere cuenta.',
+    contextPermissionDenied:
+        'Sin el permiso no se puede activar. Puedes concederlo en los ajustes del sistema.',
     placesTitle: 'Tus lugares',
-    placesEmpty: 'Aún no hay lugares. Aparecerán al jugar con la ubicación activada.',
+    placesEmpty:
+        'Aún no hay lugares. Aparecerán al jugar con la ubicación activada.',
     placeRenameTitle: 'Nombre del lugar',
     placeRenameHint: 'Casa, Parque, Trabajo…',
     saveLabel: 'Guardar',
     cancelLabel: 'Cancelar',
     nearbyTitle: 'Cerca de ti',
-    nearbySubtitle: 'Encuentra jugadores con Memory Arcade abierto a tu alrededor. Los dos tienen que estar buscando a la vez.',
+    nearbySubtitle:
+        'Encuentra jugadores con Memory Arcade abierto a tu alrededor. Los dos tienen que estar buscando a la vez.',
     nearbySearchLabel: 'Buscar cerca',
     nearbySearching: 'Buscando…',
     nearbyNoneFound: 'No se encontró a nadie cerca.',
@@ -1053,19 +1214,98 @@ mixin AppLocale {
     cpuLevelHard: 'Difícil',
     cpuName: 'Máquina ({level})',
     playRoomTitle: 'Sala de juego',
-    playRoomMessage: 'Crea una sala y comparte el código, o entra en la de alguien más.',
+    playRoomMessage:
+        'Crea una sala y comparte el código, o entra en la de alguien más.',
     createRoomLabel: 'Crear sala',
     joinRoomLabel: 'Entrar',
     roomCodeHint: 'Código de sala',
     roomCodeLabel: 'Sala {code}',
     roomCreatedTitle: '¡Sala creada!',
-    roomCreatedMessage: 'Comparte este código. Puedes jugar ya: tu rival jugará el mismo tablero cuando entre.',
-    roomInviteShareText: '¡Te reto en Memory Arcade! Entra en mi sala con el código {code}',
+    roomCreatedMessage:
+        'Comparte este código. Puedes jugar ya: tu rival jugará el mismo tablero cuando entre.',
+    roomInviteShareText:
+        '¡Te reto en Memory Arcade! Entra en mi sala con el código {code}',
     roomNotFound: 'No hay ninguna sala abierta con ese código',
     copyCodeLabel: 'Copiar código',
     completeProfileTitle: '¿Cómo te llamamos?',
-    completeProfileMessage: 'Es el nombre que verán tus amigos y rivales. Puedes cambiarlo después en tu perfil.',
+    completeProfileMessage:
+        'Es el nombre que verán tus amigos y rivales. Puedes cambiarlo después en tu perfil.',
     displayNameRequired: 'Escribe un nombre de al menos 2 letras',
+    minigameLevelLabel: 'Nivel {n}',
+    minigameWrongLabel: '¡Fallo!',
+    minigameCoinsEarnedLabel: '+{n} monedas',
+    minigameSudokuTitle: 'Sudoku',
+    minigameSudokuDescription: 'Cada fila, columna y caja con todos los números. Entrena la lógica.',
+    sudokuIntro: 'Completa la cuadrícula: cada número debe aparecer una sola vez en cada fila, columna y caja. Empiezas con 4 × 4; cada nivel quita pistas y agranda el tablero.',
+    sudokuCellsLabel: 'casillas resueltas',
+    sudokuMistakesLabel: 'Errores {n}/{total}',
+    sudokuHintLabel: 'Pista',
+    sudokuNoHints: 'No te quedan pistas. Consigue más en la tienda.',
+    sudokuResultWon: '¡Sudoku resuelto! El siguiente tendrá menos pistas.',
+    sudokuResultLost: 'Demasiados errores. Tómate tu tiempo: no hay reloj.',
+    minigameSequenceTitle: 'Secuencia',
+    minigameSequenceDescription: 'Repite el orden en que se iluminan. Entrena la memoria visual.',
+    sequenceIntro: 'Mira qué casillas se iluminan y tócalas en el mismo orden. Cada acierto alarga la secuencia; dos fallos seguidos terminan la ronda.',
+    sequenceWatchLabel: 'Observa…',
+    sequenceYourTurnLabel: '¡Tu turno!',
+    sequenceLengthLabel: 'Secuencia de {n} · meta {total}',
+    sequenceBestLabel: 'secuencia más larga',
+    sequenceResultWon: '¡Llegaste a la meta de {n}!',
+    sequenceResultLost: 'La meta era {n}. ¡Otra vez!',
+    minigamePatternTitle: 'Patrones',
+    minigamePatternDescription: 'Recuerda qué casillas se encendieron. Entrena la memoria espacial.',
+    patternIntro: 'Algunas casillas se iluminarán un momento. Cuando se apaguen, toca dónde estaban.',
+    patternMemorizeLabel: 'Memoriza las casillas',
+    patternTapLabel: 'Faltan {n} · errores permitidos: {total}',
+    patternFoundLabel: 'casillas encontradas',
+    patternResultWon: '¡Patrón completo! El siguiente será más grande.',
+    patternResultLost: 'Se te escaparon algunas. ¡Inténtalo de nuevo!',
+    minigameMathTitle: 'Cálculo',
+    minigameMathDescription: 'Operaciones contra el reloj. Entrena la agilidad mental.',
+    mathIntro: 'Resuelve {total} operaciones antes de que se acabe el tiempo de cada una. Acierta {n} para pasar de nivel.',
+    mathCorrectLabel: 'aciertos',
+    mathResultWon: '¡Nivel superado! Llegan números más grandes.',
+    mathResultLost: 'Necesitas {n} aciertos. ¡Vuelve a intentarlo!',
+    minigameColorsTitle: 'Colores',
+    minigameColorsDescription: 'Toca el color de la tinta, no la palabra. Entrena la atención.',
+    colorsIntro: 'Verás el nombre de un color escrito en otro color. Toca el color de la tinta, no el que dice la palabra.',
+    colorsQuestion: '¿De qué color está escrita?',
+    colorsResultWon: '¡Gran concentración! Acertaste {n} o más.',
+    colorsResultLost: 'Necesitas {n} aciertos. ¡Fíjate en la tinta!',
+    colorRed: 'rojo',
+    colorBlue: 'azul',
+    colorGreen: 'verde',
+    colorYellow: 'amarillo',
+    colorPurple: 'morado',
+    colorOrange: 'naranja',
+    minigameSlideTitle: 'Deslizar',
+    minigameSlideDescription: 'Ordena las fichas deslizándolas. Entrena la planificación.',
+    slideIntro: 'Toca una ficha junto al hueco para deslizarla. Ordénalas del 1 al último, con el hueco al final.',
+    slideMovesLabel: 'movimientos',
+    slideResultWon: '¡Resuelto! El siguiente vendrá más revuelto.',
+    streakCountLabel: '{n} días de racha',
+    streakStartBonusLabel: 'Juega hoy para empezar tu racha: +{n} monedas',
+    streakSafeLabel: '¡Hoy ya cuenta! Mañana te esperan +{n} monedas',
+    streakAtRiskLabel: 'Juega una partida hoy para no perderla: +{n} monedas',
+    streakNextMilestoneLabel: 'Próximo hito: día {n} (+{coins} monedas)',
+    streakDayTitle: '¡Día {n} de racha!',
+    streakMilestoneTitle: '¡Hito! {n} días seguidos',
+    streakFreezeUsedLabel: 'Un protector de racha cubrió los días que faltaste.',
+    storeTitle: 'Tienda',
+    storeSubtitle: 'Gasta las monedas que ganas jugando.',
+    storeStreakFreezeTitle: 'Protector de racha',
+    storeStreakFreezeDescription: 'Si un día no juegas, tu racha no se rompe.',
+    storeHintPackTitle: 'Pack de 3 pistas',
+    storeHintPackDescription: 'Pistas extra para el sudoku.',
+    storeLivesRefillTitle: 'Recargar vidas',
+    storeLivesRefillDescription: 'Todas tus vidas, ahora mismo.',
+    storeOwnedLabel: 'Tienes {n}',
+    storeOwnedOfLabel: 'Tienes {n} de {total}',
+    storeBuyForLabel: 'Comprar por {n} monedas',
+    storePurchasedMessage: '¡{n} comprado!',
+    storeNotEnoughCoins: 'No tienes monedas suficientes. ¡Juega para ganar más!',
+    storeLimitReached: 'Ya tienes el máximo de este artículo.',
+    storeNotNeeded: 'Ahora mismo no lo necesitas.',
   };
 
   static const Map<String, dynamic> en = {
@@ -1114,8 +1354,7 @@ mixin AppLocale {
     performanceTitle: 'Cognitive Performance',
     performanceSubtitle: 'Weekly memory accuracy',
     inviteFriendsTitle: 'Invite Friends',
-    inviteFriendsSubtitle:
-        'Share your code so friends can add you.',
+    inviteFriendsSubtitle: 'Share your code so friends can add you.',
     inviteLinkLabel: 'Share my code',
     socialNetworkTitle: 'Social Network',
     findByUsernameHint: 'Friend code',
@@ -1175,8 +1414,7 @@ mixin AppLocale {
     backOnlineBannerMessage: 'Back online. Syncing...',
     livesLabel: 'Lives',
     noLivesTitle: 'Out of lives!',
-    noLivesMessage:
-        'Wait for your lives to recharge to keep playing.',
+    noLivesMessage: 'Wait for your lives to recharge to keep playing.',
     nextLifeInLabel: 'Next life in',
     goToShopLabel: 'Go to Shop',
     notNowLabel: 'Not now',
@@ -1224,11 +1462,13 @@ mixin AppLocale {
     coinsSemanticLabel: 'Coins',
     streakSemanticLabel: 'Daily streak',
     appearanceSectionTitle: 'Appearance',
-    appearanceSectionSubtitle: 'Choose how the game looks. You can change it any time.',
+    appearanceSectionSubtitle:
+        'Choose how the game looks. You can change it any time.',
     profileVibrantName: 'Dynamic',
     profileVibrantDescription: 'Animations, confetti and bright colours',
     profileAccessibleName: 'Clear view',
-    profileAccessibleDescription: 'Large text, high contrast, big buttons and no rush',
+    profileAccessibleDescription:
+        'Large text, high contrast, big buttons and no rush',
     profileSelectedLabel: 'Selected',
     gameplaySectionTitle: 'Gameplay',
     timedMatchesTitle: 'Play against the clock',
@@ -1270,7 +1510,8 @@ mixin AppLocale {
     statsTrendImproving: 'Your memory is getting sharper!',
     statsTrendSteady: 'You are keeping a steady pace',
     statsTrendDeclining: 'A tougher week. Playing a little every day helps.',
-    statsTrendNotEnough: 'Play at least 2 games this week and last week to see your trend.',
+    statsTrendNotEnough:
+        'Play at least 2 games this week and last week to see your trend.',
     statsSpeedLabel: 'Speed',
     statsAccuracyLabel: 'Accuracy',
     statsErrorsLabel: 'Memory errors',
@@ -1294,8 +1535,10 @@ mixin AppLocale {
     statsHistoryTitle: 'Game history',
     statsLoadMore: 'Show more',
     statsEmptyTitle: 'No games yet',
-    statsEmptySubtitle: 'Finish your first game and you will see how your memory evolves here.',
-    statsPrivacyNote: 'Your statistics stay on this device. They are a practice guide, not a medical assessment.',
+    statsEmptySubtitle:
+        'Finish your first game and you will see how your memory evolves here.',
+    statsPrivacyNote:
+        'Your statistics stay on this device. They are a practice guide, not a medical assessment.',
     statsWonLabel: 'Completed',
     statsLostLabel: 'Out of time',
     statsNotCompletedLabel: 'Not passed',
@@ -1314,7 +1557,8 @@ mixin AppLocale {
     minigameStartLabel: 'Start',
     minigameResultTitle: 'Nice workout!',
     minigameCorrectLabel: 'Correct!',
-    digitsIntro: 'A number appears for a few seconds. Memorize it and type it once it disappears. Each correct answer adds a digit; two misses in a row end the game.',
+    digitsIntro:
+        'A number appears for a few seconds. Memorize it and type it once it disappears. Each correct answer adds a digit; two misses in a row end the game.',
     digitsModeForward: 'In order',
     digitsModeReverse: 'Backwards',
     digitsModeReverseHint: 'Backwards: type the digits from last to first.',
@@ -1328,7 +1572,8 @@ mixin AppLocale {
     digitsBestSpanLabel: 'Your best',
     digitsResultWon: 'You beat the {n}-digit goal!',
     digitsResultLost: 'The goal is {n} digits. Keep practicing!',
-    wordsIntro: 'Memorize a list of words. Then words appear one at a time: tell us whether each was on the list.',
+    wordsIntro:
+        'Memorize a list of words. Then words appear one at a time: tell us whether each was on the list.',
     wordsStudyTitle: 'Memorize these words',
     wordsReadyLabel: "I've got them",
     wordsQuestion: 'Was it on the list?',
@@ -1343,7 +1588,8 @@ mixin AppLocale {
     minigameCrosswordDescription: 'Make words from a few letters.',
     crosswordLevelLabel: 'Level {n}',
     crosswordProgressLabel: '{n} of {total} words',
-    crosswordInstructions: 'Swipe across the letters, or tap them one by one, to make words.',
+    crosswordInstructions:
+        'Swipe across the letters, or tap them one by one, to make words.',
     crosswordFoundFeedback: '{n}!',
     crosswordRepeatedFeedback: '{n} is already on the grid',
     crosswordInvalidFeedback: '{n} is not in this puzzle',
@@ -1369,7 +1615,8 @@ mixin AppLocale {
     levelNodeLocked: 'locked',
     friendsModeSubtitle: 'Add and challenge friends',
     yourFriendCodeLabel: 'Your friend code',
-    friendInviteShareText: 'Play with me on Memory Arcade! Add me with my friend code: {code}',
+    friendInviteShareText:
+        'Play with me on Memory Arcade! Add me with my friend code: {code}',
     addFriendLabel: 'Add',
     friendRequestsTitle: 'Requests',
     sentRequestsTitle: 'Sent',
@@ -1391,7 +1638,8 @@ mixin AppLocale {
     alreadyPendingMessage: 'You already sent a request',
     socialActionFailed: "Couldn't complete that. Check your connection.",
     socialSignInTitle: 'Play with friends',
-    socialSignInMessage: 'Create an account to add friends and challenge them to duels.',
+    socialSignInMessage:
+        'Create an account to add friends and challenge them to duels.',
     rankRookie: 'Rookie',
     rankApprentice: 'Apprentice',
     rankExpert: 'Expert',
@@ -1418,7 +1666,8 @@ mixin AppLocale {
     seriesDrawTitle: 'Draw',
     seriesInProgressTitle: 'Duel in progress',
     seriesWaitingTitle: 'Waiting for {name}',
-    seriesWaitingMessage: 'The result appears as soon as they play their rounds.',
+    seriesWaitingMessage:
+        'The result appears as soon as they play their rounds.',
     seriesVictoryMessage: 'Will you give them a rematch?',
     seriesDefeatMessage: 'Ask for a rematch and show who is boss.',
     rematchLabel: 'Rematch',
@@ -1427,6 +1676,35 @@ mixin AppLocale {
     rivalNotStarted: 'Has not played yet',
     rivalRoundsPlayed: 'Played {n} of {total} rounds',
     rivalHitPair: '{name} found a pair!',
+    reminderChannelName: 'Streak reminders',
+    reminderStreakTitle: '🔥 Your {n}-day streak is at risk!',
+    reminderStreakBody:
+        'One game before midnight keeps it alive. You\'ve got this!',
+    reminderInviteTitle: '🧠 Your daily challenge is waiting',
+    reminderInviteBody: 'A few minutes for your memory today. Want to play?',
+    reminderComeBackTitle: 'We miss you',
+    reminderComeBackBody:
+        'Your level map is still there. Come back and start a new streak.',
+    reactionsButtonLabel: 'Send a reaction',
+    reactionThumbsUp: 'Thumbs up',
+    reactionFire: 'Fire',
+    reactionWow: 'Amazed',
+    reactionLaugh: 'Laughing',
+    reactionFromRival: '{name} reacted: {reaction}',
+    dailyRewardTitle: 'Daily chest',
+    dailyRewardReady: 'Your day {day} reward is waiting!',
+    dailyRewardClaimedToday:
+        'Claimed today. Come back tomorrow to keep your streak.',
+    dailyRewardClaim: 'Claim',
+    dailyRewardTomorrow: 'Tomorrow',
+    dailyRewardStreakDays: '{n}-day streak',
+    dailyRewardMultiplierToday: 'Your streak multiplies today\'s reward {x}',
+    dailyRewardComeBack: 'Come back tomorrow: the reward rises to {x}',
+    dailyRewardClose: 'Awesome',
+    dailyRewardDayLabel: 'Day {n}',
+    dailyRewardClaimedTitle: 'Reward claimed!',
+    dailyRewardSurpriseCoins: 'Chest surprise! +{n} bonus coins',
+    dailyRewardSurpriseXp: 'Chest surprise! +{n} bonus XP',
     rivalMissPair: '{name} missed a pair',
     rivalHitAnswer: '{name} got one right!',
     rivalMissAnswer: '{name} slipped up',
@@ -1438,7 +1716,8 @@ mixin AppLocale {
     roundNotNeededLabel: 'Not needed',
     roundTiedLabel: 'Tie',
     totalPointsLabel: 'Total points',
-    versusHowItWorks: 'You both play the same board, whenever you can. Best score wins.',
+    versusHowItWorks:
+        'You both play the same board, whenever you can. Best score wins.',
     duelsToPlayTitle: 'Your turn',
     duelsWaitingTitle: 'Waiting for rival',
     duelsFinishedTitle: 'Results',
@@ -1453,13 +1732,15 @@ mixin AppLocale {
     duelVsLabel: 'vs {name}',
     duelCreateFailed: "Couldn't create the duel. Check your connection.",
     duelYouLabel: 'You',
-    duelResultSaved: 'Your result is saved. Check Versus to see who won once {name} plays.',
+    duelResultSaved:
+        'Your result is saved. Check Versus to see who won once {name} plays.',
     duelSubmitFailed: "Couldn't send your result. Check your connection.",
     duelPointsLabel: '{n} pts',
     searchTitle: 'Ask your history',
     searchHint: 'E.g.: What was my best game on Friday?',
     searchEntry: 'Ask your history…',
-    searchPrivacyNote: 'Search runs on this device: your questions and your history never leave it.',
+    searchPrivacyNote:
+        'Search runs on this device: your questions and your history never leave it.',
     searchExampleBestFriday: 'What was my best game on Friday?',
     searchExampleImproved: 'Which category did I improve most this month?',
     searchExampleWhoPark: 'Who did I play with last week at the park?',
@@ -1480,10 +1761,13 @@ mixin AppLocale {
     searchCountTitle: '{n} games, {wins} won',
     searchGamesTitle: 'The closest matching games',
     searchNoGames: 'No games match those filters.',
-    searchNoNearby: 'No nearby players recorded yet. Turn it on in Settings › Automatic context.',
-    searchNoPlaces: 'No places recorded yet. Turn on location in Settings › Automatic context.',
+    searchNoNearby:
+        'No nearby players recorded yet. Turn it on in Settings › Automatic context.',
+    searchNoPlaces:
+        'No places recorded yet. Turn on location in Settings › Automatic context.',
     searchNoComparison: 'Not enough games to compare yet.',
-    searchUnmatchedPlace: 'You have no place called "{place}". Name your places in Settings.',
+    searchUnmatchedPlace:
+        'You have no place called "{place}". Name your places in Settings.',
     searchFailed: 'Search failed. Try again.',
     searchUnderstood: 'Understood: {filters}',
     searchEveryWeekday: 'every {day}',
@@ -1493,12 +1777,16 @@ mixin AppLocale {
     slotNight: 'late at night',
     placeUnnamed: 'Place {n}',
     contextSectionTitle: 'Automatic context',
-    contextSectionSubtitle: 'Optional and off by default. What is stored never leaves this device.',
+    contextSectionSubtitle:
+        'Optional and off by default. What is stored never leaves this device.',
     contextLocationTitle: 'Remember where you play',
-    contextLocationSubtitle: 'Groups your games by place to show where you focus best.',
+    contextLocationSubtitle:
+        'Groups your games by place to show where you focus best.',
     contextNearbyTitle: 'Nearby players',
-    contextNearbySubtitle: 'Over Bluetooth: you broadcast your friend code and record who was playing nearby. Needs an account.',
-    contextPermissionDenied: 'It cannot be turned on without the permission. You can grant it in the system settings.',
+    contextNearbySubtitle:
+        'Over Bluetooth: you broadcast your friend code and record who was playing nearby. Needs an account.',
+    contextPermissionDenied:
+        'It cannot be turned on without the permission. You can grant it in the system settings.',
     placesTitle: 'Your places',
     placesEmpty: 'No places yet. They appear as you play with location on.',
     placeRenameTitle: 'Place name',
@@ -1506,7 +1794,8 @@ mixin AppLocale {
     saveLabel: 'Save',
     cancelLabel: 'Cancel',
     nearbyTitle: 'Near you',
-    nearbySubtitle: 'Find players around you with Memory Arcade open. Both of you need to be searching at the same time.',
+    nearbySubtitle:
+        'Find players around you with Memory Arcade open. Both of you need to be searching at the same time.',
     nearbySearchLabel: 'Search nearby',
     nearbySearching: 'Searching…',
     nearbyNoneFound: 'Nobody found nearby.',
@@ -1547,7 +1836,8 @@ mixin AppLocale {
     levelRewardCoins: '+{coins} coins',
     levelMapRegionName: 'Forest of Riddles',
     mapNavigatorLabel: 'Map navigator',
-    mapNavigatorHint: 'Your map: progress, rewards and a shortcut to your level.',
+    mapNavigatorHint:
+        'Your map: progress, rewards and a shortcut to your level.',
     gotItLabel: 'Got it',
     mapCurrentLevelLabel: 'You are on level {n}',
     mapLevelsCleared: '{n} levels cleared',
@@ -1587,13 +1877,90 @@ mixin AppLocale {
     roomCodeHint: 'Room code',
     roomCodeLabel: 'Room {code}',
     roomCreatedTitle: 'Room created!',
-    roomCreatedMessage: 'Share this code. You can play now: your rival gets the same board when they join.',
-    roomInviteShareText: 'I challenge you in Memory Arcade! Join my room with the code {code}',
+    roomCreatedMessage:
+        'Share this code. You can play now: your rival gets the same board when they join.',
+    roomInviteShareText:
+        'I challenge you in Memory Arcade! Join my room with the code {code}',
     roomNotFound: 'No open room has that code',
     copyCodeLabel: 'Copy code',
     completeProfileTitle: 'What should we call you?',
     completeProfileMessage:
         "It's the name your friends and rivals will see. You can change it later in your profile.",
     displayNameRequired: 'Enter a name of at least 2 letters',
+    minigameLevelLabel: 'Level {n}',
+    minigameWrongLabel: 'Wrong!',
+    minigameCoinsEarnedLabel: '+{n} coins',
+    minigameSudokuTitle: 'Sudoku',
+    minigameSudokuDescription: 'Every row, column and box holds each number. Trains logic.',
+    sudokuIntro: 'Fill the grid so each number appears once in every row, column and box. You start on 4 × 4; every level removes clues and grows the board.',
+    sudokuCellsLabel: 'cells solved',
+    sudokuMistakesLabel: 'Mistakes {n}/{total}',
+    sudokuHintLabel: 'Hint',
+    sudokuNoHints: 'No hints left. Get more in the store.',
+    sudokuResultWon: 'Sudoku solved! The next one has fewer clues.',
+    sudokuResultLost: 'Too many mistakes. Take your time: there is no clock.',
+    minigameSequenceTitle: 'Sequence',
+    minigameSequenceDescription: 'Repeat the order they light up in. Trains visual memory.',
+    sequenceIntro: 'Watch which pads light up and tap them in the same order. Each success makes the sequence longer; two misses in a row end the round.',
+    sequenceWatchLabel: 'Watch…',
+    sequenceYourTurnLabel: 'Your turn!',
+    sequenceLengthLabel: 'Sequence of {n} · goal {total}',
+    sequenceBestLabel: 'longest sequence',
+    sequenceResultWon: 'You reached the goal of {n}!',
+    sequenceResultLost: 'The goal was {n}. Try again!',
+    minigamePatternTitle: 'Patterns',
+    minigamePatternDescription: 'Remember which cells lit up. Trains spatial memory.',
+    patternIntro: 'Some cells will light up for a moment. When they go dark, tap where they were.',
+    patternMemorizeLabel: 'Memorize the cells',
+    patternTapLabel: '{n} to go · mistakes left: {total}',
+    patternFoundLabel: 'cells found',
+    patternResultWon: 'Pattern complete! The next one is bigger.',
+    patternResultLost: 'A few got away. Try again!',
+    minigameMathTitle: 'Quick math',
+    minigameMathDescription: 'Sums against the clock. Trains mental speed.',
+    mathIntro: 'Solve {total} problems, each before its time runs out. Get {n} right to level up.',
+    mathCorrectLabel: 'correct',
+    mathResultWon: 'Level cleared! Bigger numbers are coming.',
+    mathResultLost: 'You need {n} right. Try again!',
+    minigameColorsTitle: 'Colors',
+    minigameColorsDescription: 'Tap the ink, not the word. Trains attention.',
+    colorsIntro: 'You will see a colour name written in another colour. Tap the colour of the ink, not the one the word says.',
+    colorsQuestion: 'What colour is the ink?',
+    colorsResultWon: 'Great focus! You got {n} or more.',
+    colorsResultLost: 'You need {n} right. Watch the ink!',
+    colorRed: 'red',
+    colorBlue: 'blue',
+    colorGreen: 'green',
+    colorYellow: 'yellow',
+    colorPurple: 'purple',
+    colorOrange: 'orange',
+    minigameSlideTitle: 'Slide',
+    minigameSlideDescription: 'Slide the tiles back in order. Trains planning.',
+    slideIntro: 'Tap a tile next to the gap to slide it. Put them in order, with the gap last.',
+    slideMovesLabel: 'moves',
+    slideResultWon: 'Solved! The next one will be more scrambled.',
+    streakCountLabel: '{n}-day streak',
+    streakStartBonusLabel: 'Play today to start your streak: +{n} coins',
+    streakSafeLabel: 'Today counts! Tomorrow brings +{n} coins',
+    streakAtRiskLabel: 'Play a round today to keep it: +{n} coins',
+    streakNextMilestoneLabel: 'Next milestone: day {n} (+{coins} coins)',
+    streakDayTitle: 'Day {n} of your streak!',
+    streakMilestoneTitle: 'Milestone! {n} days in a row',
+    streakFreezeUsedLabel: 'A streak freeze covered the days you missed.',
+    storeTitle: 'Store',
+    storeSubtitle: 'Spend the coins you earn by playing.',
+    storeStreakFreezeTitle: 'Streak freeze',
+    storeStreakFreezeDescription: 'Miss a day and your streak survives.',
+    storeHintPackTitle: '3-hint pack',
+    storeHintPackDescription: 'Extra hints for sudoku.',
+    storeLivesRefillTitle: 'Refill lives',
+    storeLivesRefillDescription: 'All your lives, right now.',
+    storeOwnedLabel: 'You have {n}',
+    storeOwnedOfLabel: 'You have {n} of {total}',
+    storeBuyForLabel: 'Buy for {n} coins',
+    storePurchasedMessage: '{n} purchased!',
+    storeNotEnoughCoins: 'Not enough coins. Play to earn more!',
+    storeLimitReached: 'You already hold the most of this item.',
+    storeNotNeeded: 'You don\'t need that right now.',
   };
 }

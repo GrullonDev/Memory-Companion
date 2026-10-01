@@ -21,7 +21,10 @@ class _FakeGateway implements SyncGateway {
   Map<String, Object?>? profile;
 
   @override
-  Future<void> apply(SyncOperation operation, {required String cloudUid}) async {
+  Future<void> apply(
+    SyncOperation operation, {
+    required String cloudUid,
+  }) async {
     if (failuresLeft > 0) {
       failuresLeft--;
       throw failure;
@@ -52,7 +55,9 @@ void main() {
     opCounter = 0;
     engine = SyncEngine(queue: queue, gateway: gateway, clock: () => now);
 
-    await db.into(db.playerProfiles).insert(
+    await db
+        .into(db.playerProfiles)
+        .insert(
           PlayerProfilesCompanion.insert(
             localId: playerId,
             createdAt: 0,
@@ -83,8 +88,9 @@ void main() {
   }
 
   Future<SyncOperationRow> rowOf(String opId) {
-    return (db.select(db.syncOperations)..where((o) => o.opId.equals(opId)))
-        .getSingle();
+    return (db.select(
+      db.syncOperations,
+    )..where((o) => o.opId.equals(opId))).getSingle();
   }
 
   test('sin cuenta no se intenta nada y la cola se conserva', () async {
@@ -121,15 +127,11 @@ void main() {
 
     await engine.run(playerLocalId: playerId, cloudUid: cloudUid);
 
-    expect(
-      gateway.applied.map((o) => o.type),
-      [
-        SyncOperationType.recordMatch,
-        SyncOperationType.completeLevel,
-        SyncOperationType.earnCoins,
-      ],
-      reason: 'subir la partida antes que el nivel que desbloqueó',
-    );
+    expect(gateway.applied.map((o) => o.type), [
+      SyncOperationType.recordMatch,
+      SyncOperationType.completeLevel,
+      SyncOperationType.earnCoins,
+    ], reason: 'subir la partida antes que el nivel que desbloqueó');
   });
 
   test('lo ya confirmado no se vuelve a subir', () async {
@@ -165,27 +167,31 @@ void main() {
     expect((await rowOf(second)).status, SyncStatus.pending);
   });
 
-  test('una operación en espera de backoff no se toma antes de tiempo',
-      () async {
-    await enqueue();
-    gateway.failuresLeft = 1;
-    await engine.run(playerLocalId: playerId, cloudUid: cloudUid);
+  test(
+    'una operación en espera de backoff no se toma antes de tiempo',
+    () async {
+      await enqueue();
+      gateway.failuresLeft = 1;
+      await engine.run(playerLocalId: playerId, cloudUid: cloudUid);
 
-    // Un segundo después todavía no toca.
-    now = now.add(const Duration(seconds: 1));
-    expect(
-      (await engine.run(playerLocalId: playerId, cloudUid: cloudUid))
-          .wasSkipped,
-      isTrue,
-    );
+      // Un segundo después todavía no toca.
+      now = now.add(const Duration(seconds: 1));
+      expect(
+        (await engine.run(
+          playerLocalId: playerId,
+          cloudUid: cloudUid,
+        )).wasSkipped,
+        isTrue,
+      );
 
-    // Pasado el backoff, sí.
-    now = now.add(const Duration(seconds: 5));
-    expect(
-      (await engine.run(playerLocalId: playerId, cloudUid: cloudUid)).applied,
-      1,
-    );
-  });
+      // Pasado el backoff, sí.
+      now = now.add(const Duration(seconds: 5));
+      expect(
+        (await engine.run(playerLocalId: playerId, cloudUid: cloudUid)).applied,
+        1,
+      );
+    },
+  );
 
   test('el backoff crece con cada intento', () {
     expect(SyncEngine.defaultBackoff(1), const Duration(seconds: 2));
@@ -209,8 +215,10 @@ void main() {
     // Ni siquiera pasado un día: reintentar no lo arregla.
     now = now.add(const Duration(days: 1));
     expect(
-      (await engine.run(playerLocalId: playerId, cloudUid: cloudUid))
-          .wasSkipped,
+      (await engine.run(
+        playerLocalId: playerId,
+        cloudUid: cloudUid,
+      )).wasSkipped,
       isTrue,
     );
   });
@@ -296,6 +304,9 @@ void main() {
     );
     final deltas = operations.single.mapValue('deltas');
     expect(deltas['totalXp'], 201);
-    expect(operations.single.mapValue('streak')['lastPlayedDate'], '2026-08-31');
+    expect(
+      operations.single.mapValue('streak')['lastPlayedDate'],
+      '2026-08-31',
+    );
   });
 }

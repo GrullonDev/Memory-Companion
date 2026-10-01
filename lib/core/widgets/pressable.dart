@@ -48,8 +48,8 @@ class Pressable extends StatefulWidget {
     this.haptic = true,
     this.semanticLabel,
     this.semanticHint,
-  })  : scale = AppMotion.pressScaleSmall,
-        depth = 0.0;
+  }) : scale = AppMotion.pressScaleSmall,
+       depth = 0.0;
 
   final Widget child;
   final VoidCallback? onTap;

@@ -22,24 +22,24 @@ class SaveStateBadge extends ConsumerWidget {
 
     return switch (state) {
       SaveState.savedInCloud => AppBadge(
-          icon: Icons.cloud_done_rounded,
-          label: AppLocale.saveStateInCloud.getString(context),
-          background: AppColors.mintSoft,
-          foreground: AppColors.mintStrong,
-          compact: true,
-        ),
+        icon: Icons.cloud_done_rounded,
+        label: AppLocale.saveStateInCloud.getString(context),
+        background: AppColors.mintSoft,
+        foreground: AppColors.mintStrong,
+        compact: true,
+      ),
       SaveState.syncing => AppBadge(
-          icon: Icons.sync_rounded,
-          label: AppLocale.saveStateSyncing.getString(context),
-          background: AppColors.skySoft,
-          foreground: AppColors.skyStrong,
-          compact: true,
-        ),
+        icon: Icons.sync_rounded,
+        label: AppLocale.saveStateSyncing.getString(context),
+        background: AppColors.skySoft,
+        foreground: AppColors.skyStrong,
+        compact: true,
+      ),
       SaveState.savedOnDevice => AppBadge.neutral(
-          icon: Icons.smartphone_rounded,
-          label: AppLocale.saveStateOnDevice.getString(context),
-          compact: true,
-        ),
+        icon: Icons.smartphone_rounded,
+        label: AppLocale.saveStateOnDevice.getString(context),
+        compact: true,
+      ),
     };
   }
 }

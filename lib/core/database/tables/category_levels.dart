@@ -22,8 +22,7 @@ class CategoryLevels extends Table {
   /// `SkillState.skill`, de 0 a 1.
   RealColumn get skill => real()();
   IntColumn get pairCount => integer()();
-  IntColumn get consecutiveLosses =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get consecutiveLosses => integer().withDefault(const Constant(0))();
   IntColumn get roundsPlayed => integer().withDefault(const Constant(0))();
 
   IntColumn get updatedAt => integer()();

@@ -8,6 +8,7 @@ import 'package:memory_companion/features/game/model/match_rewards.dart';
 import 'package:memory_companion/features/game/repository/local_match_repository.dart';
 import 'package:memory_companion/features/level_map/repository/local_level_repository.dart';
 import 'package:memory_companion/features/player/model/player_profile.dart';
+import 'package:memory_companion/features/player/model/player_streak.dart';
 import 'package:memory_companion/features/player/repository/player_repository.dart';
 
 void main() {
@@ -69,22 +70,25 @@ void main() {
     );
   }
 
-  test('una victoria queda registrada y pagada en la misma operación',
-      () async {
-    expect(await record('match-1'), isTrue);
+  test(
+    'una victoria queda registrada y pagada en la misma operación',
+    () async {
+      expect(await record('match-1'), isTrue);
 
-    final match = await db.select(db.matches).getSingle();
-    expect(match.id, 'match-1');
-    expect(match.won, isTrue);
-    expect(match.coinsEarned, 125);
-    expect(match.syncStatus, SyncStatus.pending, reason: 'espera a subir');
+      final match = await db.select(db.matches).getSingle();
+      expect(match.id, 'match-1');
+      expect(match.won, isTrue);
+      expect(match.coinsEarned, 125);
+      expect(match.syncStatus, SyncStatus.pending, reason: 'espera a subir');
 
-    final profile = await playerRepository.readLocalProfile();
-    expect(profile!.totalCoins, 125);
-    expect(profile.totalXp, 201);
-    expect(profile.totalMoves, 12);
-    expect(profile.gamesWon, 1);
-  });
+      final profile = await playerRepository.readLocalProfile();
+      // La primera partida del día también paga la racha.
+      expect(profile!.totalCoins, 125 + streakDayCoins(1));
+      expect(profile.totalXp, 201);
+      expect(profile.totalMoves, 12);
+      expect(profile.gamesWon, 1);
+    },
+  );
 
   test('registrar la misma partida dos veces no paga dos veces', () async {
     expect(await record('match-1'), isTrue);
@@ -93,7 +97,11 @@ void main() {
 
     expect(await db.select(db.matches).get(), hasLength(1));
     final profile = await playerRepository.readLocalProfile();
-    expect(profile!.totalCoins, 125, reason: 'sin doble abono');
+    expect(
+      profile!.totalCoins,
+      125 + streakDayCoins(1),
+      reason: 'sin doble abono',
+    );
     expect(profile.totalXp, 201);
     expect(profile.gamesWon, 1);
   });
@@ -108,7 +116,7 @@ void main() {
 
     final profile = await playerRepository.readLocalProfile();
     expect(profile!.gamesWon, 0);
-    expect(profile.totalCoins, 0);
+    expect(profile.totalCoins, streakDayCoins(1), reason: 'solo la racha');
     expect(profile.totalXp, 10, reason: 'jugar siempre deja algo');
     expect(profile.totalMoves, 30);
     expect(await db.select(db.matches).get(), hasLength(1));
@@ -125,36 +133,38 @@ void main() {
     );
 
     final profile = await playerRepository.readLocalProfile();
-    expect(profile!.totalCoins, 185);
+    expect(profile!.totalCoins, 185 + streakDayCoins(1));
     expect(profile.totalXp, 341);
     expect(profile.gamesWon, 2);
     expect(profile.totalMoves, 49);
   });
 
-  test('watchLastMatch devuelve la más reciente, no la última escrita',
-      () async {
-    await record(
-      'vieja',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(1000),
-      score: 100,
-    );
-    await record(
-      'reciente',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(9000),
-      score: 999,
-    );
-    // Escrita al final, pero jugada en medio.
-    await record(
-      'intermedia',
-      playedAt: DateTime.fromMillisecondsSinceEpoch(5000),
-      score: 500,
-    );
+  test(
+    'watchLastMatch devuelve la más reciente, no la última escrita',
+    () async {
+      await record(
+        'vieja',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(1000),
+        score: 100,
+      );
+      await record(
+        'reciente',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(9000),
+        score: 999,
+      );
+      // Escrita al final, pero jugada en medio.
+      await record(
+        'intermedia',
+        playedAt: DateTime.fromMillisecondsSinceEpoch(5000),
+        score: 500,
+      );
 
-    final last = await matchRepository.watchLastMatch(player.localId).first;
-    expect(last, isNotNull);
-    expect(last!.id, 'reciente');
-    expect(last.score, 999);
-  });
+      final last = await matchRepository.watchLastMatch(player.localId).first;
+      expect(last, isNotNull);
+      expect(last!.id, 'reciente');
+      expect(last.score, 999);
+    },
+  );
 
   test('sin partidas, la última es null', () async {
     expect(await matchRepository.watchLastMatch(player.localId).first, isNull);
@@ -188,8 +198,9 @@ void main() {
     await record('b', playedAt: DateTime.fromMillisecondsSinceEpoch(3000));
     await record('c', playedAt: DateTime.fromMillisecondsSinceEpoch(2000));
 
-    final history =
-        await matchRepository.watchRecentMatches(player.localId).first;
+    final history = await matchRepository
+        .watchRecentMatches(player.localId)
+        .first;
     expect(history.map((m) => m.id), ['b', 'c', 'a']);
   });
 }

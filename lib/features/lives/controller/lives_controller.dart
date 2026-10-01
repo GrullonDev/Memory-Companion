@@ -53,14 +53,15 @@ class LivesController extends AsyncNotifier<LivesState> {
     final player = await ref.watch(localPlayerProvider.future);
     _playerLocalId = player.localId;
 
-    final row = await ref.read(livesRepositoryProvider).ensure(
+    final row = await ref
+        .read(livesRepositoryProvider)
+        .ensure(
           playerLocalId: _playerLocalId,
           initialLives: maxLives,
           now: DateTime.now(),
         );
     _storedLives = row.currentLives;
-    _storedLastRefillAt =
-        DateTime.fromMillisecondsSinceEpoch(row.lastRefillAt);
+    _storedLastRefillAt = DateTime.fromMillisecondsSinceEpoch(row.lastRefillAt);
 
     final snapshot = await _applyRecovery();
 
@@ -86,7 +87,9 @@ class LivesController extends AsyncNotifier<LivesState> {
     if (snapshot.current != _storedLives) {
       _storedLives = snapshot.current;
       _storedLastRefillAt = snapshot.lastRefillAt;
-      await ref.read(livesRepositoryProvider).save(
+      await ref
+          .read(livesRepositoryProvider)
+          .save(
             playerLocalId: _playerLocalId,
             currentLives: _storedLives,
             lastRefillAt: _storedLastRefillAt,
@@ -122,12 +125,36 @@ class LivesController extends AsyncNotifier<LivesState> {
     _storedLives -= 1;
     if (wasFull) _storedLastRefillAt = DateTime.now();
 
-    await ref.read(livesRepositoryProvider).save(
+    await ref
+        .read(livesRepositoryProvider)
+        .save(
           playerLocalId: _playerLocalId,
           currentLives: _storedLives,
           lastRefillAt: _storedLastRefillAt,
         );
 
+    state = AsyncData(await _applyRecovery());
+    return true;
+  }
+
+  /// Fills every life at once — what the store's refill buys.
+  ///
+  /// Returns `false`, without touching anything, when there is nothing to
+  /// fill: lives already full, or infinite with the Pro plan.
+  Future<bool> refill() async {
+    if (hasInfiniteLives) return false;
+    await future;
+    if (!ref.mounted || _storedLives >= maxLives) return false;
+
+    _storedLives = maxLives;
+    _storedLastRefillAt = DateTime.now();
+    await ref
+        .read(livesRepositoryProvider)
+        .save(
+          playerLocalId: _playerLocalId,
+          currentLives: _storedLives,
+          lastRefillAt: _storedLastRefillAt,
+        );
     state = AsyncData(await _applyRecovery());
     return true;
   }

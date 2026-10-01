@@ -17,6 +17,9 @@ class RoutePaths {
   static const String completeProfile = '/complete-profile';
   static const String friends = '/friends';
   static const String shop = '/shop';
+
+  /// Coin store; lives outside the hidden Shop tab.
+  static const String store = '/store';
   static const String levelMap = '/level-map';
   static const String boardSolo = '/board/solo';
   static const String dailyChallenge = '/daily-challenge';

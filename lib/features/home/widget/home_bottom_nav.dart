@@ -26,7 +26,7 @@ class HomeBottomNav extends StatelessWidget {
   final ValueChanged<int>? onTap;
 
   static const List<({IconData icon, IconData activeIcon, String labelKey})>
-      _items = [
+  _items = [
     (
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
@@ -122,11 +122,7 @@ class _NavItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            active ? activeIcon : icon,
-            color: color,
-            size: AppSize.iconMd,
-          ),
+          Icon(active ? activeIcon : icon, color: color, size: AppSize.iconMd),
           const SizedBox(height: AppSpacing.xs),
           Text(
             label,
@@ -134,9 +130,9 @@ class _NavItem extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: color,
-                  fontWeight: active ? FontWeight.w800 : FontWeight.w600,
-                ),
+              color: color,
+              fontWeight: active ? FontWeight.w800 : FontWeight.w600,
+            ),
           ),
         ],
       ),

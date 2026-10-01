@@ -4,8 +4,10 @@ import 'package:memory_companion/core/database/connection/open_connection.dart';
 import 'package:memory_companion/core/database/database_enums.dart';
 import 'package:memory_companion/core/database/tables/category_levels.dart';
 import 'package:memory_companion/core/database/tables/daily_challenges.dart';
+import 'package:memory_companion/core/database/tables/daily_rewards.dart';
 import 'package:memory_companion/core/database/tables/display_settings.dart';
 import 'package:memory_companion/core/database/tables/game_stats.dart';
+import 'package:memory_companion/core/database/tables/inventory_items.dart';
 import 'package:memory_companion/core/database/tables/ladder_rewards.dart';
 import 'package:memory_companion/core/database/tables/level_progress.dart';
 import 'package:memory_companion/core/database/tables/lives_states.dart';
@@ -39,6 +41,8 @@ part 'app_database.g.dart';
     CategoryLevels,
     Places,
     LadderRewards,
+    DailyRewards,
+    InventoryItems,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -63,8 +67,10 @@ class AppDatabase extends _$AppDatabase {
   ///  7. `ladder_rewards` — premios ya entregados de la escalera de niveles
   ///     de cada juego.
   ///  8. `display_settings.map_navigator_hint_seen`.
+  ///  9. `daily_rewards` — el cofre diario y su racha de reclamos.
+  /// 10. `inventory_items` — lo comprado en la tienda con monedas.
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {
@@ -102,6 +108,8 @@ class AppDatabase extends _$AppDatabase {
             displaySettings.mapNavigatorHintSeen,
           );
         }
+        if (from < 9) await m.createTable(dailyRewards);
+        if (from < 10) await m.createTable(inventoryItems);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

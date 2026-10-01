@@ -36,10 +36,7 @@ void main() {
       test('cada nivel se arma como crucigrama', () {
         for (final level in levels) {
           final layout = CrosswordLayout.build(level.words);
-          expect(
-            layout.words.map((w) => w.word).toSet(),
-            level.words.toSet(),
-          );
+          expect(layout.words.map((w) => w.word).toSet(), level.words.toSet());
           // Cada palabra se lee en la cuadrícula en su posición.
           for (final placed in layout.words) {
             final read = placed.cells.map((c) => layout.letters[c]).join();

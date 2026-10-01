@@ -15,7 +15,9 @@ import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
 import 'package:memory_companion/features/minigames/modules/crossword/crossword_game_module.dart';
 import 'package:memory_companion/features/minigames/modules/digits/digits_game_module.dart';
+import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
+import 'package:memory_companion/features/player/model/player_streak.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
 
 void main() {
@@ -77,10 +79,10 @@ void main() {
       'classic',
       'numeric',
       'association',
-      'game:digits',
-      'game:words',
-      'game:crossword',
+      for (final game in MinigameRegistry.all)
+        if (game.climbsByWins) 'game:${game.id}',
     ]);
+    expect(ids, contains('game:sudoku'));
   });
 
   test('cada ronda ganada de un minijuego sube un peldaño', () async {
@@ -103,18 +105,26 @@ void main() {
     final reporter = container.read(minigameResultReporterProvider);
     const game = CrosswordGameModule();
     final id = GameLadder.minigameId(game);
+    // Cada victoria paga lo suyo, y la primera ronda del día, la racha.
+    int winCoins(int upTo) => [
+      for (var level = 1; level <= upTo; level++) minigameWinCoins(level),
+    ].fold(0, (sum, c) => sum + c);
+    final streakBonus = streakDayCoins(1);
 
     for (var i = 0; i < 4; i++) {
       await reporter.report(game, round(won: true));
     }
     expect(container.read(ladderRoundNoticesProvider)[id]!.rewards, isEmpty);
-    expect(await coins(), 0);
+    expect(await coins(), streakBonus + winCoins(4));
 
     await reporter.report(game, round(won: true));
     final notice = container.read(ladderRoundNoticesProvider)[id]!;
     expect(notice.completedLevel, 5);
     expect(notice.rewards.single.level, 5);
-    expect(await coins(), 100);
+    expect(notice.coinsEarned, minigameWinCoins(5));
+    expect(notice.streak!.currentStreak, 1);
+    expect(notice.streak!.bonusCoins, 0, reason: 'la racha paga una vez al día');
+    expect(await coins(), streakBonus + winCoins(5) + 100);
 
     // La ronda siguiente no repite el premio ni el anuncio.
     await reporter.report(game, round(won: false));
@@ -123,7 +133,7 @@ void main() {
       container.read(ladderRoundNoticesProvider)[id]!.completedLevel,
       isNull,
     );
-    expect(await coins(), 100);
+    expect(await coins(), streakBonus + winCoins(5) + 100);
   });
 
   test('al arrancar se pagan los premios ganados antes de existir', () async {

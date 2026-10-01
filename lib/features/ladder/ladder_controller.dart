@@ -10,6 +10,7 @@ import 'package:memory_companion/features/ladder/level_rewards.dart';
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
 import 'package:memory_companion/features/minigames/minigame_registry.dart';
 import 'package:memory_companion/features/player/controller/player_controller.dart';
+import 'package:memory_companion/features/player/model/player_streak.dart';
 import 'package:memory_companion/features/statistics/controller/statistics_controller.dart';
 
 final ladderRewardRepositoryProvider = Provider<LadderRewardRepository>(
@@ -51,11 +52,20 @@ final gameLaddersProvider = Provider<List<GameLadder>>((ref) {
   ];
 });
 
+/// Coins a mini-game round won pays on its own, before any ladder reward:
+/// a little more the higher the level, so climbing always pays.
+int minigameWinCoins(int completedLevel) {
+  final level = completedLevel < 0 ? 0 : completedLevel;
+  return 5 + (level > 50 ? 50 : level) ~/ 2;
+}
+
 /// What a mini-game's last round did on its ladder, for its result screen.
 class LadderRoundNotice {
   const LadderRoundNotice({
     required this.completedLevel,
     required this.rewards,
+    this.coinsEarned = 0,
+    this.streak,
   });
 
   /// The level the round completed, or null if it was not won.
@@ -63,6 +73,13 @@ class LadderRoundNotice {
 
   /// Ladder rewards the round paid. Usually none.
   final List<LevelReward> rewards;
+
+  /// Coins for winning the round ([minigameWinCoins]).
+  final int coinsEarned;
+
+  /// The play streak after this round. Its `bonusCoins` are above zero only
+  /// for the first round of the day.
+  final StreakUpdate? streak;
 }
 
 /// The last round of each mini-game, by ladder id. Replaced every time that
@@ -97,7 +114,8 @@ class LadderService {
     return _claim(categoryId, level);
   }
 
-  /// After a mini-game round, once its `game_stats` row is written.
+  /// After a mini-game round, once its `game_stats` row is written: keeps
+  /// the play streak alive, pays the win and any ladder reward.
   Future<List<LevelReward>> claimMinigame(
     BaseMinigame game, {
     required bool won,
@@ -105,11 +123,20 @@ class LadderService {
     if (!game.climbsByWins) return const [];
     final ladderId = GameLadder.minigameId(game);
     try {
+      final players = _ref.read(playerRepositoryProvider);
+      final player = await players.ensureLocalProfile();
+      final streak = await players.registerPlayedToday(
+        localId: player.localId,
+      );
       final wins = await _ref
           .read(statsRepositoryProvider)
           .watchWinsByCategory()
           .first;
       final level = minigameLevel(game, wins);
+      final coins = won ? minigameWinCoins(level - 1) : 0;
+      if (coins > 0) {
+        await players.earnCoins(localId: player.localId, amount: coins);
+      }
       final rewards = await _claim(ladderId, level);
       _ref
           .read(ladderRoundNoticesProvider.notifier)
@@ -118,6 +145,8 @@ class LadderService {
             LadderRoundNotice(
               completedLevel: won ? level - 1 : null,
               rewards: rewards,
+              coinsEarned: coins,
+              streak: streak,
             ),
           );
       return rewards;

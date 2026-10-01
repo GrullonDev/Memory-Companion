@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -25,15 +26,24 @@ class WordsController extends Notifier<WordsState> {
   Timer? _studyTimer;
   late DateTime _startedAt;
 
+  static const _game = WordsGameModule();
+
   @override
   WordsState build() {
     ref.onDispose(() => _studyTimer?.cancel());
-    return const WordsState.intro();
+    // Keeps the ladder level loading while the intro is on screen.
+    ref.listen(minigameLevelProvider(_game), (_, _) {});
+    return WordsState.intro(level: ref.read(minigameLevelProvider(_game)));
   }
 
-  /// Deals a round of [listSize] words, the current level by default.
-  void start({int? listSize}) {
-    final size = listSize ?? state.listSize;
+  /// Deals a round at [level]: the player's ladder level by default, or the
+  /// level just played when retrying.
+  void start({int? level}) {
+    final ladder = ref.read(minigameLevelProvider(_game));
+    final difficulty = WordsDifficulty.forLevel(
+      level ?? max(ladder, state.phase == WordsPhase.intro ? 1 : state.level),
+    );
+    final size = difficulty.listSize;
     final random = ref.read(minigameRandomProvider);
     final pool = [...WordBank.forLanguage(languageCode)]..shuffle(random);
     final studied = pool.take(size).toList();
@@ -42,16 +52,16 @@ class WordsController extends Notifier<WordsState> {
     _startedAt = ref.read(statsClockProvider)();
     state = WordsState(
       phase: WordsPhase.study,
-      listSize: size,
+      difficulty: difficulty,
       studied: studied,
       probes: probes,
     );
     _studyTimer?.cancel();
-    _studyTimer = Timer(wordsStudyDuration(size), finishStudy);
+    _studyTimer = Timer(difficulty.studyDuration, finishStudy);
   }
 
-  /// Plays the next level: a longer list.
-  void nextLevel() => start(listSize: state.nextListSize);
+  /// Plays the next level: a longer list, or less time to study it.
+  void nextLevel() => start(level: state.level + 1);
 
   /// Hides the list and starts asking.
   void finishStudy() {
@@ -82,7 +92,7 @@ class WordsController extends Notifier<WordsState> {
     final reporter = ref.read(minigameResultReporterProvider);
     unawaited(
       reporter.report(
-        const WordsGameModule(),
+        _game,
         MinigameResult(
           itemCount: state.probes.length,
           itemsSolved: state.correct,

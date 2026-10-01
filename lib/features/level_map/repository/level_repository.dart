@@ -71,11 +71,7 @@ class LevelRepository {
   }
 
   /// Complete a level (mark as completed and unlock next)
-  Future<void> completeLevel(
-    String userId,
-    int levelNumber,
-    int score,
-  ) async {
+  Future<void> completeLevel(String userId, int levelNumber, int score) async {
     try {
       final batch = _firestore.batch();
 
@@ -121,11 +117,11 @@ class LevelRepository {
         .orderBy('levelNumber', descending: false)
         .snapshots()
         .map((snapshot) {
-      return [
-        for (final doc in snapshot.docs)
-          GameLevel.fromFirestore(doc.data(), doc.id),
-      ];
-    });
+          return [
+            for (final doc in snapshot.docs)
+              GameLevel.fromFirestore(doc.data(), doc.id),
+          ];
+        });
   }
 
   /// Get current level number (highest unlocked)

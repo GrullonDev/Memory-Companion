@@ -15,12 +15,14 @@ class LivesRepository {
     required DateTime now,
   }) {
     return _db.transaction(() async {
-      final existing = await (_db.select(_db.livesStates)
-            ..where((l) => l.playerLocalId.equals(playerLocalId)))
-          .getSingleOrNull();
+      final existing = await (_db.select(
+        _db.livesStates,
+      )..where((l) => l.playerLocalId.equals(playerLocalId))).getSingleOrNull();
       if (existing != null) return existing;
 
-      return _db.into(_db.livesStates).insertReturning(
+      return _db
+          .into(_db.livesStates)
+          .insertReturning(
             LivesStatesCompanion.insert(
               playerLocalId: playerLocalId,
               currentLives: initialLives,
@@ -35,7 +37,9 @@ class LivesRepository {
     required int currentLives,
     required DateTime lastRefillAt,
   }) {
-    return _db.into(_db.livesStates).insert(
+    return _db
+        .into(_db.livesStates)
+        .insert(
           LivesStatesCompanion.insert(
             playerLocalId: playerLocalId,
             currentLives: currentLives,

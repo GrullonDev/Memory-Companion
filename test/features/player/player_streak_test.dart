@@ -120,13 +120,19 @@ void main() {
 
   test('cruza fin de mes y fin de año sin romperse', () {
     expect(
-      play(lastPlayedDate: '2026-08-31', currentStreak: 2, now: day(2026, 9, 1))
-          .currentStreak,
+      play(
+        lastPlayedDate: '2026-08-31',
+        currentStreak: 2,
+        now: day(2026, 9, 1),
+      ).currentStreak,
       3,
     );
     expect(
-      play(lastPlayedDate: '2026-12-31', currentStreak: 5, now: day(2027, 1, 1))
-          .currentStreak,
+      play(
+        lastPlayedDate: '2026-12-31',
+        currentStreak: 5,
+        now: day(2027, 1, 1),
+      ).currentStreak,
       6,
     );
   });

@@ -28,9 +28,9 @@ class AppStatChip extends StatelessWidget {
     required this.value,
     this.onTap,
     this.semanticLabel,
-  })  : icon = Icons.monetization_on_rounded,
-        background = AppColors.sunSoft,
-        foreground = AppColors.sunStrong;
+  }) : icon = Icons.monetization_on_rounded,
+       background = AppColors.sunSoft,
+       foreground = AppColors.sunStrong;
 
   /// Daily streak — orange, because it is the one number with urgency.
   const AppStatChip.streak({
@@ -38,9 +38,9 @@ class AppStatChip extends StatelessWidget {
     required this.value,
     this.onTap,
     this.semanticLabel,
-  })  : icon = Icons.local_fire_department_rounded,
-        background = AppColors.streakSoft,
-        foreground = AppColors.streakStrong;
+  }) : icon = Icons.local_fire_department_rounded,
+       background = AppColors.streakSoft,
+       foreground = AppColors.streakStrong;
 
   final IconData icon;
   final String value;
@@ -71,11 +71,7 @@ class AppStatChip extends StatelessWidget {
               value,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: AppTypography.score(
-                context,
-                size: 16,
-                color: foreground,
-              ),
+              style: AppTypography.score(context, size: 16, color: foreground),
             ),
           ),
         ],

@@ -18,11 +18,7 @@ class GameLevel {
   final bool isCompleted;
   final int bestScore;
 
-  GameLevel copyWith({
-    bool? isUnlocked,
-    bool? isCompleted,
-    int? bestScore,
-  }) {
+  GameLevel copyWith({bool? isUnlocked, bool? isCompleted, int? bestScore}) {
     return GameLevel(
       id: id,
       levelNumber: levelNumber,
@@ -71,7 +67,8 @@ class GameLevel {
   }
 
   @override
-  String toString() => 'GameLevel(levelNumber: $levelNumber, difficulty: $difficulty)';
+  String toString() =>
+      'GameLevel(levelNumber: $levelNumber, difficulty: $difficulty)';
 }
 
 /// Generate levels dynamically based on game progression
@@ -88,8 +85,11 @@ List<GameLevel> generateGameLevels({
     final bestScore = bestScores?[i] ?? 0;
 
     // Progressive difficulty: every 5 levels, time decreases and cards increase
-    final timeLimit = 90 - ((i - 1) ~/ 5) * 10; // Starts at 90s, decreases by 10s every 5 levels
-    final cardsCount = 16 + ((i - 1) ~/ 5) * 2; // Starts at 16, increases by 2 every 5 levels
+    final timeLimit =
+        90 -
+        ((i - 1) ~/ 5) * 10; // Starts at 90s, decreases by 10s every 5 levels
+    final cardsCount =
+        16 + ((i - 1) ~/ 5) * 2; // Starts at 16, increases by 2 every 5 levels
 
     levels.add(
       GameLevel(

@@ -293,6 +293,21 @@ service cloud.firestore {
                        && incoming().status == 'declined')
                     );
 
+      // Reacciones rápidas: cada jugador escribe solo la suya, y solo un
+      // emoji de la lista de la app. Valen también con el duelo terminado,
+      // para celebrar o felicitar al rival.
+      allow update: if isMember()
+                    && incoming().diff(current()).affectedKeys()
+                         .hasOnly(['reactions'])
+                    && incoming().reactions
+                         .diff(current().get('reactions', {}))
+                         .affectedKeys().hasOnly([request.auth.uid])
+                    && incoming().reactions[request.auth.uid].keys()
+                         .hasOnly(['reaction', 'seq', 'at'])
+                    && incoming().reactions[request.auth.uid].reaction
+                         in ['thumbsUp', 'fire', 'wow', 'laugh']
+                    && incoming().reactions[request.auth.uid].seq is int;
+
       allow delete: if false;
     }
 

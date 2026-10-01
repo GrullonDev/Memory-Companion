@@ -48,12 +48,12 @@ void main() {
 
   test('el margen de eficiencia corta donde debe', () {
     MatchRewards atMoves(int moves) => calculateMatchRewards(
-          score: 1000,
-          moves: moves,
-          timeLimit: 90,
-          secondsElapsed: 80,
-          won: true,
-        );
+      score: 1000,
+      moves: moves,
+      timeLimit: 90,
+      secondsElapsed: 80,
+      won: true,
+    );
 
     expect(atMoves(13).coins - atMoves(14).coins, 50);
     expect(atMoves(13).xp - atMoves(14).xp, 50);

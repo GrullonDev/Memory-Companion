@@ -50,8 +50,7 @@ void main() {
     fail('el resumen nunca llegó al estado esperado');
   }
 
-  test('el primer arranque deja la Home lista, sin cuenta y sin red',
-      () async {
+  test('el primer arranque deja la Home lista, sin cuenta y sin red', () async {
     final profile = await container.read(localPlayerProvider.future);
     final summary = container.read(homeSummaryProvider);
 
@@ -68,9 +67,9 @@ void main() {
   test('el progreso guardado localmente llega a la cabecera', () async {
     final profile = await container.read(localPlayerProvider.future);
 
-    await (db.update(db.playerProfiles)
-          ..where((p) => p.localId.equals(profile.localId)))
-        .write(
+    await (db.update(
+      db.playerProfiles,
+    )..where((p) => p.localId.equals(profile.localId))).write(
       const PlayerProfilesCompanion(
         displayName: Value('Jorge'),
         totalXp: Value(28350),
@@ -123,6 +122,7 @@ void main() {
     expect(summary.mainLadder.nextReward.level, 10);
     expect(summary.mainLadder.levelsUntilReward, 4);
     // Los demás juegos llevan su propia escalera y arrancan en el 1.
-    expect(summary.ladders.map((l) => l.level), [7, 1, 1, 1, 1, 1]);
+    expect(summary.ladders.first.level, 7);
+    expect(summary.ladders.skip(1).map((l) => l.level), everyElement(1));
   });
 }

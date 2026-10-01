@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:memory_companion/features/minigames/core/base_minigame.dart';
+import 'package:memory_companion/features/minigames/core/minigame_level.dart';
 import 'package:memory_companion/features/minigames/core/minigame_random.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result.dart';
 import 'package:memory_companion/features/minigames/core/minigame_result_reporter.dart';
@@ -34,10 +35,9 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           minigameRandomProvider.overrideWithValue(Random(5)),
+          minigameLevelOverrideProvider.overrideWithValue(1),
           minigameResultReporterProvider.overrideWithValue(reporter),
-          statsClockProvider.overrideWithValue(
-            () => start.add(async.elapsed),
-          ),
+          statsClockProvider.overrideWithValue(() => start.add(async.elapsed)),
         ],
       );
       container.listen(provider, (_, _) {});
@@ -157,7 +157,7 @@ void main() {
 
   test('el nivel no pasa del máximo', () {
     run((async, c) {
-      controllerOf(c).start(listSize: wordsMaxListSize);
+      controllerOf(c).start(level: 50);
       controllerOf(c).finishStudy();
       answerAll(c);
       controllerOf(c).nextLevel();

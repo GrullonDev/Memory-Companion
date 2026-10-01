@@ -26,8 +26,8 @@ class AppBadge extends StatelessWidget {
     required this.label,
     this.icon,
     this.compact = false,
-  })  : background = AppColors.surfaceContainerHigh,
-        foreground = AppColors.onSurfaceVariant;
+  }) : background = AppColors.surfaceContainerHigh,
+       foreground = AppColors.onSurfaceVariant;
 
   /// Confirmation variant — a finished daily challenge, an unlocked item.
   const AppBadge.success({
@@ -35,8 +35,8 @@ class AppBadge extends StatelessWidget {
     required this.label,
     this.icon = Icons.check_rounded,
     this.compact = false,
-  })  : background = AppColors.mintSoft,
-        foreground = AppColors.mintStrong;
+  }) : background = AppColors.mintSoft,
+       foreground = AppColors.mintStrong;
 
   final String label;
   final IconData? icon;
@@ -69,9 +69,9 @@ class AppBadge extends StatelessWidget {
               label,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: foreground,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: foreground),
             ),
           ),
         ],

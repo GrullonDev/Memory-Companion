@@ -15,7 +15,12 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 /// smallest text in the product is 13px, and every size below 15px is
 /// reserved for metadata that is never the only way to get information.
 abstract final class AppTypography {
-  static TextStyle _display(double size, double height, {FontWeight w = FontWeight.w700, double? spacing}) {
+  static TextStyle _display(
+    double size,
+    double height, {
+    FontWeight w = FontWeight.w700,
+    double? spacing,
+  }) {
     return GoogleFonts.quicksand(
       fontSize: size,
       height: height / size,
@@ -24,7 +29,12 @@ abstract final class AppTypography {
     );
   }
 
-  static TextStyle _body(double size, double height, {FontWeight w = FontWeight.w400, double? spacing}) {
+  static TextStyle _body(
+    double size,
+    double height, {
+    FontWeight w = FontWeight.w400,
+    double? spacing,
+  }) {
     return GoogleFonts.plusJakartaSans(
       fontSize: size,
       height: height / size,
@@ -60,10 +70,7 @@ abstract final class AppTypography {
       labelLarge: _body(15, 20, w: FontWeight.w700, spacing: 0.2),
       labelMedium: _body(13, 16, w: FontWeight.w700, spacing: 0.3),
       labelSmall: _body(12, 16, w: FontWeight.w700, spacing: 0.4),
-    ).apply(
-      bodyColor: AppColors.onSurface,
-      displayColor: AppColors.onSurface,
-    );
+    ).apply(bodyColor: AppColors.onSurface, displayColor: AppColors.onSurface);
   }
 
   /// Numbers that change in place — scores, coins, XP, timers.

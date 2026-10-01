@@ -35,7 +35,9 @@ class _BoardPageState extends ConsumerState<BoardPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => unawaited(_enterMatch()));
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => unawaited(_enterMatch()),
+    );
   }
 
   BoardSetup get _setup {
@@ -47,15 +49,17 @@ class _BoardPageState extends ConsumerState<BoardPage> {
   }
 
   Future<void> _enterMatch() async {
-    final hasLife =
-        await ref.read(livesControllerProvider.notifier).consumeLife();
+    final hasLife = await ref
+        .read(livesControllerProvider.notifier)
+        .consumeLife();
     if (!hasLife && mounted) _showNoLivesDialog(canStayOnBoard: false);
   }
 
   /// Starts another round — a retry or the next level — if a life is left.
   Future<void> _attemptNewRound(void Function(BoardController) start) async {
-    final hasLife =
-        await ref.read(livesControllerProvider.notifier).consumeLife();
+    final hasLife = await ref
+        .read(livesControllerProvider.notifier)
+        .consumeLife();
     if (!mounted) return;
     if (hasLife) {
       start(ref.read(boardControllerProvider(_setup).notifier));

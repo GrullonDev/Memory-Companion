@@ -21,7 +21,9 @@ class SyncQueue {
   final AppDatabase _db;
 
   Future<void> enqueue(SyncOperationInput input, {required DateTime now}) {
-    return _db.into(_db.syncOperations).insert(
+    return _db
+        .into(_db.syncOperations)
+        .insert(
           SyncOperationsCompanion.insert(
             opId: input.opId,
             playerLocalId: input.playerLocalId,
@@ -46,17 +48,18 @@ class SyncQueue {
     required DateTime now,
     int limit = 25,
   }) async {
-    final rows = await (_db.select(_db.syncOperations)
-          ..where((o) => o.playerLocalId.equals(playerLocalId))
-          ..where((o) => o.status.equalsValue(SyncStatus.pending))
-          ..where(
-            (o) => o.nextAttemptAt.isSmallerOrEqualValue(
-              now.millisecondsSinceEpoch,
-            ),
-          )
-          ..orderBy([(o) => OrderingTerm.asc(o.createdAt)])
-          ..limit(limit))
-        .get();
+    final rows =
+        await (_db.select(_db.syncOperations)
+              ..where((o) => o.playerLocalId.equals(playerLocalId))
+              ..where((o) => o.status.equalsValue(SyncStatus.pending))
+              ..where(
+                (o) => o.nextAttemptAt.isSmallerOrEqualValue(
+                  now.millisecondsSinceEpoch,
+                ),
+              )
+              ..orderBy([(o) => OrderingTerm.asc(o.createdAt)])
+              ..limit(limit))
+            .get();
 
     return [for (final row in rows) SyncOperation.fromRow(row)];
   }
@@ -75,16 +78,17 @@ class SyncQueue {
     required DateTime nextAttemptAt,
     required bool permanent,
   }) async {
-    final row = await (_db.select(_db.syncOperations)
-          ..where((o) => o.opId.equals(opId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.syncOperations,
+    )..where((o) => o.opId.equals(opId))).getSingleOrNull();
     if (row == null) return;
 
     final retries = row.retryCount + 1;
     final exhausted = permanent || retries >= maxRetries;
 
-    await (_db.update(_db.syncOperations)..where((o) => o.opId.equals(opId)))
-        .write(
+    await (_db.update(
+      _db.syncOperations,
+    )..where((o) => o.opId.equals(opId))).write(
       SyncOperationsCompanion(
         status: Value(exhausted ? SyncStatus.failed : SyncStatus.pending),
         retryCount: Value(retries),
@@ -103,7 +107,9 @@ class SyncQueue {
     return (_db.update(_db.syncOperations)
           ..where((o) => o.playerLocalId.equals(playerLocalId))
           ..where((o) => o.status.equalsValue(SyncStatus.syncing)))
-        .write(const SyncOperationsCompanion(status: Value(SyncStatus.pending)));
+        .write(
+          const SyncOperationsCompanion(status: Value(SyncStatus.pending)),
+        );
   }
 
   /// Reabre las operaciones agotadas para un intento más.
@@ -118,12 +124,12 @@ class SyncQueue {
           ..where((o) => o.playerLocalId.equals(playerLocalId))
           ..where((o) => o.status.equalsValue(SyncStatus.failed)))
         .write(
-      SyncOperationsCompanion(
-        status: const Value(SyncStatus.pending),
-        retryCount: const Value(0),
-        nextAttemptAt: Value(now.millisecondsSinceEpoch),
-      ),
-    );
+          SyncOperationsCompanion(
+            status: const Value(SyncStatus.pending),
+            retryCount: const Value(0),
+            nextAttemptAt: Value(now.millisecondsSinceEpoch),
+          ),
+        );
   }
 
   Stream<int> watchPendingCount(String playerLocalId) {
@@ -131,9 +137,7 @@ class SyncQueue {
     final query = _db.selectOnly(_db.syncOperations)
       ..addColumns([count])
       ..where(_db.syncOperations.playerLocalId.equals(playerLocalId))
-      ..where(
-        _db.syncOperations.status.equalsValue(SyncStatus.synced).not(),
-      );
+      ..where(_db.syncOperations.status.equalsValue(SyncStatus.synced).not());
 
     return query.map((row) => row.read(count) ?? 0).watchSingle();
   }

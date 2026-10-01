@@ -16,6 +16,7 @@ import 'package:memory_companion/features/shop/model/plan.dart';
 import 'package:memory_companion/features/shop/model/plan_feature.dart';
 import 'package:memory_companion/features/shop/widget/plan_card.dart';
 import 'package:memory_companion/features/shop/widget/shop_hero_banner.dart';
+import 'package:memory_companion/features/shop/widget/store_section.dart';
 import 'package:memory_companion/features/shop/widget/theme_chip.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 
@@ -83,6 +84,8 @@ class ShopScreen extends ConsumerWidget {
                 ),
               ),
               const SizedBox(height: 24),
+              const StoreSection(),
+              const SizedBox(height: 12),
               AsyncValueView(
                 value: shop,
                 onRetry: () => ref.invalidate(shopControllerProvider),

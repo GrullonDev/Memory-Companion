@@ -7,10 +7,7 @@ void main() {
   const refill = Duration(minutes: 20);
   final start = DateTime(2026, 8, 31, 10);
 
-  LivesSnapshot recover({
-    required int stored,
-    required Duration elapsed,
-  }) {
+  LivesSnapshot recover({required int stored, required Duration elapsed}) {
     return recoverLives(
       storedCurrent: stored,
       storedLastRefillAt: start,

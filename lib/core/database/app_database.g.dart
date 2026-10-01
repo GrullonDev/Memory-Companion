@@ -6585,6 +6585,782 @@ class LadderRewardsCompanion extends UpdateCompanion<LadderRewardRow> {
   }
 }
 
+class $DailyRewardsTable extends DailyRewards
+    with TableInfo<$DailyRewardsTable, DailyRewardRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyRewardsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _playerLocalIdMeta = const VerificationMeta(
+    'playerLocalId',
+  );
+  @override
+  late final GeneratedColumn<String> playerLocalId = GeneratedColumn<String>(
+    'player_local_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES player_profiles (local_id)',
+    ),
+  );
+  static const VerificationMeta _lastClaimDateMeta = const VerificationMeta(
+    'lastClaimDate',
+  );
+  @override
+  late final GeneratedColumn<String> lastClaimDate = GeneratedColumn<String>(
+    'last_claim_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _claimStreakMeta = const VerificationMeta(
+    'claimStreak',
+  );
+  @override
+  late final GeneratedColumn<int> claimStreak = GeneratedColumn<int>(
+    'claim_streak',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _longestClaimStreakMeta =
+      const VerificationMeta('longestClaimStreak');
+  @override
+  late final GeneratedColumn<int> longestClaimStreak = GeneratedColumn<int>(
+    'longest_claim_streak',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalClaimsMeta = const VerificationMeta(
+    'totalClaims',
+  );
+  @override
+  late final GeneratedColumn<int> totalClaims = GeneratedColumn<int>(
+    'total_claims',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    playerLocalId,
+    lastClaimDate,
+    claimStreak,
+    longestClaimStreak,
+    totalClaims,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_rewards';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyRewardRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('player_local_id')) {
+      context.handle(
+        _playerLocalIdMeta,
+        playerLocalId.isAcceptableOrUnknown(
+          data['player_local_id']!,
+          _playerLocalIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_playerLocalIdMeta);
+    }
+    if (data.containsKey('last_claim_date')) {
+      context.handle(
+        _lastClaimDateMeta,
+        lastClaimDate.isAcceptableOrUnknown(
+          data['last_claim_date']!,
+          _lastClaimDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('claim_streak')) {
+      context.handle(
+        _claimStreakMeta,
+        claimStreak.isAcceptableOrUnknown(
+          data['claim_streak']!,
+          _claimStreakMeta,
+        ),
+      );
+    }
+    if (data.containsKey('longest_claim_streak')) {
+      context.handle(
+        _longestClaimStreakMeta,
+        longestClaimStreak.isAcceptableOrUnknown(
+          data['longest_claim_streak']!,
+          _longestClaimStreakMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_claims')) {
+      context.handle(
+        _totalClaimsMeta,
+        totalClaims.isAcceptableOrUnknown(
+          data['total_claims']!,
+          _totalClaimsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {playerLocalId};
+  @override
+  DailyRewardRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyRewardRow(
+      playerLocalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}player_local_id'],
+      )!,
+      lastClaimDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_claim_date'],
+      ),
+      claimStreak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}claim_streak'],
+      )!,
+      longestClaimStreak: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}longest_claim_streak'],
+      )!,
+      totalClaims: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_claims'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DailyRewardsTable createAlias(String alias) {
+    return $DailyRewardsTable(attachedDatabase, alias);
+  }
+}
+
+class DailyRewardRow extends DataClass implements Insertable<DailyRewardRow> {
+  final String playerLocalId;
+
+  /// Último día reclamado como `'YYYY-MM-DD'` en zona **local**, igual que
+  /// `player_profiles.last_played_date` y por la misma razón.
+  final String? lastClaimDate;
+  final int claimStreak;
+  final int longestClaimStreak;
+  final int totalClaims;
+  final int updatedAt;
+  const DailyRewardRow({
+    required this.playerLocalId,
+    this.lastClaimDate,
+    required this.claimStreak,
+    required this.longestClaimStreak,
+    required this.totalClaims,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['player_local_id'] = Variable<String>(playerLocalId);
+    if (!nullToAbsent || lastClaimDate != null) {
+      map['last_claim_date'] = Variable<String>(lastClaimDate);
+    }
+    map['claim_streak'] = Variable<int>(claimStreak);
+    map['longest_claim_streak'] = Variable<int>(longestClaimStreak);
+    map['total_claims'] = Variable<int>(totalClaims);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  DailyRewardsCompanion toCompanion(bool nullToAbsent) {
+    return DailyRewardsCompanion(
+      playerLocalId: Value(playerLocalId),
+      lastClaimDate: lastClaimDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastClaimDate),
+      claimStreak: Value(claimStreak),
+      longestClaimStreak: Value(longestClaimStreak),
+      totalClaims: Value(totalClaims),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DailyRewardRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyRewardRow(
+      playerLocalId: serializer.fromJson<String>(json['playerLocalId']),
+      lastClaimDate: serializer.fromJson<String?>(json['lastClaimDate']),
+      claimStreak: serializer.fromJson<int>(json['claimStreak']),
+      longestClaimStreak: serializer.fromJson<int>(json['longestClaimStreak']),
+      totalClaims: serializer.fromJson<int>(json['totalClaims']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'playerLocalId': serializer.toJson<String>(playerLocalId),
+      'lastClaimDate': serializer.toJson<String?>(lastClaimDate),
+      'claimStreak': serializer.toJson<int>(claimStreak),
+      'longestClaimStreak': serializer.toJson<int>(longestClaimStreak),
+      'totalClaims': serializer.toJson<int>(totalClaims),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  DailyRewardRow copyWith({
+    String? playerLocalId,
+    Value<String?> lastClaimDate = const Value.absent(),
+    int? claimStreak,
+    int? longestClaimStreak,
+    int? totalClaims,
+    int? updatedAt,
+  }) => DailyRewardRow(
+    playerLocalId: playerLocalId ?? this.playerLocalId,
+    lastClaimDate: lastClaimDate.present
+        ? lastClaimDate.value
+        : this.lastClaimDate,
+    claimStreak: claimStreak ?? this.claimStreak,
+    longestClaimStreak: longestClaimStreak ?? this.longestClaimStreak,
+    totalClaims: totalClaims ?? this.totalClaims,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DailyRewardRow copyWithCompanion(DailyRewardsCompanion data) {
+    return DailyRewardRow(
+      playerLocalId: data.playerLocalId.present
+          ? data.playerLocalId.value
+          : this.playerLocalId,
+      lastClaimDate: data.lastClaimDate.present
+          ? data.lastClaimDate.value
+          : this.lastClaimDate,
+      claimStreak: data.claimStreak.present
+          ? data.claimStreak.value
+          : this.claimStreak,
+      longestClaimStreak: data.longestClaimStreak.present
+          ? data.longestClaimStreak.value
+          : this.longestClaimStreak,
+      totalClaims: data.totalClaims.present
+          ? data.totalClaims.value
+          : this.totalClaims,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRewardRow(')
+          ..write('playerLocalId: $playerLocalId, ')
+          ..write('lastClaimDate: $lastClaimDate, ')
+          ..write('claimStreak: $claimStreak, ')
+          ..write('longestClaimStreak: $longestClaimStreak, ')
+          ..write('totalClaims: $totalClaims, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    playerLocalId,
+    lastClaimDate,
+    claimStreak,
+    longestClaimStreak,
+    totalClaims,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyRewardRow &&
+          other.playerLocalId == this.playerLocalId &&
+          other.lastClaimDate == this.lastClaimDate &&
+          other.claimStreak == this.claimStreak &&
+          other.longestClaimStreak == this.longestClaimStreak &&
+          other.totalClaims == this.totalClaims &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DailyRewardsCompanion extends UpdateCompanion<DailyRewardRow> {
+  final Value<String> playerLocalId;
+  final Value<String?> lastClaimDate;
+  final Value<int> claimStreak;
+  final Value<int> longestClaimStreak;
+  final Value<int> totalClaims;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const DailyRewardsCompanion({
+    this.playerLocalId = const Value.absent(),
+    this.lastClaimDate = const Value.absent(),
+    this.claimStreak = const Value.absent(),
+    this.longestClaimStreak = const Value.absent(),
+    this.totalClaims = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyRewardsCompanion.insert({
+    required String playerLocalId,
+    this.lastClaimDate = const Value.absent(),
+    this.claimStreak = const Value.absent(),
+    this.longestClaimStreak = const Value.absent(),
+    this.totalClaims = const Value.absent(),
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : playerLocalId = Value(playerLocalId),
+       updatedAt = Value(updatedAt);
+  static Insertable<DailyRewardRow> custom({
+    Expression<String>? playerLocalId,
+    Expression<String>? lastClaimDate,
+    Expression<int>? claimStreak,
+    Expression<int>? longestClaimStreak,
+    Expression<int>? totalClaims,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (playerLocalId != null) 'player_local_id': playerLocalId,
+      if (lastClaimDate != null) 'last_claim_date': lastClaimDate,
+      if (claimStreak != null) 'claim_streak': claimStreak,
+      if (longestClaimStreak != null)
+        'longest_claim_streak': longestClaimStreak,
+      if (totalClaims != null) 'total_claims': totalClaims,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyRewardsCompanion copyWith({
+    Value<String>? playerLocalId,
+    Value<String?>? lastClaimDate,
+    Value<int>? claimStreak,
+    Value<int>? longestClaimStreak,
+    Value<int>? totalClaims,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return DailyRewardsCompanion(
+      playerLocalId: playerLocalId ?? this.playerLocalId,
+      lastClaimDate: lastClaimDate ?? this.lastClaimDate,
+      claimStreak: claimStreak ?? this.claimStreak,
+      longestClaimStreak: longestClaimStreak ?? this.longestClaimStreak,
+      totalClaims: totalClaims ?? this.totalClaims,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (playerLocalId.present) {
+      map['player_local_id'] = Variable<String>(playerLocalId.value);
+    }
+    if (lastClaimDate.present) {
+      map['last_claim_date'] = Variable<String>(lastClaimDate.value);
+    }
+    if (claimStreak.present) {
+      map['claim_streak'] = Variable<int>(claimStreak.value);
+    }
+    if (longestClaimStreak.present) {
+      map['longest_claim_streak'] = Variable<int>(longestClaimStreak.value);
+    }
+    if (totalClaims.present) {
+      map['total_claims'] = Variable<int>(totalClaims.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyRewardsCompanion(')
+          ..write('playerLocalId: $playerLocalId, ')
+          ..write('lastClaimDate: $lastClaimDate, ')
+          ..write('claimStreak: $claimStreak, ')
+          ..write('longestClaimStreak: $longestClaimStreak, ')
+          ..write('totalClaims: $totalClaims, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $InventoryItemsTable extends InventoryItems
+    with TableInfo<$InventoryItemsTable, InventoryItemRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InventoryItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _playerLocalIdMeta = const VerificationMeta(
+    'playerLocalId',
+  );
+  @override
+  late final GeneratedColumn<String> playerLocalId = GeneratedColumn<String>(
+    'player_local_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES player_profiles (local_id)',
+    ),
+  );
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
+    'item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    playerLocalId,
+    itemId,
+    quantity,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'inventory_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<InventoryItemRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('player_local_id')) {
+      context.handle(
+        _playerLocalIdMeta,
+        playerLocalId.isAcceptableOrUnknown(
+          data['player_local_id']!,
+          _playerLocalIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_playerLocalIdMeta);
+    }
+    if (data.containsKey('item_id')) {
+      context.handle(
+        _itemIdMeta,
+        itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_itemIdMeta);
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {playerLocalId, itemId};
+  @override
+  InventoryItemRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InventoryItemRow(
+      playerLocalId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}player_local_id'],
+      )!,
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_id'],
+      )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $InventoryItemsTable createAlias(String alias) {
+    return $InventoryItemsTable(attachedDatabase, alias);
+  }
+}
+
+class InventoryItemRow extends DataClass
+    implements Insertable<InventoryItemRow> {
+  final String playerLocalId;
+
+  /// `StoreItemId.name`. No renombrar nunca un id ya publicado.
+  final String itemId;
+  final int quantity;
+  final int updatedAt;
+  const InventoryItemRow({
+    required this.playerLocalId,
+    required this.itemId,
+    required this.quantity,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['player_local_id'] = Variable<String>(playerLocalId);
+    map['item_id'] = Variable<String>(itemId);
+    map['quantity'] = Variable<int>(quantity);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  InventoryItemsCompanion toCompanion(bool nullToAbsent) {
+    return InventoryItemsCompanion(
+      playerLocalId: Value(playerLocalId),
+      itemId: Value(itemId),
+      quantity: Value(quantity),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory InventoryItemRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InventoryItemRow(
+      playerLocalId: serializer.fromJson<String>(json['playerLocalId']),
+      itemId: serializer.fromJson<String>(json['itemId']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'playerLocalId': serializer.toJson<String>(playerLocalId),
+      'itemId': serializer.toJson<String>(itemId),
+      'quantity': serializer.toJson<int>(quantity),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  InventoryItemRow copyWith({
+    String? playerLocalId,
+    String? itemId,
+    int? quantity,
+    int? updatedAt,
+  }) => InventoryItemRow(
+    playerLocalId: playerLocalId ?? this.playerLocalId,
+    itemId: itemId ?? this.itemId,
+    quantity: quantity ?? this.quantity,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  InventoryItemRow copyWithCompanion(InventoryItemsCompanion data) {
+    return InventoryItemRow(
+      playerLocalId: data.playerLocalId.present
+          ? data.playerLocalId.value
+          : this.playerLocalId,
+      itemId: data.itemId.present ? data.itemId.value : this.itemId,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InventoryItemRow(')
+          ..write('playerLocalId: $playerLocalId, ')
+          ..write('itemId: $itemId, ')
+          ..write('quantity: $quantity, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(playerLocalId, itemId, quantity, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InventoryItemRow &&
+          other.playerLocalId == this.playerLocalId &&
+          other.itemId == this.itemId &&
+          other.quantity == this.quantity &&
+          other.updatedAt == this.updatedAt);
+}
+
+class InventoryItemsCompanion extends UpdateCompanion<InventoryItemRow> {
+  final Value<String> playerLocalId;
+  final Value<String> itemId;
+  final Value<int> quantity;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const InventoryItemsCompanion({
+    this.playerLocalId = const Value.absent(),
+    this.itemId = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InventoryItemsCompanion.insert({
+    required String playerLocalId,
+    required String itemId,
+    this.quantity = const Value.absent(),
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : playerLocalId = Value(playerLocalId),
+       itemId = Value(itemId),
+       updatedAt = Value(updatedAt);
+  static Insertable<InventoryItemRow> custom({
+    Expression<String>? playerLocalId,
+    Expression<String>? itemId,
+    Expression<int>? quantity,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (playerLocalId != null) 'player_local_id': playerLocalId,
+      if (itemId != null) 'item_id': itemId,
+      if (quantity != null) 'quantity': quantity,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InventoryItemsCompanion copyWith({
+    Value<String>? playerLocalId,
+    Value<String>? itemId,
+    Value<int>? quantity,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return InventoryItemsCompanion(
+      playerLocalId: playerLocalId ?? this.playerLocalId,
+      itemId: itemId ?? this.itemId,
+      quantity: quantity ?? this.quantity,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (playerLocalId.present) {
+      map['player_local_id'] = Variable<String>(playerLocalId.value);
+    }
+    if (itemId.present) {
+      map['item_id'] = Variable<String>(itemId.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InventoryItemsCompanion(')
+          ..write('playerLocalId: $playerLocalId, ')
+          ..write('itemId: $itemId, ')
+          ..write('quantity: $quantity, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -6604,6 +7380,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CategoryLevelsTable categoryLevels = $CategoryLevelsTable(this);
   late final $PlacesTable places = $PlacesTable(this);
   late final $LadderRewardsTable ladderRewards = $LadderRewardsTable(this);
+  late final $DailyRewardsTable dailyRewards = $DailyRewardsTable(this);
+  late final $InventoryItemsTable inventoryItems = $InventoryItemsTable(this);
   late final Index idxMatchesPlayerPlayedAt = Index(
     'idx_matches_player_played_at',
     'CREATE INDEX idx_matches_player_played_at ON matches (player_local_id, played_at)',
@@ -6645,6 +7423,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     categoryLevels,
     places,
     ladderRewards,
+    dailyRewards,
+    inventoryItems,
     idxMatchesPlayerPlayedAt,
     idxMatchesSyncStatus,
     idxSyncOpsStatusNextAttempt,
@@ -6806,6 +7586,46 @@ final class $$PlayerProfilesTableReferences
         );
 
     final cache = $_typedResult.readTableOrNull(_syncOperationsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$DailyRewardsTable, List<DailyRewardRow>>
+  _dailyRewardsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.dailyRewards,
+    aliasName: 'player_profiles__local_id__daily_rewards__player_local_id',
+  );
+
+  $$DailyRewardsTableProcessedTableManager get dailyRewardsRefs {
+    final manager = $$DailyRewardsTableTableManager($_db, $_db.dailyRewards)
+        .filter(
+          (f) => f.playerLocalId.localId.sqlEquals(
+            $_itemColumn<String>('local_id')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(_dailyRewardsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$InventoryItemsTable, List<InventoryItemRow>>
+  _inventoryItemsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.inventoryItems,
+    aliasName: 'player_profiles__local_id__inventory_items__player_local_id',
+  );
+
+  $$InventoryItemsTableProcessedTableManager get inventoryItemsRefs {
+    final manager = $$InventoryItemsTableTableManager($_db, $_db.inventoryItems)
+        .filter(
+          (f) => f.playerLocalId.localId.sqlEquals(
+            $_itemColumn<String>('local_id')!,
+          ),
+        );
+
+    final cache = $_typedResult.readTableOrNull(_inventoryItemsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -7008,6 +7828,56 @@ class $$PlayerProfilesTableFilterComposer
           }) => $$SyncOperationsTableFilterComposer(
             $db: $db,
             $table: $db.syncOperations,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> dailyRewardsRefs(
+    Expression<bool> Function($$DailyRewardsTableFilterComposer f) f,
+  ) {
+    final $$DailyRewardsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.localId,
+      referencedTable: $db.dailyRewards,
+      getReferencedColumn: (t) => t.playerLocalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DailyRewardsTableFilterComposer(
+            $db: $db,
+            $table: $db.dailyRewards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> inventoryItemsRefs(
+    Expression<bool> Function($$InventoryItemsTableFilterComposer f) f,
+  ) {
+    final $$InventoryItemsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.localId,
+      referencedTable: $db.inventoryItems,
+      getReferencedColumn: (t) => t.playerLocalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryItemsTableFilterComposer(
+            $db: $db,
+            $table: $db.inventoryItems,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -7288,6 +8158,56 @@ class $$PlayerProfilesTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> dailyRewardsRefs<T extends Object>(
+    Expression<T> Function($$DailyRewardsTableAnnotationComposer a) f,
+  ) {
+    final $$DailyRewardsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.localId,
+      referencedTable: $db.dailyRewards,
+      getReferencedColumn: (t) => t.playerLocalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$DailyRewardsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.dailyRewards,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<T> inventoryItemsRefs<T extends Object>(
+    Expression<T> Function($$InventoryItemsTableAnnotationComposer a) f,
+  ) {
+    final $$InventoryItemsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.localId,
+      referencedTable: $db.inventoryItems,
+      getReferencedColumn: (t) => t.playerLocalId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryItemsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.inventoryItems,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$PlayerProfilesTableTableManager
@@ -7309,6 +8229,8 @@ class $$PlayerProfilesTableTableManager
             bool dailyChallengeProgressRefs,
             bool livesStatesRefs,
             bool syncOperationsRefs,
+            bool dailyRewardsRefs,
+            bool inventoryItemsRefs,
           })
         > {
   $$PlayerProfilesTableTableManager(
@@ -7407,6 +8329,8 @@ class $$PlayerProfilesTableTableManager
                 dailyChallengeProgressRefs = false,
                 livesStatesRefs = false,
                 syncOperationsRefs = false,
+                dailyRewardsRefs = false,
+                inventoryItemsRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -7416,6 +8340,8 @@ class $$PlayerProfilesTableTableManager
                     if (dailyChallengeProgressRefs) db.dailyChallengeProgress,
                     if (livesStatesRefs) db.livesStates,
                     if (syncOperationsRefs) db.syncOperations,
+                    if (dailyRewardsRefs) db.dailyRewards,
+                    if (inventoryItemsRefs) db.inventoryItems,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -7525,6 +8451,48 @@ class $$PlayerProfilesTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (dailyRewardsRefs)
+                        await $_getPrefetchedData<
+                          PlayerProfileRow,
+                          $PlayerProfilesTable,
+                          DailyRewardRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlayerProfilesTableReferences
+                              ._dailyRewardsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlayerProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).dailyRewardsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.playerLocalId == item.localId,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (inventoryItemsRefs)
+                        await $_getPrefetchedData<
+                          PlayerProfileRow,
+                          $PlayerProfilesTable,
+                          InventoryItemRow
+                        >(
+                          currentTable: table,
+                          referencedTable: $$PlayerProfilesTableReferences
+                              ._inventoryItemsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$PlayerProfilesTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).inventoryItemsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.playerLocalId == item.localId,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -7551,6 +8519,8 @@ typedef $$PlayerProfilesTableProcessedTableManager =
         bool dailyChallengeProgressRefs,
         bool livesStatesRefs,
         bool syncOperationsRefs,
+        bool dailyRewardsRefs,
+        bool inventoryItemsRefs,
       })
     >;
 typedef $$MatchesTableCreateCompanionBuilder =
@@ -11095,6 +12065,659 @@ typedef $$LadderRewardsTableProcessedTableManager =
       LadderRewardRow,
       PrefetchHooks Function()
     >;
+typedef $$DailyRewardsTableCreateCompanionBuilder =
+    DailyRewardsCompanion Function({
+      required String playerLocalId,
+      Value<String?> lastClaimDate,
+      Value<int> claimStreak,
+      Value<int> longestClaimStreak,
+      Value<int> totalClaims,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$DailyRewardsTableUpdateCompanionBuilder =
+    DailyRewardsCompanion Function({
+      Value<String> playerLocalId,
+      Value<String?> lastClaimDate,
+      Value<int> claimStreak,
+      Value<int> longestClaimStreak,
+      Value<int> totalClaims,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$DailyRewardsTableReferences
+    extends BaseReferences<_$AppDatabase, $DailyRewardsTable, DailyRewardRow> {
+  $$DailyRewardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $PlayerProfilesTable _playerLocalIdTable(_$AppDatabase db) => db
+      .playerProfiles
+      .createAlias('daily_rewards__player_local_id__player_profiles__local_id');
+
+  $$PlayerProfilesTableProcessedTableManager get playerLocalId {
+    final $_column = $_itemColumn<String>('player_local_id')!;
+
+    final manager = $$PlayerProfilesTableTableManager(
+      $_db,
+      $_db.playerProfiles,
+    ).filter((f) => f.localId.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_playerLocalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$DailyRewardsTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyRewardsTable> {
+  $$DailyRewardsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get lastClaimDate => $composableBuilder(
+    column: $table.lastClaimDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get claimStreak => $composableBuilder(
+    column: $table.claimStreak,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get longestClaimStreak => $composableBuilder(
+    column: $table.longestClaimStreak,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalClaims => $composableBuilder(
+    column: $table.totalClaims,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PlayerProfilesTableFilterComposer get playerLocalId {
+    final $$PlayerProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DailyRewardsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyRewardsTable> {
+  $$DailyRewardsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get lastClaimDate => $composableBuilder(
+    column: $table.lastClaimDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get claimStreak => $composableBuilder(
+    column: $table.claimStreak,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get longestClaimStreak => $composableBuilder(
+    column: $table.longestClaimStreak,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalClaims => $composableBuilder(
+    column: $table.totalClaims,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PlayerProfilesTableOrderingComposer get playerLocalId {
+    final $$PlayerProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DailyRewardsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyRewardsTable> {
+  $$DailyRewardsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get lastClaimDate => $composableBuilder(
+    column: $table.lastClaimDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get claimStreak => $composableBuilder(
+    column: $table.claimStreak,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get longestClaimStreak => $composableBuilder(
+    column: $table.longestClaimStreak,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalClaims => $composableBuilder(
+    column: $table.totalClaims,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PlayerProfilesTableAnnotationComposer get playerLocalId {
+    final $$PlayerProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$DailyRewardsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyRewardsTable,
+          DailyRewardRow,
+          $$DailyRewardsTableFilterComposer,
+          $$DailyRewardsTableOrderingComposer,
+          $$DailyRewardsTableAnnotationComposer,
+          $$DailyRewardsTableCreateCompanionBuilder,
+          $$DailyRewardsTableUpdateCompanionBuilder,
+          (DailyRewardRow, $$DailyRewardsTableReferences),
+          DailyRewardRow,
+          PrefetchHooks Function({bool playerLocalId})
+        > {
+  $$DailyRewardsTableTableManager(_$AppDatabase db, $DailyRewardsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyRewardsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyRewardsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyRewardsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> playerLocalId = const Value.absent(),
+                Value<String?> lastClaimDate = const Value.absent(),
+                Value<int> claimStreak = const Value.absent(),
+                Value<int> longestClaimStreak = const Value.absent(),
+                Value<int> totalClaims = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRewardsCompanion(
+                playerLocalId: playerLocalId,
+                lastClaimDate: lastClaimDate,
+                claimStreak: claimStreak,
+                longestClaimStreak: longestClaimStreak,
+                totalClaims: totalClaims,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String playerLocalId,
+                Value<String?> lastClaimDate = const Value.absent(),
+                Value<int> claimStreak = const Value.absent(),
+                Value<int> longestClaimStreak = const Value.absent(),
+                Value<int> totalClaims = const Value.absent(),
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => DailyRewardsCompanion.insert(
+                playerLocalId: playerLocalId,
+                lastClaimDate: lastClaimDate,
+                claimStreak: claimStreak,
+                longestClaimStreak: longestClaimStreak,
+                totalClaims: totalClaims,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DailyRewardsTable, DailyRewardRow>(table),
+                  $$DailyRewardsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({playerLocalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (playerLocalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.playerLocalId,
+                                referencedTable: $$DailyRewardsTableReferences
+                                    ._playerLocalIdTable(db),
+                                referencedColumn: $$DailyRewardsTableReferences
+                                    ._playerLocalIdTable(db)
+                                    .localId,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$DailyRewardsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyRewardsTable,
+      DailyRewardRow,
+      $$DailyRewardsTableFilterComposer,
+      $$DailyRewardsTableOrderingComposer,
+      $$DailyRewardsTableAnnotationComposer,
+      $$DailyRewardsTableCreateCompanionBuilder,
+      $$DailyRewardsTableUpdateCompanionBuilder,
+      (DailyRewardRow, $$DailyRewardsTableReferences),
+      DailyRewardRow,
+      PrefetchHooks Function({bool playerLocalId})
+    >;
+typedef $$InventoryItemsTableCreateCompanionBuilder =
+    InventoryItemsCompanion Function({
+      required String playerLocalId,
+      required String itemId,
+      Value<int> quantity,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$InventoryItemsTableUpdateCompanionBuilder =
+    InventoryItemsCompanion Function({
+      Value<String> playerLocalId,
+      Value<String> itemId,
+      Value<int> quantity,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+final class $$InventoryItemsTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $InventoryItemsTable, InventoryItemRow> {
+  $$InventoryItemsTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $PlayerProfilesTable _playerLocalIdTable(_$AppDatabase db) =>
+      db.playerProfiles.createAlias(
+        'inventory_items__player_local_id__player_profiles__local_id',
+      );
+
+  $$PlayerProfilesTableProcessedTableManager get playerLocalId {
+    final $_column = $_itemColumn<String>('player_local_id')!;
+
+    final manager = $$PlayerProfilesTableTableManager(
+      $_db,
+      $_db.playerProfiles,
+    ).filter((f) => f.localId.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_playerLocalIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$InventoryItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $InventoryItemsTable> {
+  $$InventoryItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get itemId => $composableBuilder(
+    column: $table.itemId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$PlayerProfilesTableFilterComposer get playerLocalId {
+    final $$PlayerProfilesTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableFilterComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $InventoryItemsTable> {
+  $$InventoryItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get itemId => $composableBuilder(
+    column: $table.itemId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$PlayerProfilesTableOrderingComposer get playerLocalId {
+    final $$PlayerProfilesTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableOrderingComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InventoryItemsTable> {
+  $$InventoryItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get itemId =>
+      $composableBuilder(column: $table.itemId, builder: (column) => column);
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  $$PlayerProfilesTableAnnotationComposer get playerLocalId {
+    final $$PlayerProfilesTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.playerLocalId,
+      referencedTable: $db.playerProfiles,
+      getReferencedColumn: (t) => t.localId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$PlayerProfilesTableAnnotationComposer(
+            $db: $db,
+            $table: $db.playerProfiles,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $InventoryItemsTable,
+          InventoryItemRow,
+          $$InventoryItemsTableFilterComposer,
+          $$InventoryItemsTableOrderingComposer,
+          $$InventoryItemsTableAnnotationComposer,
+          $$InventoryItemsTableCreateCompanionBuilder,
+          $$InventoryItemsTableUpdateCompanionBuilder,
+          (InventoryItemRow, $$InventoryItemsTableReferences),
+          InventoryItemRow,
+          PrefetchHooks Function({bool playerLocalId})
+        > {
+  $$InventoryItemsTableTableManager(
+    _$AppDatabase db,
+    $InventoryItemsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InventoryItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InventoryItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InventoryItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> playerLocalId = const Value.absent(),
+                Value<String> itemId = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InventoryItemsCompanion(
+                playerLocalId: playerLocalId,
+                itemId: itemId,
+                quantity: quantity,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String playerLocalId,
+                required String itemId,
+                Value<int> quantity = const Value.absent(),
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => InventoryItemsCompanion.insert(
+                playerLocalId: playerLocalId,
+                itemId: itemId,
+                quantity: quantity,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$InventoryItemsTable, InventoryItemRow>(table),
+                  $$InventoryItemsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({playerLocalId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (playerLocalId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.playerLocalId,
+                                referencedTable: $$InventoryItemsTableReferences
+                                    ._playerLocalIdTable(db),
+                                referencedColumn:
+                                    $$InventoryItemsTableReferences
+                                        ._playerLocalIdTable(db)
+                                        .localId,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$InventoryItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $InventoryItemsTable,
+      InventoryItemRow,
+      $$InventoryItemsTableFilterComposer,
+      $$InventoryItemsTableOrderingComposer,
+      $$InventoryItemsTableAnnotationComposer,
+      $$InventoryItemsTableCreateCompanionBuilder,
+      $$InventoryItemsTableUpdateCompanionBuilder,
+      (InventoryItemRow, $$InventoryItemsTableReferences),
+      InventoryItemRow,
+      PrefetchHooks Function({bool playerLocalId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -11126,4 +12749,8 @@ class $AppDatabaseManager {
       $$PlacesTableTableManager(_db, _db.places);
   $$LadderRewardsTableTableManager get ladderRewards =>
       $$LadderRewardsTableTableManager(_db, _db.ladderRewards);
+  $$DailyRewardsTableTableManager get dailyRewards =>
+      $$DailyRewardsTableTableManager(_db, _db.dailyRewards);
+  $$InventoryItemsTableTableManager get inventoryItems =>
+      $$InventoryItemsTableTableManager(_db, _db.inventoryItems);
 }

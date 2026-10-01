@@ -14,8 +14,7 @@ import 'package:memory_companion/core/database/tables/player_profiles.dart';
 /// si dos dispositivos jugaron el mismo nivel offline, gana la mejor marca.
 @DataClassName('LevelProgressRow')
 class LevelProgress extends Table {
-  TextColumn get playerLocalId =>
-      text().references(PlayerProfiles, #localId)();
+  TextColumn get playerLocalId => text().references(PlayerProfiles, #localId)();
   IntColumn get levelNumber => integer()();
 
   BoolColumn get isCompleted => boolean().withDefault(const Constant(false))();
