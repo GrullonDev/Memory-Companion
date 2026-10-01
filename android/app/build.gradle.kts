@@ -20,6 +20,11 @@ val keystoreProperties = Properties().apply {
 }
 val hasReleaseKeystore = keystoreProperties.getProperty("storeFile") != null
 
+// App ID de AdMob. Sin `admobAppId` en android/gradle.properties se usa el ID
+// de prueba de Google, que solo sirve anuncios de prueba. No es secreto.
+val admobAppId = (project.findProperty("admobAppId") as String?)
+    ?: "ca-app-pub-3940256099942544~3347511713"
+
 android {
     namespace = "com.grullondev.memory_arcade"
     compileSdk = flutter.compileSdkVersion
@@ -45,6 +50,7 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders["admobAppId"] = admobAppId
     }
 
     signingConfigs {

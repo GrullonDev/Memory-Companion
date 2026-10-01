@@ -10,6 +10,8 @@ import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/routes/route_switch.dart';
 import 'package:memory_companion/core/theme/app_theme.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
+import 'package:memory_companion/features/ads/controller/ad_controller.dart';
+import 'package:memory_companion/features/ads/controller/remove_ads_controller.dart';
 import 'package:memory_companion/features/game_context/controller/game_context_providers.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 
@@ -75,6 +77,11 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.watch(nearbyBeaconProvider);
     // Follows the player's streak to keep the reminders in step.
     ref.watch(streakReminderControllerProvider);
+    // The store asks for its purchase stream to be heard from launch: a
+    // purchase approved while the app was closed arrives there. The ad
+    // controller starts preloading so the first interstitial is ready.
+    ref.listen(removeAdsControllerProvider, (_, _) {});
+    ref.listen(adControllerProvider, (_, _) {});
 
     return MaterialApp(
       title: 'Memory Arcade',
