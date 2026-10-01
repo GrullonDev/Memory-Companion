@@ -7,6 +7,7 @@ import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/app_stat_chip.dart';
+import 'package:memory_companion/features/ads/widget/remove_ads_card.dart';
 import 'package:memory_companion/features/shop/widget/store_section.dart';
 import 'package:memory_companion/features/wallet/controller/wallet_controller.dart';
 
@@ -47,7 +48,11 @@ class StoreScreen extends ConsumerWidget {
                 AppSpacing.screenMargin,
                 AppSpacing.xxl,
               ),
-              children: const [StoreSection(showTitle: false)],
+              children: const [
+                RemoveAdsCard(),
+                SizedBox(height: AppSpacing.md),
+                StoreSection(showTitle: false),
+              ],
             ),
           ),
         ),
