@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_localization/flutter_localization.dart';
@@ -84,7 +85,8 @@ class _MyAppState extends ConsumerState<MyApp> {
     ref.listen(adControllerProvider, (_, _) {});
 
     return MaterialApp(
-      title: 'Memory Arcade',
+      // Mismo nombre que el lanzador: el build de desarrollo lleva "Dev".
+      title: kReleaseMode ? 'Memory Arcade' : 'Memory Arcade Dev',
       debugShowCheckedModeBanner: false,
       navigatorKey: appNavigatorKey,
       theme: AppTheme.light(profile: profile),
