@@ -638,6 +638,17 @@ mixin AppLocale {
   static const String storeHintPackDescription = 'storeHintPackDescription';
   static const String storeLivesRefillTitle = 'storeLivesRefillTitle';
   static const String storeLivesRefillDescription = 'storeLivesRefillDescription';
+  static const String removeAdsTitle = 'removeAdsTitle';
+  static const String removeAdsDescription = 'removeAdsDescription';
+  static const String removeAdsBuyLabel = 'removeAdsBuyLabel';
+  static const String removeAdsRestoreLabel = 'removeAdsRestoreLabel';
+  static const String removeAdsActiveLabel = 'removeAdsActiveLabel';
+  static const String removeAdsThanksLabel = 'removeAdsThanksLabel';
+  static const String removeAdsUnavailableLabel = 'removeAdsUnavailableLabel';
+  static const String removeAdsProcessingLabel = 'removeAdsProcessingLabel';
+  static const String removeAdsPurchaseFailedLabel = 'removeAdsPurchaseFailedLabel';
+  static const String removeAdsRestoreFailedLabel = 'removeAdsRestoreFailedLabel';
+  static const String removeAdsNothingToRestoreLabel = 'removeAdsNothingToRestoreLabel';
   static const String storeOwnedLabel = 'storeOwnedLabel';
   static const String storeOwnedOfLabel = 'storeOwnedOfLabel';
   static const String storeBuyForLabel = 'storeBuyForLabel';
@@ -1299,6 +1310,17 @@ mixin AppLocale {
     storeHintPackDescription: 'Pistas extra para el sudoku.',
     storeLivesRefillTitle: 'Recargar vidas',
     storeLivesRefillDescription: 'Todas tus vidas, ahora mismo.',
+    removeAdsTitle: 'Sin anuncios',
+    removeAdsDescription: 'Juega sin interrupciones. Un solo pago, para siempre.',
+    removeAdsBuyLabel: 'Quitar anuncios · {price}',
+    removeAdsRestoreLabel: 'Restaurar compras',
+    removeAdsActiveLabel: 'Sin anuncios activado. ¡Gracias por tu apoyo!',
+    removeAdsThanksLabel: '¡Listo! Ya no verás anuncios.',
+    removeAdsUnavailableLabel: 'La tienda no está disponible ahora mismo.',
+    removeAdsProcessingLabel: 'Procesando…',
+    removeAdsPurchaseFailedLabel: 'No se pudo completar la compra. Inténtalo de nuevo.',
+    removeAdsRestoreFailedLabel: 'No se pudieron restaurar las compras. Inténtalo de nuevo.',
+    removeAdsNothingToRestoreLabel: 'No encontramos ninguna compra para restaurar en esta cuenta.',
     storeOwnedLabel: 'Tienes {n}',
     storeOwnedOfLabel: 'Tienes {n} de {total}',
     storeBuyForLabel: 'Comprar por {n} monedas',
@@ -1955,6 +1977,17 @@ mixin AppLocale {
     storeHintPackDescription: 'Extra hints for sudoku.',
     storeLivesRefillTitle: 'Refill lives',
     storeLivesRefillDescription: 'All your lives, right now.',
+    removeAdsTitle: 'No ads',
+    removeAdsDescription: 'Play without interruptions. One payment, forever.',
+    removeAdsBuyLabel: 'Remove ads · {price}',
+    removeAdsRestoreLabel: 'Restore purchases',
+    removeAdsActiveLabel: 'Ads removed. Thanks for your support!',
+    removeAdsThanksLabel: 'Done! You won\'t see ads anymore.',
+    removeAdsUnavailableLabel: 'The store isn\'t available right now.',
+    removeAdsProcessingLabel: 'Processing…',
+    removeAdsPurchaseFailedLabel: 'The purchase couldn\'t be completed. Please try again.',
+    removeAdsRestoreFailedLabel: 'Purchases couldn\'t be restored. Please try again.',
+    removeAdsNothingToRestoreLabel: 'No purchases to restore were found on this account.',
     storeOwnedLabel: 'You have {n}',
     storeOwnedOfLabel: 'You have {n} of {total}',
     storeBuyForLabel: 'Buy for {n} coins',

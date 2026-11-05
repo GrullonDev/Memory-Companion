@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:memory_companion/core/localization/app_locale.dart';
 import 'package:memory_companion/core/routes/route_paths.dart';
 import 'package:memory_companion/core/theme/app_colors.dart';
+import 'package:memory_companion/features/ads/controller/ad_controller.dart';
 import 'package:memory_companion/features/game/board/board_screen.dart';
 import 'package:memory_companion/features/game/board/category/game_categories.dart';
 import 'package:memory_companion/features/game/board/controller/board_controller.dart';
@@ -66,6 +67,16 @@ class _BoardPageState extends ConsumerState<BoardPage> {
     } else {
       await _showNoLivesDialog(canStayOnBoard: true);
     }
+  }
+
+  /// The player won and moves on: every few levels an interstitial plays
+  /// first (see [AdController]), then the next round starts as usual.
+  Future<void> _continueToNextLevel() async {
+    final proceed = await ref
+        .read(adControllerProvider.notifier)
+        .onLevelCompleted();
+    if (!proceed || !mounted) return;
+    await _attemptNewRound((c) => c.nextLevel());
   }
 
   Future<void> _showNoLivesDialog({required bool canStayOnBoard}) async {
@@ -130,7 +141,7 @@ class _BoardPageState extends ConsumerState<BoardPage> {
       onTogglePause: controller.togglePause,
       onHint: controller.useHint,
       onRestart: () => _attemptNewRound((c) => c.restart()),
-      onNextLevel: () => _attemptNewRound((c) => c.nextLevel()),
+      onNextLevel: _continueToNextLevel,
       onExit: () => Navigator.of(context).pop(),
       lives: lives?.current ?? LivesController.maxLives,
       isLivesUnlimited: isLivesUnlimited,

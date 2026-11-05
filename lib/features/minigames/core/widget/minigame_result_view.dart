@@ -7,6 +7,7 @@ import 'package:memory_companion/core/theme/app_colors.dart';
 import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/widgets/adaptive_button.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
+import 'package:memory_companion/features/ads/controller/ad_controller.dart';
 import 'package:memory_companion/features/ladder/game_ladder.dart';
 import 'package:memory_companion/features/ladder/ladder_controller.dart';
 import 'package:memory_companion/features/ladder/widget/level_reward_card.dart';
@@ -22,6 +23,10 @@ import 'package:memory_companion/features/statistics/widget/stats_format.dart';
 /// Given the [game], it also shows what the round did on the game's level
 /// ladder: the level completed and, every few levels, the reward it paid.
 /// Both arrive a moment after the round ends, once the result is stored.
+///
+/// After a win, [onPrimary] goes through [AdController] first, so every few
+/// completed levels an interstitial plays before the next one. A lost round
+/// never shows an ad.
 class MinigameResultView extends ConsumerWidget {
   const MinigameResultView({
     super.key,
@@ -135,7 +140,7 @@ class MinigameResultView extends ConsumerWidget {
         AdaptiveButton(
           label: primaryLabel,
           icon: Icons.play_arrow_rounded,
-          onPressed: onPrimary,
+          onPressed: won ? () => _continueAfterWin(context, ref) : onPrimary,
         ),
         const SizedBox(height: AppSpacing.md),
         AdaptiveButton(
@@ -146,5 +151,12 @@ class MinigameResultView extends ConsumerWidget {
         ),
       ],
     );
+  }
+
+  Future<void> _continueAfterWin(BuildContext context, WidgetRef ref) async {
+    final proceed = await ref
+        .read(adControllerProvider.notifier)
+        .onLevelCompleted();
+    if (proceed && context.mounted) onPrimary();
   }
 }

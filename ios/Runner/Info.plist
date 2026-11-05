@@ -49,5 +49,15 @@
 	<string>Si lo activas en Ajustes, Memory Arcade guarda en qué lugar juegas cada partida. La ubicación no sale de tu dispositivo.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Si lo activas, Memory Arcade usa Bluetooth para encontrar jugadores cerca y que ellos te encuentren a ti.</string>
+	<!-- AdMob: ID de prueba de Google. Cambiarlo por el real antes de publicar. -->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 </dict>
 </plist>
