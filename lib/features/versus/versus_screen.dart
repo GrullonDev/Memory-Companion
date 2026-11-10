@@ -236,10 +236,11 @@ class _PlayModeSheet extends ConsumerWidget {
           AppSpacing.xl,
           AppSpacing.xl,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
             Text(
               AppLocale.playModeTitle.getString(context),
               textAlign: TextAlign.center,
@@ -268,7 +269,8 @@ class _PlayModeSheet extends ConsumerWidget {
               messageKey: AppLocale.playLocalMessage,
               mode: PlayMode.nearby,
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );
