@@ -332,6 +332,11 @@ mixin AppLocale {
   static const String accountSignedInAs = 'accountSignedInAs';
   static const String accountPlayingLocally = 'accountPlayingLocally';
   static const String signOutLabel = 'signOutLabel';
+  static const String deleteAccountLabel = 'deleteAccountLabel';
+  static const String deleteAccountConfirmTitle = 'deleteAccountConfirmTitle';
+  static const String deleteAccountConfirmMessage = 'deleteAccountConfirmMessage';
+  static const String deleteAccountConfirmButton = 'deleteAccountConfirmButton';
+  static const String deleteAccountCancelButton = 'deleteAccountCancelButton';
   static const String levelShortLabel = 'levelShortLabel';
   static const String coinsShortLabel = 'coinsShortLabel';
   static const String friendsModeSubtitle = 'friendsModeSubtitle';
@@ -1167,6 +1172,11 @@ mixin AppLocale {
     accountSignedInAs: 'Sesión iniciada',
     accountPlayingLocally: 'Juegas sin cuenta',
     signOutLabel: 'Cerrar sesión',
+    deleteAccountLabel: 'Eliminar cuenta',
+    deleteAccountConfirmTitle: '¿Eliminar tu cuenta?',
+    deleteAccountConfirmMessage: 'Se borrarán tu perfil, historial, progreso y amigos. Tu progreso local se conservará.',
+    deleteAccountConfirmButton: 'Eliminar cuenta',
+    deleteAccountCancelButton: 'Cancelar',
     levelShortLabel: 'Nivel',
     coinsShortLabel: 'monedas',
     ladderRewardHintOne: '¡Un nivel más y ganas {reward}!',
@@ -1823,6 +1833,11 @@ mixin AppLocale {
     accountSignedInAs: 'Signed in',
     accountPlayingLocally: 'Playing without an account',
     signOutLabel: 'Sign out',
+    deleteAccountLabel: 'Delete account',
+    deleteAccountConfirmTitle: 'Delete your account?',
+    deleteAccountConfirmMessage: 'Your profile, history, progress, and friends will be deleted. Your local progress will be kept.',
+    deleteAccountConfirmButton: 'Delete account',
+    deleteAccountCancelButton: 'Cancel',
     levelShortLabel: 'Level',
     coinsShortLabel: 'coins',
     ladderRewardHintOne: 'One more level to win {reward}!',

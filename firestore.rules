@@ -95,32 +95,37 @@ service cloud.firestore {
                     && deltaWithin('totalCoins', 2000)
                     && deltaWithin('gamesWon', 5);
 
-      allow delete: if false;
+      // Account deletion: the owner can delete their own profile.
+      // Subcollections must be deleted separately (client or Cloud Function).
+      allow delete: if isOwner(uid);
 
-      // Historial. Una partida escrita no se reescribe ni se borra: si
-      // pudiera editarse, el historial dejaría de ser una prueba de nada.
+      // Historial. Una partida escrita no se reescribe ni se borra en uso
+      // normal. Delete is allowed only for account deletion cleanup.
       match /matches/{matchId} {
         allow read, create: if isOwner(uid);
-        allow update, delete: if false;
+        allow update: if false;
+        allow delete: if isOwner(uid);
       }
 
-      // Progreso de niveles. Se puede actualizar (mejorar la marca) pero no
-      // borrar.
+      // Progreso de niveles. Se puede actualizar (mejorar la marca).
+      // Delete is allowed for account deletion cleanup.
       match /level_progress/{levelNumber} {
         allow read, create, update: if isOwner(uid);
-        allow delete: if false;
+        allow delete: if isOwner(uid);
       }
 
-      // Registro de idempotencia. Crear sí; borrar **nunca**: si se pudiera
-      // borrar una entrada, podría reaplicarse su operación y duplicar las
-      // recompensas.
+      // Registro de idempotencia. Crear sí; borrar solo para eliminar la
+      // cuenta. En uso normal no se borra: si se pudiera, podría
+      // reaplicarse la operación y duplicar recompensas.
       match /sync_ops/{opId} {
         allow read, create: if isOwner(uid);
-        allow update, delete: if false;
+        allow update: if false;
+        allow delete: if isOwner(uid);
       }
 
       match /achievements/{achievementId} {
         allow read, write: if isOwner(uid);
+        allow delete: if isOwner(uid);
       }
     }
 
@@ -135,11 +140,12 @@ service cloud.firestore {
     // ---------------------------------------------------------------
     match /user_index/{uid} {
       allow read: if signedIn();
-      allow write: if isOwner(uid)
+      allow create, update: if isOwner(uid)
                    && incoming().keys().hasOnly(
                         ['displayName', 'avatarSeed', 'level', 'totalXp',
                          'friendCode', 'lastSeenAt', 'playing', 'updatedAt']
                       );
+      allow delete: if isOwner(uid);
     }
 
     // ---------------------------------------------------------------

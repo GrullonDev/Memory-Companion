@@ -134,6 +134,23 @@ class AuthController extends AsyncNotifier<void> {
   }
 
   Future<void> signOut() => _auth.signOut();
+
+  /// Deletes the user's cloud data and Firebase Auth account, then signs out.
+  ///
+  /// Local progress (Drift) is preserved so the player can keep playing
+  /// without an account or link a new one later.
+  Future<void> deleteAccount() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(() async {
+      final user = _auth.currentUser;
+      if (user == null) throw StateError('No authenticated user');
+
+      await ref
+          .read(userRepositoryProvider)
+          .deleteAllUserData(user.uid);
+      await user.delete();
+    });
+  }
 }
 
 final authControllerProvider = AsyncNotifierProvider<AuthController, void>(

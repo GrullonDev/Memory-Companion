@@ -8,6 +8,7 @@ import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
+import 'package:memory_companion/features/auth/controller/auth_controller.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 import 'package:memory_companion/features/settings/widget/context_settings_section.dart';
 import 'package:memory_companion/features/settings/widget/visual_profile_option.dart';
@@ -105,9 +106,114 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.sectionGap - AppSpacing.md),
             const ContextSettingsSection(),
+            const SizedBox(height: AppSpacing.sectionGap - AppSpacing.md),
+            const _AccountSection(),
           ],
         ),
       ),
     );
+  }
+}
+
+class _AccountSection extends ConsumerWidget {
+  const _AccountSection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user = ref.watch(authStateChangesProvider).value;
+    if (user == null) return const SizedBox.shrink();
+
+    final textTheme = Theme.of(context).textTheme;
+    final tokens = ProfileTokens.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          header: true,
+          child: Text(
+            AppLocale.accountSectionTitle.getString(context),
+            style: textTheme.titleLarge,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.xs),
+        Text(
+          '${AppLocale.accountSignedInAs.getString(context)}: '
+          '${user.displayName ?? user.email ?? ''}',
+          style: textTheme.bodyMedium?.copyWith(
+            color: tokens.supportingTextColor,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Material(
+            type: MaterialType.transparency,
+            child: ListTile(
+              leading: const Icon(Icons.logout_rounded),
+              title: Text(AppLocale.signOutLabel.getString(context)),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+              ),
+              onTap: () => ref.read(authControllerProvider.notifier).signOut(),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Material(
+            type: MaterialType.transparency,
+            child: ListTile(
+              leading: Icon(
+                Icons.delete_forever_rounded,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              title: Text(
+                AppLocale.deleteAccountLabel.getString(context),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+              ),
+              onTap: () => _confirmDelete(context, ref),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocale.deleteAccountConfirmTitle.getString(context)),
+        content: Text(
+          AppLocale.deleteAccountConfirmMessage.getString(context),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(
+              AppLocale.deleteAccountCancelButton.getString(context),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(
+              foregroundColor: Theme.of(context).colorScheme.error,
+            ),
+            child: Text(
+              AppLocale.deleteAccountConfirmButton.getString(context),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      await ref.read(authControllerProvider.notifier).deleteAccount();
+    }
   }
 }

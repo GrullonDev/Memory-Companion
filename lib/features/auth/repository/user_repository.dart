@@ -74,12 +74,26 @@ class UserRepository {
     }
   }
 
-  /// Delete user data (when account is deleted)
-  Future<void> deleteUser(String uid) async {
-    try {
-      await _firestore.collection('users').doc(uid).delete();
-    } catch (e) {
-      rethrow;
+  /// Deletes all user data from Firestore: subcollections first, then the
+  /// user document and the public index entry.
+  ///
+  /// Firestore does not cascade deletes into subcollections, so each one
+  /// must be deleted explicitly. A Cloud Function would be more reliable
+  /// (handles subcollections the client may not know about), but this
+  /// covers the known ones and is enough for closed testing.
+  Future<void> deleteAllUserData(String uid) async {
+    final userDoc = _firestore.collection('users').doc(uid);
+
+    for (final sub in ['matches', 'level_progress', 'sync_ops', 'achievements']) {
+      final snapshots = await userDoc.collection(sub).limit(500).get();
+      final batch = _firestore.batch();
+      for (final doc in snapshots.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
     }
+
+    await userDoc.delete();
+    await _firestore.collection('user_index').doc(uid).delete();
   }
 }
