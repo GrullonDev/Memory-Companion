@@ -40,6 +40,8 @@ dependencies:
   flutter_ble_peripheral: ^3.1.0
   flutter_local_notifications: ^22.3.1
   timezone: ^0.11.1
+  google_mobile_ads: ^9.1.0
+  in_app_purchase: ^3.3.1
 
 dev_dependencies:
   flutter_test:

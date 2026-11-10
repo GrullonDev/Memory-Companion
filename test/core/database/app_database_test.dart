@@ -47,7 +47,7 @@ void main() {
   }
 
   test('el esquema arranca en la versión 9 y vacío', () async {
-    expect(db.schemaVersion, 10);
+    expect(db.schemaVersion, 11);
     expect(await db.select(db.playerProfiles).get(), isEmpty);
     expect(await db.select(db.syncOperations).get(), isEmpty);
     expect(await db.select(db.displaySettings).get(), isEmpty);

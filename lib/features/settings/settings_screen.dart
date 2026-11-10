@@ -8,6 +8,8 @@ import 'package:memory_companion/core/theme/app_spacing.dart';
 import 'package:memory_companion/core/theme/profile_tokens.dart';
 import 'package:memory_companion/core/theme/visual_profile.dart';
 import 'package:memory_companion/core/widgets/app_card.dart';
+import 'package:memory_companion/features/ads/controller/ad_controller.dart';
+import 'package:memory_companion/features/ads/widget/remove_ads_card.dart';
 import 'package:memory_companion/features/settings/controller/display_preferences_controller.dart';
 import 'package:memory_companion/features/settings/widget/context_settings_section.dart';
 import 'package:memory_companion/features/settings/widget/visual_profile_option.dart';
@@ -105,6 +107,10 @@ class SettingsScreen extends ConsumerWidget {
             ),
             const SizedBox(height: AppSpacing.sectionGap - AppSpacing.md),
             const ContextSettingsSection(),
+            if (ref.watch(adsPlatformSupportedProvider)) ...[
+              const SizedBox(height: AppSpacing.sectionGap - AppSpacing.md),
+              const RemoveAdsCard(),
+            ],
           ],
         ),
       ),

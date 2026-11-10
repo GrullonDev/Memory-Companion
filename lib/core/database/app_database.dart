@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 
 import 'package:memory_companion/core/database/connection/open_connection.dart';
 import 'package:memory_companion/core/database/database_enums.dart';
+import 'package:memory_companion/core/database/tables/ad_settings.dart';
 import 'package:memory_companion/core/database/tables/category_levels.dart';
 import 'package:memory_companion/core/database/tables/daily_challenges.dart';
 import 'package:memory_companion/core/database/tables/daily_rewards.dart';
@@ -43,6 +44,7 @@ part 'app_database.g.dart';
     LadderRewards,
     DailyRewards,
     InventoryItems,
+    AdSettings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -69,8 +71,10 @@ class AppDatabase extends _$AppDatabase {
   ///  8. `display_settings.map_navigator_hint_seen`.
   ///  9. `daily_rewards` — el cofre diario y su racha de reclamos.
   /// 10. `inventory_items` — lo comprado en la tienda con monedas.
+  /// 11. `ad_settings` — la compra "Sin anuncios" y el contador de niveles
+  ///     que decide cuándo toca un intersticial.
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -110,6 +114,7 @@ class AppDatabase extends _$AppDatabase {
         }
         if (from < 9) await m.createTable(dailyRewards);
         if (from < 10) await m.createTable(inventoryItems);
+        if (from < 11) await m.createTable(adSettings);
       },
       beforeOpen: (OpeningDetails details) async {
         // SQLite ignora las claves foráneas salvo que se pidan explícitamente,

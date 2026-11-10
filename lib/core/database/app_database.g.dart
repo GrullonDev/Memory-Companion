@@ -7361,6 +7361,323 @@ class InventoryItemsCompanion extends UpdateCompanion<InventoryItemRow> {
   }
 }
 
+class $AdSettingsTable extends AdSettings
+    with TableInfo<$AdSettingsTable, AdSettingsRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $AdSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _adsRemovedMeta = const VerificationMeta(
+    'adsRemoved',
+  );
+  @override
+  late final GeneratedColumn<bool> adsRemoved = GeneratedColumn<bool>(
+    'ads_removed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("ads_removed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _levelsCompletedCountMeta =
+      const VerificationMeta('levelsCompletedCount');
+  @override
+  late final GeneratedColumn<int> levelsCompletedCount = GeneratedColumn<int>(
+    'levels_completed_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    adsRemoved,
+    levelsCompletedCount,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'ad_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<AdSettingsRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('ads_removed')) {
+      context.handle(
+        _adsRemovedMeta,
+        adsRemoved.isAcceptableOrUnknown(data['ads_removed']!, _adsRemovedMeta),
+      );
+    }
+    if (data.containsKey('levels_completed_count')) {
+      context.handle(
+        _levelsCompletedCountMeta,
+        levelsCompletedCount.isAcceptableOrUnknown(
+          data['levels_completed_count']!,
+          _levelsCompletedCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  AdSettingsRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return AdSettingsRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      adsRemoved: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}ads_removed'],
+      )!,
+      levelsCompletedCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}levels_completed_count'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $AdSettingsTable createAlias(String alias) {
+    return $AdSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class AdSettingsRow extends DataClass implements Insertable<AdSettingsRow> {
+  /// Siempre `AdsRepository.singletonId`.
+  final int id;
+
+  /// El jugador compró `remove_ads`. Con esto en `true` no se carga ni se
+  /// muestra ningún anuncio.
+  final bool adsRemoved;
+
+  /// Niveles completados desde que se instaló la app. Cada
+  /// `AdsConfig.interstitialEveryLevels` toca un intersticial.
+  final int levelsCompletedCount;
+  final int updatedAt;
+  const AdSettingsRow({
+    required this.id,
+    required this.adsRemoved,
+    required this.levelsCompletedCount,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['ads_removed'] = Variable<bool>(adsRemoved);
+    map['levels_completed_count'] = Variable<int>(levelsCompletedCount);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  AdSettingsCompanion toCompanion(bool nullToAbsent) {
+    return AdSettingsCompanion(
+      id: Value(id),
+      adsRemoved: Value(adsRemoved),
+      levelsCompletedCount: Value(levelsCompletedCount),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory AdSettingsRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return AdSettingsRow(
+      id: serializer.fromJson<int>(json['id']),
+      adsRemoved: serializer.fromJson<bool>(json['adsRemoved']),
+      levelsCompletedCount: serializer.fromJson<int>(
+        json['levelsCompletedCount'],
+      ),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'adsRemoved': serializer.toJson<bool>(adsRemoved),
+      'levelsCompletedCount': serializer.toJson<int>(levelsCompletedCount),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  AdSettingsRow copyWith({
+    int? id,
+    bool? adsRemoved,
+    int? levelsCompletedCount,
+    int? updatedAt,
+  }) => AdSettingsRow(
+    id: id ?? this.id,
+    adsRemoved: adsRemoved ?? this.adsRemoved,
+    levelsCompletedCount: levelsCompletedCount ?? this.levelsCompletedCount,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  AdSettingsRow copyWithCompanion(AdSettingsCompanion data) {
+    return AdSettingsRow(
+      id: data.id.present ? data.id.value : this.id,
+      adsRemoved: data.adsRemoved.present
+          ? data.adsRemoved.value
+          : this.adsRemoved,
+      levelsCompletedCount: data.levelsCompletedCount.present
+          ? data.levelsCompletedCount.value
+          : this.levelsCompletedCount,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AdSettingsRow(')
+          ..write('id: $id, ')
+          ..write('adsRemoved: $adsRemoved, ')
+          ..write('levelsCompletedCount: $levelsCompletedCount, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, adsRemoved, levelsCompletedCount, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is AdSettingsRow &&
+          other.id == this.id &&
+          other.adsRemoved == this.adsRemoved &&
+          other.levelsCompletedCount == this.levelsCompletedCount &&
+          other.updatedAt == this.updatedAt);
+}
+
+class AdSettingsCompanion extends UpdateCompanion<AdSettingsRow> {
+  final Value<int> id;
+  final Value<bool> adsRemoved;
+  final Value<int> levelsCompletedCount;
+  final Value<int> updatedAt;
+  const AdSettingsCompanion({
+    this.id = const Value.absent(),
+    this.adsRemoved = const Value.absent(),
+    this.levelsCompletedCount = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  AdSettingsCompanion.insert({
+    this.id = const Value.absent(),
+    this.adsRemoved = const Value.absent(),
+    this.levelsCompletedCount = const Value.absent(),
+    required int updatedAt,
+  }) : updatedAt = Value(updatedAt);
+  static Insertable<AdSettingsRow> custom({
+    Expression<int>? id,
+    Expression<bool>? adsRemoved,
+    Expression<int>? levelsCompletedCount,
+    Expression<int>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (adsRemoved != null) 'ads_removed': adsRemoved,
+      if (levelsCompletedCount != null)
+        'levels_completed_count': levelsCompletedCount,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  AdSettingsCompanion copyWith({
+    Value<int>? id,
+    Value<bool>? adsRemoved,
+    Value<int>? levelsCompletedCount,
+    Value<int>? updatedAt,
+  }) {
+    return AdSettingsCompanion(
+      id: id ?? this.id,
+      adsRemoved: adsRemoved ?? this.adsRemoved,
+      levelsCompletedCount: levelsCompletedCount ?? this.levelsCompletedCount,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (adsRemoved.present) {
+      map['ads_removed'] = Variable<bool>(adsRemoved.value);
+    }
+    if (levelsCompletedCount.present) {
+      map['levels_completed_count'] = Variable<int>(levelsCompletedCount.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('AdSettingsCompanion(')
+          ..write('id: $id, ')
+          ..write('adsRemoved: $adsRemoved, ')
+          ..write('levelsCompletedCount: $levelsCompletedCount, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -7382,6 +7699,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LadderRewardsTable ladderRewards = $LadderRewardsTable(this);
   late final $DailyRewardsTable dailyRewards = $DailyRewardsTable(this);
   late final $InventoryItemsTable inventoryItems = $InventoryItemsTable(this);
+  late final $AdSettingsTable adSettings = $AdSettingsTable(this);
   late final Index idxMatchesPlayerPlayedAt = Index(
     'idx_matches_player_played_at',
     'CREATE INDEX idx_matches_player_played_at ON matches (player_local_id, played_at)',
@@ -7425,6 +7743,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     ladderRewards,
     dailyRewards,
     inventoryItems,
+    adSettings,
     idxMatchesPlayerPlayedAt,
     idxMatchesSyncStatus,
     idxSyncOpsStatusNextAttempt,
@@ -12718,6 +13037,194 @@ typedef $$InventoryItemsTableProcessedTableManager =
       InventoryItemRow,
       PrefetchHooks Function({bool playerLocalId})
     >;
+typedef $$AdSettingsTableCreateCompanionBuilder =
+    AdSettingsCompanion Function({
+      Value<int> id,
+      Value<bool> adsRemoved,
+      Value<int> levelsCompletedCount,
+      required int updatedAt,
+    });
+typedef $$AdSettingsTableUpdateCompanionBuilder =
+    AdSettingsCompanion Function({
+      Value<int> id,
+      Value<bool> adsRemoved,
+      Value<int> levelsCompletedCount,
+      Value<int> updatedAt,
+    });
+
+class $$AdSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $AdSettingsTable> {
+  $$AdSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get adsRemoved => $composableBuilder(
+    column: $table.adsRemoved,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get levelsCompletedCount => $composableBuilder(
+    column: $table.levelsCompletedCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$AdSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $AdSettingsTable> {
+  $$AdSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get adsRemoved => $composableBuilder(
+    column: $table.adsRemoved,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get levelsCompletedCount => $composableBuilder(
+    column: $table.levelsCompletedCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$AdSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $AdSettingsTable> {
+  $$AdSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<bool> get adsRemoved => $composableBuilder(
+    column: $table.adsRemoved,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get levelsCompletedCount => $composableBuilder(
+    column: $table.levelsCompletedCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$AdSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $AdSettingsTable,
+          AdSettingsRow,
+          $$AdSettingsTableFilterComposer,
+          $$AdSettingsTableOrderingComposer,
+          $$AdSettingsTableAnnotationComposer,
+          $$AdSettingsTableCreateCompanionBuilder,
+          $$AdSettingsTableUpdateCompanionBuilder,
+          (
+            AdSettingsRow,
+            BaseReferences<_$AppDatabase, $AdSettingsTable, AdSettingsRow>,
+          ),
+          AdSettingsRow,
+          PrefetchHooks Function()
+        > {
+  $$AdSettingsTableTableManager(_$AppDatabase db, $AdSettingsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$AdSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$AdSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$AdSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> adsRemoved = const Value.absent(),
+                Value<int> levelsCompletedCount = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+              }) => AdSettingsCompanion(
+                id: id,
+                adsRemoved: adsRemoved,
+                levelsCompletedCount: levelsCompletedCount,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<bool> adsRemoved = const Value.absent(),
+                Value<int> levelsCompletedCount = const Value.absent(),
+                required int updatedAt,
+              }) => AdSettingsCompanion.insert(
+                id: id,
+                adsRemoved: adsRemoved,
+                levelsCompletedCount: levelsCompletedCount,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$AdSettingsTable, AdSettingsRow>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $AdSettingsTable,
+                    AdSettingsRow
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$AdSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $AdSettingsTable,
+      AdSettingsRow,
+      $$AdSettingsTableFilterComposer,
+      $$AdSettingsTableOrderingComposer,
+      $$AdSettingsTableAnnotationComposer,
+      $$AdSettingsTableCreateCompanionBuilder,
+      $$AdSettingsTableUpdateCompanionBuilder,
+      (
+        AdSettingsRow,
+        BaseReferences<_$AppDatabase, $AdSettingsTable, AdSettingsRow>,
+      ),
+      AdSettingsRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -12753,4 +13260,6 @@ class $AppDatabaseManager {
       $$DailyRewardsTableTableManager(_db, _db.dailyRewards);
   $$InventoryItemsTableTableManager get inventoryItems =>
       $$InventoryItemsTableTableManager(_db, _db.inventoryItems);
+  $$AdSettingsTableTableManager get adSettings =>
+      $$AdSettingsTableTableManager(_db, _db.adSettings);
 }
