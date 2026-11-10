@@ -21,8 +21,9 @@ import 'package:memory_companion/firebase_options.dart';
 /// desarrollo (`com.grullondev.memory_arcade.dev`) y el de producción se
 /// registran cada uno como su propia app de Firebase.
 final firebaseInitializationProvider = FutureProvider<void>((ref) async {
-  final useNativeConfig =
-      !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  final useNativeConfig = !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+       defaultTargetPlatform == TargetPlatform.iOS);
   await Firebase.initializeApp(
     options: useNativeConfig ? null : DefaultFirebaseOptions.currentPlatform,
   );

@@ -46,6 +46,10 @@ app.*.map.json
 /android/app/release
 /android/.kotlin/
 
+# Firebase config files (contain API keys, not secrets but per-environment)
+ios/Runner/Firebase/GoogleService-Info-Dev.plist
+ios/Runner/Firebase/GoogleService-Info-Prod.plist
+
 # FVM Version Cache
 .fvm/
 
