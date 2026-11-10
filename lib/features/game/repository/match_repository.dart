@@ -130,17 +130,4 @@ class MatchRepository {
     }
   }
 
-  /// Delete a match (for testing or cleanup)
-  Future<void> deleteMatch(String userId, String matchId) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('matches')
-          .doc(matchId)
-          .delete();
-    } catch (e) {
-      rethrow;
-    }
-  }
 }

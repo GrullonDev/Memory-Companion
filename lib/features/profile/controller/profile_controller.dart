@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:memory_companion/features/auth/controller/user_controller.dart';
 import 'package:memory_companion/features/game/controller/game_controller.dart';
+import 'package:memory_companion/features/player/controller/player_controller.dart';
 import 'package:memory_companion/features/profile/model/achievement.dart';
 import 'package:memory_companion/features/profile/model/profile_data.dart';
 import 'package:memory_companion/features/player/model/player_level.dart';
@@ -118,7 +119,6 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     return achievements;
   }
 
-  /// Randomize avatar and save to Firestore
   Future<void> randomizeAvatar() async {
     final current = state.value;
     if (current == null) return;
@@ -126,10 +126,10 @@ class ProfileController extends AsyncNotifier<ProfileData> {
     final newSeed = current.avatarSeed + 1;
     state = AsyncValue.data(current.copyWith(avatarSeed: newSeed));
 
-    // Save to Firestore
+    final player = await ref.read(localPlayerProvider.future);
     await ref
-        .read(userControllerProvider.notifier)
-        .updateProfile(avatarSeed: newSeed);
+        .read(playerRepositoryProvider)
+        .updateIdentity(localId: player.localId, avatarSeed: newSeed);
   }
 }
 
