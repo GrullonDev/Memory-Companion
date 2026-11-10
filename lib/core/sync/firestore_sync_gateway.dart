@@ -49,9 +49,29 @@ class FirestoreSyncGateway implements SyncGateway {
         final user = await transaction.get(userDoc);
         final userData = user.data() ?? const <String, Object?>{};
 
+        // Read level doc upfront when needed (Firestore requires all reads
+        // before writes in a transaction).
+        Map<String, Object?>? existingLevelData;
+        if (operation.type == SyncOperationType.completeLevel ||
+            operation.type == SyncOperationType.recordMatch) {
+          final levelPayload = operation.type == SyncOperationType.completeLevel
+              ? operation.payload
+              : operation.mapValue('level');
+          final levelNumber = levelPayload['levelNumber'];
+          if (levelNumber is int) {
+            final levelSnap = await transaction.get(
+              userDoc.collection('level_progress').doc('$levelNumber'),
+            );
+            existingLevelData = levelSnap.data();
+          }
+        }
+
         switch (operation.type) {
           case SyncOperationType.recordMatch:
-            _applyRecordMatch(transaction, operation, userDoc, userData);
+            _applyRecordMatch(
+              transaction, operation, userDoc, userData,
+              existingLevelData: existingLevelData,
+            );
           case SyncOperationType.earnCoins:
           case SyncOperationType.spendCoins:
             transaction.set(userDoc, {
@@ -78,7 +98,10 @@ class FirestoreSyncGateway implements SyncGateway {
               SetOptions(merge: true),
             );
           case SyncOperationType.completeLevel:
-            _applyCompleteLevel(transaction, operation.payload, userDoc);
+            _applyCompleteLevel(
+              transaction, operation.payload, userDoc,
+              existingLevelData: existingLevelData,
+            );
           case SyncOperationType.completeChallenge:
             // Aún sin backend de retos: se marca aplicada para que no se
             // quede atascada bloqueando la cola.
@@ -104,8 +127,9 @@ class FirestoreSyncGateway implements SyncGateway {
     Transaction transaction,
     SyncOperation operation,
     DocumentReference<Map<String, Object?>> userDoc,
-    Map<String, Object?> userData,
-  ) {
+    Map<String, Object?> userData, {
+    Map<String, Object?>? existingLevelData,
+  }) {
     _writeMatch(transaction, operation.mapValue('match'), userDoc);
 
     final deltas = operation.mapValue('deltas');
@@ -125,7 +149,10 @@ class FirestoreSyncGateway implements SyncGateway {
 
     final level = operation.mapValue('level');
     if (level.isNotEmpty) {
-      _applyCompleteLevel(transaction, level, userDoc);
+      _applyCompleteLevel(
+        transaction, level, userDoc,
+        existingLevelData: existingLevelData,
+      );
     }
   }
 
@@ -155,20 +182,31 @@ class FirestoreSyncGateway implements SyncGateway {
   void _applyCompleteLevel(
     Transaction transaction,
     Map<String, Object?> level,
-    DocumentReference<Map<String, Object?>> userDoc,
-  ) {
+    DocumentReference<Map<String, Object?>> userDoc, {
+    Map<String, Object?>? existingLevelData,
+  }) {
     final number = level['levelNumber'];
     if (number is! int) return;
 
     // La mejor marca se resuelve con máximo del lado del servidor, no con
     // «gana el último»: si dos dispositivos jugaron el mismo nivel sin
     // conexión, la buena es la mejor de las dos.
-    transaction.set(userDoc.collection('level_progress').doc('$number'), {
-      'levelNumber': number,
-      'isCompleted': true,
-      'bestScore': level['bestScore'],
-      'updatedAt': FieldValue.serverTimestamp(),
-    }, SetOptions(merge: true));
+    final incomingBest = level['bestScore'];
+    final existingBest = existingLevelData?['bestScore'];
+    final best = (existingBest is int && incomingBest is int)
+        ? (existingBest > incomingBest ? existingBest : incomingBest)
+        : incomingBest;
+
+    transaction.set(
+      userDoc.collection('level_progress').doc('$number'),
+      {
+        'levelNumber': number,
+        'isCompleted': true,
+        'bestScore': best,
+        'updatedAt': FieldValue.serverTimestamp(),
+      },
+      SetOptions(merge: true),
+    );
   }
 
   /// La racha no es acumulable: el récord se resuelve con máximo y el día se
